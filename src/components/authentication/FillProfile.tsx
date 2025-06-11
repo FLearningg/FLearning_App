@@ -25,7 +25,7 @@ export default function FillProfile() {
         // Yêu cầu quyền
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permissionResult.granted) {
-            Alert.alert("Permission Denied", "Bạn cần cấp quyền truy cập ảnh.");
+            Alert.alert("Permission Denied", "You need to allow access to the media library to select an image.");
             return;
         }
 

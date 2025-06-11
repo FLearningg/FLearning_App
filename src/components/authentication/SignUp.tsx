@@ -18,7 +18,7 @@ export default function SignUp() {
     return (
         <View style={styles.container}>
             <View style={{ alignItems: "center" }}>
-                <Image source={require("../../../assets/images/LogoContent.png")} />
+                <Image source={require("../../../assets/images/LogoContentBlue.png")} />
             </View>
             <View style={styles.grettingTextContainer}>
                 <Text style={styles.grettingText}>Getting Started.!</Text>

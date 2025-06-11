@@ -18,7 +18,7 @@ export default function LoginPage() {
     return (
         <View style={styles.container}>
             <View style={{ alignItems: "center" }}>
-                <Image source={require("../../../assets/images/LogoContent.png")} />
+                <Image source={require("../../../assets/images/LogoContentBlue.png")} />
             </View>
             <View style={styles.grettingTextContainer}>
                 <Text style={styles.grettingText}>Let’s Sign In.!</Text>
