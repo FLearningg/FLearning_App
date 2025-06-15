@@ -62,9 +62,10 @@ export default function LoginPage() {
                         </View>
                         <Text style={styles.checkboxLabel}>Remember Me</Text>
                     </TouchableOpacity>
-                    <View>
+                    <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
                         <Text style={{ color: "#545454", fontWeight: "500" }}>Forgot Password?</Text>
-                    </View>
+                    </TouchableOpacity>
+
                 </View>
             </View>
             <View style={{ width: "100%", alignItems: "center", marginTop: 10 }}>
