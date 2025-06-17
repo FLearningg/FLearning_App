@@ -14,6 +14,7 @@ import CongratulationsScreen from "../screens/ForgotPasswordScreen/Congratulatio
 import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import CategoryScreen from "../screens/CategoryScreen/CategoryScreen";
 import SearchScreen from "../screens/SearchScreen/SearchScreen";
+import CourseDetail from "../screens/CourseDetail/CourseDetail";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
@@ -32,6 +33,7 @@ const MainRouter: React.FC = () => {
                 <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Category" component={CategoryScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="CourseDetail" component={CourseDetail} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     );

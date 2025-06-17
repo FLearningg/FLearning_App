@@ -191,7 +191,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 contentContainerStyle={homeScreenStyles.coursesScrollContainer}
               >
                 {popularCourses.map((course) => (
-                  <View key={course.id} style={homeScreenStyles.courseCard}>
+                  <TouchableOpacity 
+                    key={course.id} 
+                    style={homeScreenStyles.courseCard}
+                    onPress={() => navigation.navigate('CourseDetail')}
+                  >
                     <View style={homeScreenStyles.courseImage}>
                       {/* Placeholder for course image */}
                     </View>
@@ -210,7 +214,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                         <Text style={homeScreenStyles.students}>{course.students}</Text>
                       </View>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </ScrollView>
             </View>

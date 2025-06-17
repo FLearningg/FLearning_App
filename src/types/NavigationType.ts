@@ -11,4 +11,5 @@ export type RootStackParamList = {
     Home: undefined;
     Category: undefined;
     Search: undefined;
+    CourseDetail: undefined;
 };
