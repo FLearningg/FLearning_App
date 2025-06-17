@@ -7,6 +7,10 @@ const ForgotPasswordScreen = () => {
   const [selected, setSelected] = useState(null);
   const navigation = useNavigation();
 
+  const handleBack = () => {
+    navigation.goBack();
+  }
+    
   const handleContinue = () => {
     if (selected) {
       navigation.navigate('VerificationCode');
@@ -18,7 +22,7 @@ const ForgotPasswordScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#F5F7FB" />
-      <TouchableOpacity style={styles.backButton}>
+      <TouchableOpacity style={styles.backButton} onPress={handleBack}>         
         <Feather name="arrow-left" size={24} color="#212121" />
         <Text style={styles.title}>Forgot Password</Text>
       </TouchableOpacity>
