@@ -131,7 +131,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <View style={homeScreenStyles.section}>
               <View style={homeScreenStyles.sectionHeader}>
                 <Text style={homeScreenStyles.sectionTitle}>Categories</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Category')}>
+                <TouchableOpacity>
                   <Text style={homeScreenStyles.seeAll}>SEE ALL</Text>
                 </TouchableOpacity>
               </View>
@@ -159,7 +159,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <View style={homeScreenStyles.section}>
               <View style={homeScreenStyles.sectionHeader}>
                 <Text style={homeScreenStyles.sectionTitle}>Popular Courses</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('PopularCourses')}>
                   <Text style={homeScreenStyles.seeAll}>SEE ALL</Text>
                 </TouchableOpacity>
               </View>
@@ -173,6 +173,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                       homeScreenStyles.filterTab,
                       index === 1 && homeScreenStyles.activeFilterTab
                     ]}
+                    onPress={() => {
+                      if (tab === 'All') {
+                        navigation.navigate('OnlineCourses');
+                      }
+                    }}
                   >
                     <Text style={[
                       homeScreenStyles.filterTabText,

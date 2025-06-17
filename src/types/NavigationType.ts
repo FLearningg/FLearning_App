@@ -8,4 +8,6 @@ export type RootStackParamList = {
     VerificationCode: undefined;
     CreateNewPassword: undefined;
     Congratulations: undefined;
+    OnlineCourses: undefined;
+    PopularCourses: undefined;
 };

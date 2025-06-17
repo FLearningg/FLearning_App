@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   headerText: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '600',
     fontSize: 22,
     marginLeft: 10,
     color: '#212121',
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '600',
     fontSize: 20,
     color: '#212121',
     marginBottom: 30,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     marginLeft: 10,
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '500',
     color: '#212121',
   },
   button: {
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonText: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '600',
     fontSize: 16,
     color: '#FFFFFF',
     marginRight: 10,
