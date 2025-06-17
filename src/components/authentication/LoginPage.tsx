@@ -70,7 +70,7 @@ export default function LoginPage() {
             </View>
             <View style={{ width: "100%", alignItems: "center", marginTop: 10 }}>
                 <ButtonNavigate
-                    nextScreenName="SignUp"// this is temporary need to change to Home
+                    nextScreenName="Home"
                     buttonText="Sign In"
                 />
                 <Text style={styles.orContinueText}>Or Continue With</Text>

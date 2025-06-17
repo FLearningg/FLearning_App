@@ -11,6 +11,9 @@ import ForgotPasswordScreen from "../screens/ForgotPasswordScreen/ForgotPassword
 import VerificationCodeScreen from "../screens/ForgotPasswordScreen/VerificationCodeScreen";
 import CreateNewPasswordScreen from "../screens/ForgotPasswordScreen/CreateNewPasswordScreen";
 import CongratulationsScreen from "../screens/ForgotPasswordScreen/CongratulationsScreen";
+import HomeScreen from "../screens/HomeScreen/HomeScreen";
+import CategoryScreen from "../screens/CategoryScreen/CategoryScreen";
+import SearchScreen from "../screens/SearchScreen/SearchScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
@@ -26,6 +29,9 @@ const MainRouter: React.FC = () => {
                 <Stack.Screen name="VerificationCode" component={VerificationCodeScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="CreateNewPassword" component={CreateNewPasswordScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Congratulations" component={CongratulationsScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Category" component={CategoryScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     );
