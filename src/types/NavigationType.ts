@@ -10,4 +10,8 @@ export type RootStackParamList = {
     Congratulations: undefined;
     OnlineCourses: undefined;
     PopularCourses: undefined;
+    Home: undefined;
+    Category: undefined;
+    Search: undefined;
+    CourseDetail: undefined;
 };

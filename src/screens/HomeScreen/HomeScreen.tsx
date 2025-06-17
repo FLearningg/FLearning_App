@@ -10,12 +10,12 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation/HomeRoutes';
+import { RootStackParamList } from '../../types/NavigationType';
 import SearchBar from '../../components/SearchBar/SearchBar';
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
 interface HomeScreenProps {
@@ -196,7 +196,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 contentContainerStyle={homeScreenStyles.coursesScrollContainer}
               >
                 {popularCourses.map((course) => (
-                  <View key={course.id} style={homeScreenStyles.courseCard}>
+                  <TouchableOpacity 
+                    key={course.id} 
+                    style={homeScreenStyles.courseCard}
+                    onPress={() => navigation.navigate('CourseDetail')}
+                  >
                     <View style={homeScreenStyles.courseImage}>
                       {/* Placeholder for course image */}
                     </View>
@@ -215,7 +219,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                         <Text style={homeScreenStyles.students}>{course.students}</Text>
                       </View>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </ScrollView>
             </View>

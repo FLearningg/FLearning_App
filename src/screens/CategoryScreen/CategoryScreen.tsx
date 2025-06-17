@@ -10,12 +10,12 @@ import {
   Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation/HomeRoutes';
+import { RootStackParamList } from '../../types/NavigationType';
 import SearchBar from '../../components/SearchBar/SearchBar';
 
-type CategoryScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Category'>;
+type CategoryScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Category'>;
 type CategoryScreenRouteProp = RouteProp<RootStackParamList, 'Category'>;
 
 interface CategoryScreenProps {
