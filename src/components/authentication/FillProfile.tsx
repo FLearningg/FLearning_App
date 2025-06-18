@@ -5,9 +5,14 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from '@react-native-picker/picker';
 import ButtonNavigate from "../ButtonNavigate";
 import * as ImagePicker from "expo-image-picker";
+import ButtonNavigate1 from "../ButtonNavigate1";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../types/NavigationType";
 
 
 export default function FillProfile() {
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [fullName, setFullName] = useState("");
     const [nickName, setNickName] = useState("");
@@ -40,7 +45,10 @@ export default function FillProfile() {
             setImageUri(result.assets[0].uri);
         }
     };
-
+    const handleFillProfile = () => {
+        //logic implement here
+        navigation.navigate('Home')
+    }
     return (
         <View style={styles.container}>
             <View style={{ alignItems: "center" }}>
@@ -128,10 +136,14 @@ export default function FillProfile() {
                     </Picker>
                 </View>
                 <View style={{ marginVertical: 20 }}>
-                    <ButtonNavigate
+                    {/* <ButtonNavigate
                         nextScreenName="Login"
                         buttonText="Continue"
-                    />
+                    /> */}
+                    <ButtonNavigate1
+                        buttonText="Continue"
+                        onPress={handleFillProfile}
+                    ></ButtonNavigate1>
                 </View>
             </View>
         </View>

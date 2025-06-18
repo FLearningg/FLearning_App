@@ -3,9 +3,14 @@ import ButtonNavigate from "../ButtonNavigate";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/NavigationType";
+import ButtonNavigate1 from "../ButtonNavigate1";
 
 export default function StartPage() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const handleNavigate = () => {
+        //logic implement here
+        navigation.navigate("Login");
+    }
     return (
         <View style={styles.container}>
             <View style={{ marginTop: 250 }}>
@@ -26,10 +31,15 @@ export default function StartPage() {
             </TouchableOpacity>
             <Text style={styles.orText}> ( Or )</Text>
             <View style={{marginVertical: 30}}>
-                <ButtonNavigate
+                {/* <ButtonNavigate
                     nextScreenName="Login"
                     buttonText="Sign In with Your Account"
-                />
+                /> */}
+                <ButtonNavigate1
+                    buttonText="Sign In with Your Account"
+                    onPress={handleNavigate}
+                >
+                </ButtonNavigate1>
             </View>
             <View style={{ flexDirection: "row", width: 200, justifyContent: "space-between"}}>
                 <Text>Don’t have an Account?</Text>
