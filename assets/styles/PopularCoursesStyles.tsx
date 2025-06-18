@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
   // Category Filter
   categoryContainer: {
     paddingVertical: 16,
-    maxHeight: 70,
+    maxHeight: 75,
   },
   categoryContent: {
     paddingHorizontal: 20,
@@ -54,21 +54,24 @@ export const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 16,
+    marginHorizontal: 20,
   },
   courseListContent: {
     paddingBottom: 16,
   },
   courseCard: {
     backgroundColor: '#ffffff',
-    borderRadius: 12,
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
     elevation: 5,
     flexDirection: 'row',
-    marginBottom: 16,
     padding: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
+    marginVertical: 5,
+    maxHeight: 190,
   },
   courseImage: {
     backgroundColor: '#000000',
@@ -78,7 +81,6 @@ export const styles = StyleSheet.create({
   },
   courseContent: {
     flex: 1,
-    marginLeft: 16,
   },
   categoryTag: {
     color: '#ff6b00',
@@ -109,17 +111,19 @@ export const styles = StyleSheet.create({
   rating: {
     color: '#202244',
     fontSize: 12,
-    fontWeight: '500',
     marginLeft: 4,
+    fontWeight: 'bold',
   },
   separator: {
     color: '#a0a4ab',
     fontSize: 12,
     marginHorizontal: 8,
+    fontWeight: 'bold',
   },
   students: {
-    color: '#a0a4ab',
+    color: '#000000',
     fontSize: 12,
+    fontWeight: 'bold',
   },
   bookmarkButton: {
     padding: 4,

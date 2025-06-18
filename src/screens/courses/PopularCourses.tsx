@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react';
+import React, { useState, FC } from 'react';
 import {
   View,
   Text,
@@ -6,19 +6,21 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StatusBar,
+  TextInput,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import {
   ArrowLeft,
   Search,
-  Star,
-  Bookmark,
   Home,
   BookOpen,
   MessageCircle,
   CreditCard,
   User,
+  X,
 } from 'lucide-react-native';
 import { styles } from '../../../assets/styles/PopularCoursesStyles';
+import CourseCard from './CourseCard';
 
 // Types
 interface Course {
@@ -90,27 +92,89 @@ const NAV_ITEMS = [
   { icon: User, label: 'PROFILE', active: false },
 ];
 
-// Components
-const Header = () => (
+// Header Component
+interface HeaderProps {
+  onBackPress: () => void;
+  onSearchPress: () => void;
+  showSearchBar: boolean;
+  searchValue: string;
+  onChangeSearch: (text: string) => void;
+  onCloseSearch: () => void;
+}
+const Header: FC<HeaderProps> = ({
+  onBackPress,
+  onSearchPress,
+  showSearchBar,
+  searchValue,
+  onChangeSearch,
+  onCloseSearch,
+}) => (
   <View style={styles.header}>
-    <TouchableOpacity accessibilityRole="button" accessibilityLabel="Go back">
-      <ArrowLeft size={24} color="#202244" />
-    </TouchableOpacity>
-    <Text style={styles.headerTitle}>Popular Courses</Text>
-    <TouchableOpacity accessibilityRole="button" accessibilityLabel="Search courses">
-      <Search size={24} color="#202244" />
-    </TouchableOpacity>
+    {showSearchBar ? (
+      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+        <TextInput
+          style={[
+            styles.headerTitle,
+            {
+              flex: 1,
+              fontSize: 20,
+              backgroundColor: '#f0f0f0',
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              marginLeft: 0,
+            },
+          ]}
+          placeholder="Search courses..."
+          value={searchValue}
+          onChangeText={onChangeSearch}
+          autoFocus
+          accessibilityLabel="Search courses"
+        />
+        <TouchableOpacity
+          onPress={onCloseSearch}
+          accessibilityRole="button"
+          accessibilityLabel="Close search"
+          style={{ marginLeft: 8 }}
+        >
+          <X size={28} color="#202244" />
+        </TouchableOpacity>
+      </View>
+    ) : (
+      <>
+        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
+            onPress={onBackPress}
+          >
+            <ArrowLeft size={28} color="#202244" />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { fontSize: 24, fontWeight: 'bold', marginLeft: 12 }]}>
+            Popular Courses
+          </Text>
+        </View>
+        <TouchableOpacity
+          accessibilityRole="button"
+          accessibilityLabel="Search courses"
+          onPress={onSearchPress}
+        >
+          <Search size={28} color="#202244" />
+        </TouchableOpacity>
+      </>
+    )}
   </View>
 );
 
-const CategoryFilter = ({
-  categories,
-  selectedCategory,
-  onSelectCategory,
-}: {
+// CategoryFilter Component
+interface CategoryFilterProps {
   categories: string[];
   selectedCategory: string;
   onSelectCategory: (category: string) => void;
+}
+const CategoryFilter: FC<CategoryFilterProps> = ({
+  categories,
+  selectedCategory,
+  onSelectCategory,
 }) => (
   <ScrollView
     horizontal
@@ -134,6 +198,7 @@ const CategoryFilter = ({
           style={[
             styles.categoryText,
             selectedCategory === category && styles.selectedCategoryText,
+            { fontSize: 16 },
           ]}
         >
           {category}
@@ -143,51 +208,8 @@ const CategoryFilter = ({
   </ScrollView>
 );
 
-const CourseCard = memo(
-  ({
-    course,
-    onToggleBookmark,
-  }: {
-    course: Course;
-    onToggleBookmark: (id: string) => void;
-  }) => (
-    <TouchableOpacity
-      style={styles.courseCard}
-      accessibilityRole="button"
-      accessibilityLabel={`View ${course.title}`}
-    >
-      <View style={styles.courseImage} />
-      <View style={styles.courseContent}>
-        <Text style={styles.categoryTag}>{course.category}</Text>
-        <Text style={styles.courseTitle}>{course.title}</Text>
-        <Text style={styles.coursePrice}>{course.price}</Text>
-        <View style={styles.courseStats}>
-          <View style={styles.ratingContainer}>
-            <Star size={14} color="#fac025" fill="#fac025" />
-            <Text style={styles.rating}>{course.rating}</Text>
-          </View>
-          <Text style={styles.separator}>|</Text>
-          <Text style={styles.students}>{course.students}</Text>
-        </View>
-      </View>
-      <TouchableOpacity
-        style={styles.bookmarkButton}
-        onPress={() => onToggleBookmark(course.id)}
-        accessibilityRole="button"
-        accessibilityLabel={course.isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-        accessibilityState={{ checked: course.isBookmarked }}
-      >
-        <Bookmark
-          size={20}
-          color={course.isBookmarked ? "#167f71" : "#a0a4ab"}
-          fill={course.isBookmarked ? "#167f71" : "transparent"}
-        />
-      </TouchableOpacity>
-    </TouchableOpacity>
-  )
-);
-
-const BottomNav = () => (
+// BottomNav Component
+const BottomNav: FC = () => (
   <View style={styles.bottomNav}>
     {NAV_ITEMS.map(({ icon: Icon, label, active }) => (
       <TouchableOpacity
@@ -197,10 +219,8 @@ const BottomNav = () => (
         accessibilityLabel={label}
         accessibilityState={{ selected: active }}
       >
-        <Icon size={24} color={active ? "#167f71" : "#a0a4ab"} />
-        <Text
-          style={[styles.navText, active && styles.activeNavText]}
-        >
+        <Icon size={28} color={active ? '#167f71' : '#a0a4ab'} />
+        <Text style={[styles.navText, active && styles.activeNavText, { fontSize: 14 }]}>
           {label}
         </Text>
       </TouchableOpacity>
@@ -209,13 +229,21 @@ const BottomNav = () => (
 );
 
 // Main Component
-const PopularCoursesScreen = () => {
+const PopularCoursesScreen: FC = () => {
+  const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [courses, setCourses] = useState(COURSES);
+  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
 
-  const filteredCourses = selectedCategory === 'All'
-    ? courses
-    : courses.filter((course) => course.category === selectedCategory);
+  const filteredCourses = courses.filter((course) => {
+    const matchesCategory =
+      selectedCategory === 'All' || course.category === selectedCategory;
+    const matchesSearch =
+      searchValue.trim() === '' ||
+      course.title.toLowerCase().includes(searchValue.trim().toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const handleToggleBookmark = (id: string) => {
     setCourses((prevCourses) =>
@@ -225,10 +253,24 @@ const PopularCoursesScreen = () => {
     );
   };
 
+  const handleSearchPress = () => setShowSearchBar(true);
+
+  const handleCloseSearch = () => {
+    setShowSearchBar(false);
+    setSearchValue('');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-      <Header />
+      <Header
+        onBackPress={() => navigation.goBack()}
+        onSearchPress={handleSearchPress}
+        showSearchBar={showSearchBar}
+        searchValue={searchValue}
+        onChangeSearch={setSearchValue}
+        onCloseSearch={handleCloseSearch}
+      />
       <CategoryFilter
         categories={CATEGORIES}
         selectedCategory={selectedCategory}
@@ -246,6 +288,11 @@ const PopularCoursesScreen = () => {
             onToggleBookmark={handleToggleBookmark}
           />
         ))}
+        {filteredCourses.length === 0 && (
+          <Text style={{ textAlign: 'center', marginTop: 40, fontSize: 18, color: '#888' }}>
+            No courses found.
+          </Text>
+        )}
       </ScrollView>
       <BottomNav />
     </SafeAreaView>

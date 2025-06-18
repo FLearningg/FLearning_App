@@ -1,3 +1,5 @@
+import { Filters } from '../screens/courses/FilterComponents';
+
 export type RootStackParamList = {
     Launching: undefined;
     Start: undefined;
@@ -8,6 +10,9 @@ export type RootStackParamList = {
     VerificationCode: undefined;
     CreateNewPassword: undefined;
     Congratulations: undefined;
+    OnlineCourses: { filters?: Filters } | undefined;
+    FilterOnlineCourses: { filters: Filters; onApplyFilters: (filters: Filters) => void };
+    PopularCourses: undefined;
     Home: undefined;
     Category: undefined;
     Search: undefined;
