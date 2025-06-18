@@ -10,12 +10,12 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation/HomeRoutes';
+import { RootStackParamList } from '../../types/NavigationType';
 import SearchBar from '../../components/SearchBar/SearchBar';
 
-type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 type HomeScreenRouteProp = RouteProp<RootStackParamList, 'Home'>;
 
 interface HomeScreenProps {
@@ -131,7 +131,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <View style={homeScreenStyles.section}>
               <View style={homeScreenStyles.sectionHeader}>
                 <Text style={homeScreenStyles.sectionTitle}>Categories</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Category')}>
+                <TouchableOpacity>
                   <Text style={homeScreenStyles.seeAll}>SEE ALL</Text>
                 </TouchableOpacity>
               </View>
@@ -159,7 +159,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <View style={homeScreenStyles.section}>
               <View style={homeScreenStyles.sectionHeader}>
                 <Text style={homeScreenStyles.sectionTitle}>Popular Courses</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('PopularCourses')}>
                   <Text style={homeScreenStyles.seeAll}>SEE ALL</Text>
                 </TouchableOpacity>
               </View>
@@ -173,6 +173,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                       homeScreenStyles.filterTab,
                       index === 1 && homeScreenStyles.activeFilterTab
                     ]}
+                    onPress={() => {
+                      if (tab === 'All') {
+                        navigation.navigate('OnlineCourses');
+                      }
+                    }}
                   >
                     <Text style={[
                       homeScreenStyles.filterTabText,
@@ -191,7 +196,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 contentContainerStyle={homeScreenStyles.coursesScrollContainer}
               >
                 {popularCourses.map((course) => (
-                  <View key={course.id} style={homeScreenStyles.courseCard}>
+                  <TouchableOpacity 
+                    key={course.id} 
+                    style={homeScreenStyles.courseCard}
+                    onPress={() => navigation.navigate('CourseDetail')}
+                  >
                     <View style={homeScreenStyles.courseImage}>
                       {/* Placeholder for course image */}
                     </View>
@@ -210,7 +219,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                         <Text style={homeScreenStyles.students}>{course.students}</Text>
                       </View>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </ScrollView>
             </View>

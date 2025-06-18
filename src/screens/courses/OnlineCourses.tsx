@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   Switch,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import {
   ArrowLeft,
   Search,
@@ -132,9 +133,11 @@ const NAV_ITEMS = [
 ];
 
 // Components
-const Header = memo(() => (
+const Header = memo(({ onBackPress }: { onBackPress: () => void }) => (
   <View style={styles.header}>
-    <ArrowLeft color="#202244" />
+    <TouchableOpacity onPress={onBackPress}>
+      <ArrowLeft color="#202244" />
+    </TouchableOpacity>
     <Text style={styles.headerText}>Online Courses</Text>
   </View>
 ));
@@ -390,6 +393,7 @@ const FilterModal = memo(
 
 // Main Component
 const OnlineCourseScreen = () => {
+  const navigation = useNavigation();
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
   const [courses, setCourses] = useState<Course[]>(COURSES);
@@ -458,7 +462,7 @@ const OnlineCourseScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <Header onBackPress={() => navigation.goBack()} />
       <SearchBar
         onFilterPress={() => setFilterVisible(true)}
         onChangeText={setSearchQuery} // Add search functionality

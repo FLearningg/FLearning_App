@@ -5,6 +5,7 @@ import ButtonNavigate from "../ButtonNavigate";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/NavigationType";
+import ButtonNavigate1 from "../ButtonNavigate1";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -14,7 +15,10 @@ export default function LoginPage() {
     const togglePassword = () => setSecureText(!secureText);
 
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+    const handleSignUp = () => {
+        //logic implement here
+        navigation.navigate('SignUp') //pass parameter here
+    }
     return (
         <View style={styles.container}>
             <View style={{ alignItems: "center" }}>
@@ -69,9 +73,13 @@ export default function LoginPage() {
                 </View>
             </View>
             <View style={{ width: "100%", alignItems: "center", marginTop: 10 }}>
-                <ButtonNavigate
-                    nextScreenName="SignUp"// this is temporary need to change to Home
+                {/* <ButtonNavigate
+                    nextScreenName="Home"
                     buttonText="Sign In"
+                /> */}
+                <ButtonNavigate1
+                    buttonText="SignUp"
+                    onPress={handleSignUp}
                 />
                 <Text style={styles.orContinueText}>Or Continue With</Text>
                 <View style={{ flexDirection: "row", marginTop: 25, marginLeft: 20 }}>

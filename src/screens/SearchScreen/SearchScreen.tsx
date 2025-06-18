@@ -10,12 +10,12 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation/HomeRoutes';
+import { RootStackParamList } from '../../types/NavigationType';
 import { styles } from '../../../assets/styles/SearchScreen/SearchScreenStyles';
 
-type SearchScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Search'>;
+type SearchScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Search'>;
 type SearchScreenRouteProp = RouteProp<RootStackParamList, 'Search'>;
 
 interface SearchScreenProps {
