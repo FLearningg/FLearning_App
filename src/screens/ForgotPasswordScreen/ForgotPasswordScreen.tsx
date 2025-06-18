@@ -2,15 +2,20 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/NavigationType';
 
 const ForgotPasswordScreen = () => {
-  const [selected, setSelected] = useState(null);
-  const navigation = useNavigation();
+  // const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState<'email' | 'sms' | null>(null);
+  // const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
 
   const handleBack = () => {
     navigation.goBack();
   }
-    
+
   const handleContinue = () => {
     if (selected) {
       navigation.navigate('VerificationCode');
@@ -22,7 +27,7 @@ const ForgotPasswordScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#F5F7FB" />
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>         
+      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
         <Feather name="arrow-left" size={24} color="#212121" />
         <Text style={styles.title}>Forgot Password</Text>
       </TouchableOpacity>

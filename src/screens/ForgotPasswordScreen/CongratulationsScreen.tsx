@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ActivityIndicator, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../types/NavigationType';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const CongratulationsScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useEffect(() => {
   const timer = setTimeout(() => {
@@ -52,13 +54,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontWeight: '600',
+    fontFamily: 'OPTIFrankfurter-Medium',
     fontSize: 22,
     color: '#212121',
     marginBottom: 10,
   },
   subtitle: {
-    fontWeight: '500',
+    fontFamily: 'OPTIFrankfurter-Medium',
     fontSize: 15,
     color: '#666',
     textAlign: 'center',

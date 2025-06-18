@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/NavigationType';
 
 const CreateNewPasswordScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState(true);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handleContinue = () => {
   if (password && confirmPassword && password === confirmPassword) {
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   headerText: {
-    fontWeight: '600',
+    fontFamily: 'OPTIFrankfurter-Medium',
     fontSize: 22,
     marginLeft: 10,
     color: '#212121',
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontWeight: '600',
+    fontFamily: 'OPTIFrankfurter-Medium',
     fontSize: 20,
     color: '#212121',
     marginBottom: 30,
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     marginLeft: 10,
-    fontWeight: '500',
+    fontFamily: 'OPTIFrankfurter-Medium',
     color: '#212121',
   },
   button: {
@@ -121,7 +123,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonText: {
-    fontWeight: '600',
+    fontFamily: 'OPTIFrankfurter-Medium',
     fontSize: 16,
     color: '#FFFFFF',
     marginRight: 10,

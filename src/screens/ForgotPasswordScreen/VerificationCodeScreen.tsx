@@ -9,14 +9,18 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../types/NavigationType";
 
 const VerificationCodeScreen = () => {
   const [code, setCode] = useState(["", "", "", ""]);
   const [timer, setTimer] = useState(59);
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const inputs = useRef([]);
 
+  // const inputs = useRef([]);
+  const inputs = useRef<Array<TextInput | null>>([]);
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
@@ -25,16 +29,16 @@ const VerificationCodeScreen = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleCodeInput = (value, index) => {
+  const handleCodeInput = (value: string, index: number) => {
     if (/^[0-9]$/.test(value) || value === "") {
       const newCode = [...code];
       newCode[index] = value;
       setCode(newCode);
 
       if (value && index < code.length - 1) {
-        inputs.current[index + 1].focus();
+        inputs.current[index + 1]?.focus();
       } else if (!value && index > 0) {
-        inputs.current[index - 1].focus();
+        inputs.current[index - 1]?.focus();
       }
     }
   };
@@ -64,7 +68,7 @@ const VerificationCodeScreen = () => {
           {code.map((digit, index) => (
             <TextInput
               key={index}
-              ref={(el) => (inputs.current[index] = el)}
+              ref={(el) => { inputs.current[index] = el }}
               style={styles.codeInput}
               keyboardType="numeric"
               maxLength={1}
