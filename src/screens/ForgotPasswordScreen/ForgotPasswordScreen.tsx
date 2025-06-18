@@ -2,15 +2,20 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { MaterialIcons, Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../types/NavigationType';
 
 const ForgotPasswordScreen = () => {
-  const [selected, setSelected] = useState(null);
-  const navigation = useNavigation();
+  // const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState<'email' | 'sms' | null>(null);
+  // const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
 
   const handleBack = () => {
     navigation.goBack();
   }
-    
+
   const handleContinue = () => {
     if (selected) {
       navigation.navigate('VerificationCode');
@@ -22,7 +27,7 @@ const ForgotPasswordScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#F5F7FB" />
-      <TouchableOpacity style={styles.backButton} onPress={handleBack}>         
+      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
         <Feather name="arrow-left" size={24} color="#212121" />
         <Text style={styles.title}>Forgot Password</Text>
       </TouchableOpacity>
@@ -76,7 +81,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   title: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '600',
     fontSize: 22,
     marginLeft: 10,
     color: '#212121',
@@ -86,7 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   instruction: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '500',
     fontSize: 15,
     color: '#666666',
     textAlign: 'center',
@@ -109,12 +114,12 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   optionLabel: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '600',
     fontSize: 16,
     color: '#212121',
   },
   optionDetail: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '500',
     fontSize: 14,
     color: '#666666',
   },
@@ -128,7 +133,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   buttonText: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '600',
     fontSize: 16,
     color: '#FFFFFF',
     marginRight: 10,
