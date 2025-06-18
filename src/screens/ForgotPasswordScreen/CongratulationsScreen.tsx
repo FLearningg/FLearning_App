@@ -52,13 +52,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '600',
     fontSize: 22,
     color: '#212121',
     marginBottom: 10,
   },
   subtitle: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '500',
     fontSize: 15,
     color: '#666',
     textAlign: 'center',

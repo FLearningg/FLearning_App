@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   title: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '600',
     fontSize: 22,
     marginLeft: 10,
     color: "#212121",
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   infoText: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '500',
     fontSize: 15,
     color: "#666666",
     marginBottom: 30,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   codeInput: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '600',
     backgroundColor: "#FFFFFF",
     width: 50,
     height: 50,
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   resendText: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '500',
     color: "#666666",
     fontSize: 14,
   },
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   buttonText: {
-    fontFamily: 'OPTIFrankfurter-Medium',
+    fontWeight: '600',
     fontSize: 16,
     color: "#FFFFFF",
     marginRight: 10,

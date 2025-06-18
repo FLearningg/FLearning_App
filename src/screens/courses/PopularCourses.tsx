@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   StatusBar,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import {
   ArrowLeft,
   Search,
@@ -91,9 +92,13 @@ const NAV_ITEMS = [
 ];
 
 // Components
-const Header = () => (
+const Header = ({ onBackPress }: { onBackPress: () => void }) => (
   <View style={styles.header}>
-    <TouchableOpacity accessibilityRole="button" accessibilityLabel="Go back">
+    <TouchableOpacity 
+      accessibilityRole="button" 
+      accessibilityLabel="Go back"
+      onPress={onBackPress}
+    >
       <ArrowLeft size={24} color="#202244" />
     </TouchableOpacity>
     <Text style={styles.headerTitle}>Popular Courses</Text>
@@ -210,6 +215,7 @@ const BottomNav = () => (
 
 // Main Component
 const PopularCoursesScreen = () => {
+  const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [courses, setCourses] = useState(COURSES);
 
@@ -228,7 +234,7 @@ const PopularCoursesScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-      <Header />
+      <Header onBackPress={() => navigation.goBack()} />
       <CategoryFilter
         categories={CATEGORIES}
         selectedCategory={selectedCategory}
