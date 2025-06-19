@@ -15,9 +15,9 @@ export default function LoginPage() {
     const togglePassword = () => setSecureText(!secureText);
 
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    const handleSignUp = () => {
+    const handleSignIn = () => {
         //logic implement here
-        navigation.navigate('SignUp') //pass parameter here
+        navigation.navigate('Home') //pass parameter here
     }
     return (
         <View style={styles.container}>
@@ -78,8 +78,8 @@ export default function LoginPage() {
                     buttonText="Sign In"
                 /> */}
                 <ButtonNavigate1
-                    buttonText="SignUp"
-                    onPress={handleSignUp}
+                    buttonText="Sign In"
+                    onPress={handleSignIn}
                 />
                 <Text style={styles.orContinueText}>Or Continue With</Text>
                 <View style={{ flexDirection: "row", marginTop: 25, marginLeft: 20 }}>
