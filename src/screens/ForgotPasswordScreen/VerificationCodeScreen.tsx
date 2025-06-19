@@ -61,7 +61,7 @@ const VerificationCodeScreen = () => {
 
       <View style={styles.content}>
         <Text style={styles.infoText}>
-          Code has been sent to (+1) ***-***-*529
+          Code has been sent to *******916
         </Text>
 
         <View style={styles.codeContainer}>

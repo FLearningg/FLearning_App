@@ -44,7 +44,7 @@ const ForgotPasswordScreen = () => {
           <MaterialIcons name="email" size={24} color="#0C9488" />
           <View style={styles.optionTextContainer}>
             <Text style={styles.optionLabel}>Via Email</Text>
-            <Text style={styles.optionDetail}>priscilla.frank26@gmail.com</Text>
+            <Text style={styles.optionDetail}>dattntde180651@fpt.edu.vn</Text>
           </View>
         </TouchableOpacity>
 
@@ -55,7 +55,7 @@ const ForgotPasswordScreen = () => {
           <MaterialIcons name="sms" size={24} color="#0C9488" />
           <View style={styles.optionTextContainer}>
             <Text style={styles.optionLabel}>Via SMS</Text>
-            <Text style={styles.optionDetail}>(+91) 958-894-5529</Text>
+            <Text style={styles.optionDetail}>0828006916</Text>
           </View>
         </TouchableOpacity>
       </View>
