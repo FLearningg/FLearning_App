@@ -17,69 +17,93 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: "#202244",
-    fontSize: 20,
-    fontWeight: "600",
+    fontSize: 28,
+    fontWeight: 'bold',
     marginLeft: 12,
+    marginTop: 30,
   },
 
-  // Search Bar
   searchContainer: {
-    flexDirection: "row",
+    marginHorizontal: 24,
     marginBottom: 16,
-    paddingHorizontal: 16,
-    maxHeight: 50,
   },
   searchBar: {
-    backgroundColor: "white",
-    borderRadius: 16,
-    flex: 1,
     flexDirection: "row",
-    paddingLeft: 40,
-    paddingVertical: 0,
+    alignItems: "center",
+    backgroundColor: "#F9FAFB",
+    borderRadius: 16,
+    height: 64,
+    paddingHorizontal: 16,
     position: "relative",
   },
   searchIcon: {
-    left: 12,
-    position: "absolute",
-    top: 14,
+    marginRight: 12,
   },
   searchInput: {
-    color: "#202244",
     flex: 1,
+    fontSize: 18,
+    color: "#4B5563",
+    paddingRight: 60,
   },
   filterButton: {
-    backgroundColor: "#0961f5",
+    position: "absolute",
+    right: 12,
+    width: 40,
+    height: 40,
+    backgroundColor: "#3B82F6",
     borderRadius: 12,
-    marginLeft: 8,
-    padding: 12,
+    justifyContent: "center",
+    alignItems: "center",
   },
-
-  // Tabs
-  tabContainer: {
+  tabsContainer: {
     flexDirection: "row",
-    marginBottom: 12,
-    paddingHorizontal: 16,
+    marginHorizontal: 24,
+    gap: 16,
+    marginBottom: 32,
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
   },
   activeTab: {
-    backgroundColor: "#167f71",
-    borderRadius: 24,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
+    backgroundColor: "#0D9488",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  inactiveTab: {
+    backgroundColor: "#EFF6FF",
+  },
+  tabText: {
+    fontSize: 18,
+    fontWeight: "500",
   },
   activeTabText: {
     color: "white",
-    fontWeight: "500",
-  },
-  inactiveTab: {
-    backgroundColor: "#e8f1ff",
-    borderRadius: 24,
-    marginLeft: 8,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
   },
   inactiveTabText: {
-    color: "#202244",
-    fontWeight: "500",
+    color: "#4B5563",
+  },
+  contentArea: {
+    backgroundColor: "#F9FAFB",
+    borderRadius: 12,
+    padding: 24,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 100,
+  },
+  contentText: {
+    color: "#6B7280",
+    textAlign: "center",
+    fontSize: 16,
   },
 
   // Result Header
@@ -108,6 +132,8 @@ const styles = StyleSheet.create({
   courseList: {
     paddingBottom: 80,
     paddingHorizontal: 16,
+    marginTop: 30,
+    marginBottom: 30,
   },
   courseCard: {
     backgroundColor: "white",
@@ -196,81 +222,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "500",
     marginTop: 2,
-  },
-
-  // Filter Modal
-  modalContainer: {
-    backgroundColor: "#ffffff",
-    flex: 1,
-  },
-  modalHeader: {
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderColor: "#e2e6ea",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  headerLeft: {
-    alignItems: "center",
-    flexDirection: "row",
-  },
-  headerTitle: {
-    color: "#202244",
-    fontSize: 20,
-    fontWeight: "600",
-    marginLeft: 12,
-  },
-  clearText: {
-    color: "#545454",
-    fontSize: 16,
-  },
-  scrollContent: {
-    paddingBottom: 120,
-    paddingHorizontal: 20,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    color: "#202244",
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 12,
-  },
-  optionRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    marginBottom: 12,
-  },
-  optionText: {
-    color: "#545454",
-    fontSize: 16,
-    marginLeft: 12,
-  },
-  footer: {
-    backgroundColor: "#ffffff",
-    borderColor: "#e2e6ea",
-    borderTopWidth: 1,
-    bottom: 0,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    position: "absolute",
-    width: "100%",
-  },
-  applyButton: {
-    alignItems: "center",
-    backgroundColor: "#0961f5",
-    borderRadius: 16,
-    flexDirection: "row",
-    justifyContent: "center",
-    paddingVertical: 14,
-  },
-  applyText: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "600",
-    marginRight: 8,
   },
 });

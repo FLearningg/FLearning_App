@@ -17,6 +17,7 @@ import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import CategoryScreen from "../screens/CategoryScreen/CategoryScreen";
 import SearchScreen from "../screens/SearchScreen/SearchScreen";
 import CourseDetail from "../screens/CourseDetail/CourseDetail";
+import FilterScreen from "../screens/courses/FilterComponents";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
@@ -33,6 +34,7 @@ const MainRouter: React.FC = () => {
                 <Stack.Screen name="CreateNewPassword" component={CreateNewPasswordScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Congratulations" component={CongratulationsScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="OnlineCourses" component={OnlineCourseScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="FilterOnlineCourses" component={FilterScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="PopularCourses" component={PopularCoursesScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Category" component={CategoryScreen} options={{ headerShown: false }} />
