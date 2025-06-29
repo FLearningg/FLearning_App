@@ -13,10 +13,14 @@ export default function StartPage() {
     }
     return (
         <View style={styles.container}>
-            <View style={{ marginTop: 250 }}>
+            {/* <Image source={require("../../../assets/images/LOGO.png")} style={{ width: 90, height: 90 }} /> */}
+            <View style={styles.iconContainer}>
+                <Image source={require("../../../assets/images/LOGO.png")} style={{ width: 90, height: 90 }} />
+            </View>
+            <View style={{ marginTop: 25 }}>
                 <Text style={styles.headerText}>Let's you in</Text>
             </View>
-            <TouchableOpacity style={styles.googleSignInContainer}>
+            {/* <TouchableOpacity style={styles.googleSignInContainer}>
                 <View style={styles.googleSignInButton}>
                     <Image source={require("../../../assets/images/GoogleIcon.png")} style={{ width: 20, height: 20 }} />
                 </View>
@@ -28,20 +32,16 @@ export default function StartPage() {
                     <Image source={require("../../../assets/images/AppleIcon.png")} style={{ width: 20, height: 20 }} />
                 </View>
                 <Text style={styles.googleSignInText}>Continue with Apple</Text>
-            </TouchableOpacity>
-            <Text style={styles.orText}> ( Or )</Text>
-            <View style={{marginVertical: 30}}>
-                {/* <ButtonNavigate
-                    nextScreenName="Login"
-                    buttonText="Sign In with Your Account"
-                /> */}
+            </TouchableOpacity> */}
+
+            {/* <Text style={styles.orText}> ( Or )</Text> */}
+            <View style={{ marginVertical: 30, marginTop: 300 }}>
                 <ButtonNavigate1
                     buttonText="Sign In with Your Account"
                     onPress={handleNavigate}
-                >
-                </ButtonNavigate1>
+                />
             </View>
-            <View style={{ flexDirection: "row", width: 200, justifyContent: "space-between"}}>
+            <View style={{ flexDirection: "row", width: 200, justifyContent: "space-between" }}>
                 <Text>Don’t have an Account?</Text>
                 <Text style={styles.signUpText} onPress={() => navigation.navigate("SignUp")}>SIGN UP</Text>
             </View>
@@ -100,5 +100,12 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         borderBottomWidth: 2,
         borderBottomColor: "#0961F5",
+    },
+    iconContainer: {
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 20,
+        padding: 10,
     },
 });

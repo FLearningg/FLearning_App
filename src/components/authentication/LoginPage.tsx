@@ -82,7 +82,7 @@ export default function LoginPage() {
                     onPress={handleSignIn}
                 />
                 <Text style={styles.orContinueText}>Or Continue With</Text>
-                <View style={{ flexDirection: "row", marginTop: 25, marginLeft: 20 }}>
+                {/* <View style={{ flexDirection: "row", marginTop: 25, marginLeft: 20 }}>
                     <TouchableOpacity>
                         <View style={styles.googleSignInContainer}>
                             <View style={styles.googleSignInButton}>
@@ -95,7 +95,7 @@ export default function LoginPage() {
                             <Image source={require("../../../assets/images/AppleIcon.png")} style={{ width: 20, height: 20 }} />
                         </View>
                     </TouchableOpacity>
-                </View>
+                </View> */}
                 <View style={{ flexDirection: "row", width: 200, justifyContent: "space-between", marginTop: 30 }}>
                     <Text>Don’t have an Account?</Text>
                     <Text style={styles.signInText} onPress={() => navigation.navigate("SignUp")}>SIGN UP</Text>

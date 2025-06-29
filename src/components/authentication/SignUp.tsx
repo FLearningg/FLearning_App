@@ -19,6 +19,12 @@ export default function SignUp() {
         //logic implement here
         navigation.navigate('FillProfile');
     }
+    const resetNavigation = () => {
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+        });
+    }
     return (
         <View style={styles.container}>
             <View style={{ alignItems: "center" }}>
@@ -65,16 +71,12 @@ export default function SignUp() {
                 </TouchableOpacity>
             </View>
             <View style={{ width: "100%", alignItems: "center", marginTop: 10 }}>
-                {/* <ButtonNavigate
-                    nextScreenName="FillProfile"
-                    buttonText="Sign Up"
-                /> */}
                 <ButtonNavigate1
                     onPress={handleSignUp}
                     buttonText="Sign Up"
                 ></ButtonNavigate1>
                 <Text style={styles.orContinueText}>Or Continue With</Text>
-                <View style={{ flexDirection: "row", marginTop: 25, marginLeft: 20 }}>
+                {/* <View style={{ flexDirection: "row", marginTop: 25, marginLeft: 20 }}>
                     <TouchableOpacity>
                         <View style={styles.googleSignInContainer}>
                             <View style={styles.googleSignInButton}>
@@ -87,10 +89,10 @@ export default function SignUp() {
                             <Image source={require("../../../assets/images/AppleIcon.png")} style={{ width: 20, height: 20 }} />
                         </View>
                     </TouchableOpacity>
-                </View>
+                </View> */}
                 <View style={{ flexDirection: "row", width: 213, justifyContent: "space-between", marginTop: 30 }}>
                     <Text>Already have an Account?</Text>
-                    <Text style={styles.signInText} onPress={() => navigation.navigate("Login")}>SIGN IN</Text>
+                    <Text style={styles.signInText} onPress={() => resetNavigation()}>SIGN IN</Text>
                 </View>
             </View>
 
