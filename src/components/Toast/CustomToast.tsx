@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, Image, StyleSheet } from "react-native";
 
-export default function CustomToast({ text1, text2, props, status }: any) {
+export default function CustomToast({ text1, text2, props }: any) {
     return (
         <View style={[styles.container, props?.status === 'error' ? { borderColor: 'red' } : { borderColor: 'green' }]}>
             {props?.imageUrl && (
