@@ -1,11 +1,10 @@
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { AntDesign, Feather, FontAwesome, Fontisto } from "@expo/vector-icons";
 import { useState } from "react";
-import ButtonNavigate from "../ButtonNavigate";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/NavigationType";
-import ButtonNavigate1 from "../ButtonNavigate1";
+import ButtonNavigate1 from "../../components/ButtonNavigate1";
 
 export default function SignUp() {
     const [email, setEmail] = useState("");
