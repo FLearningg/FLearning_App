@@ -19,6 +19,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import CourseDetailAbout from "./CourseDetailAbout";
 import CourseDetailCurriculum from "./CourseDetailCurriculum";
+import ButtonNavigate1 from "../../components/ButtonNavigate1";
 
 const CourseDetail = () => {
   const navigation = useNavigation();
@@ -58,7 +59,8 @@ const CourseDetail = () => {
   const reviews = [
     {
       id: 1,
-      avatar: "https://placehold.co/40x40/d1d1d1/ffffff?text=W",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80",
       name: "Will",
       rating: 4.5,
       text: "This course has been very useful. Mentor was well spoken totally loved it.",
@@ -67,7 +69,8 @@ const CourseDetail = () => {
     },
     {
       id: 2,
-      avatar: "https://placehold.co/40x40/d1d1d1/ffffff?text=MT",
+      avatar:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80",
       name: "Martha E. Thompson",
       rating: 4.5,
       text: "This course has been very useful. Mentor was well spoken totally loved it. It had fun sessions as well.",
@@ -92,7 +95,7 @@ const CourseDetail = () => {
         <View style={styles.headerImageContainer}>
           <Image
             source={{
-              uri: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+              uri: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
             }}
             style={styles.headerImage}
           />
@@ -187,7 +190,7 @@ const CourseDetail = () => {
               <View style={styles.instructorContainer}>
                 <Image
                   source={{
-                    uri: "https://placehold.co/60x60/d1d1d1/ffffff?text=RJ",
+                    uri: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80",
                   }}
                   style={styles.instructorImage}
                 />
@@ -260,16 +263,13 @@ const CourseDetail = () => {
 
       {/* Enrollment Button */}
       <View style={styles.enrollButtonContainer}>
-        <TouchableOpacity
-          style={styles.enrollButton}
+        <ButtonNavigate1
           onPress={() => {
             // Handle enrollment
             console.log("Enroll pressed");
           }}
-        >
-          <Text style={styles.enrollButtonText}>Enroll Course - 499/-</Text>
-          <AntDesign name="arrowright" size={20} color="white" />
-        </TouchableOpacity>
+          buttonText="Enroll Course - 499/-"
+        />
       </View>
     </SafeAreaView>
   );
