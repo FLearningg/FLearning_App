@@ -22,7 +22,7 @@ export default function LoginPage() {
             type: 'custom_with_image',
             text1: 'Login Successful',
             text2: 'Welcome back!',
-            props: { 
+            props: {
                 imageUrl: require('../../../assets/images/LOGO.png'),
                 status: 'success',
             },

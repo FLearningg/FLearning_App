@@ -35,23 +35,3 @@ const styles = StyleSheet.create({
     text1: { fontWeight: 'bold', fontSize: 16 },
     text2: { fontSize: 14 },
 });
-
-// NOTE: this is toast component (can be custom here)
-// USAGE: using in event handler 
-//Example:
-// const handleSignIn = () => {
-//     //logic implement here
-//     Toast.show({
-//         type: 'custom_with_image',
-//         text1: 'Login Successful',
-//         text2: 'Welcome back!',
-//         props: {
-//             imageUrl: require('../../../assets/images/LOGO.png'),
-//             status: 'success',
-//         },
-//         position: 'top',
-//         visibilityTime: 3000,
-//         autoHide: false, // This is for testing, set to true in production
-//     });
-//     navigation.navigate('Home') //pass parameter here
-// }
