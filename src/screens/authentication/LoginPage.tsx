@@ -6,6 +6,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/NavigationType";
 import ButtonNavigate1 from "../../components/ButtonNavigate1";
 import Toast from "react-native-toast-message";
+import LoadingComponent from "../../components/Loading/LoadingComponent";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -13,22 +14,28 @@ export default function LoginPage() {
     const [secureText, setSecureText] = useState(true);
     const [checked, setChecked] = useState(false);
     const togglePassword = () => setSecureText(!secureText);
-
+    const [loading, setLoading] = useState(false);
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const handleSignIn = () => {
-        //logic implement here
-        Toast.show({
-            type: 'custom_with_image',
-            text1: 'Login Successful',
-            text2: 'Welcome back!',
-            props: {
-                imageUrl: require('../../../assets/images/LOGO.png'),
-                status: 'success',
-            },
-            position: 'top',
-            visibilityTime: 3000,
-        });
-        navigation.navigate('Home') //pass parameter here
+
+        // Simulate loading state
+        setLoading(true);
+        setTimeout(() => {
+            //logic implement here
+            Toast.show({
+                type: 'custom_with_image',
+                text1: 'Login Successful',
+                text2: 'Welcome back!',
+                props: {
+                    imageUrl: require('../../../assets/images/LOGO.png'),
+                    status: 'success',
+                },
+                position: 'top',
+                visibilityTime: 3000,
+            });
+            navigation.navigate('Home') //pass parameter here
+            setLoading(false);
+        }, 5000);
     }
     return (
         <View style={styles.container}>
@@ -112,7 +119,7 @@ export default function LoginPage() {
                     <Text style={styles.signInText} onPress={() => navigation.navigate("SignUp")}>SIGN UP</Text>
                 </View>
             </View>
-
+            <LoadingComponent visible={loading} />
         </View>
     );
 }
