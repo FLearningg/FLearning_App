@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, ImageBackground } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { RootStackParamList } from "../types/NavigationType" // điều chỉnh đường dẫn cho đúng
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 type LaunchingScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "Launching">
 export default function Launching() {
@@ -10,9 +11,16 @@ export default function Launching() {
 
       useEffect(() => {
         const timer = setTimeout(() => {
-          navigation.navigate("Start")
+            //kiểm tra currentUser trong AsyncStorage
+            // nếu có thì chuyển đến Home, nếu không thì chuyển đến Start
+            AsyncStorage.getItem("currentUser").then((currentUser) => {
+              if (currentUser) {
+                navigation.navigate("Home")
+              } else {
+                navigation.navigate("Start")
+              }
+            })
         }, 2000)
-
         return () => clearTimeout(timer)
       }, [navigation])
 

@@ -28,6 +28,7 @@ interface HomeScreenProps {
 }
 import { homeScreenStyles } from "../../../assets/styles/HomeScreen/HomeScreenStyles";
 import { responsiveWidth } from "../../../assets/styles/utils/responsive";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // Prevent back navigation when on Home screen
@@ -103,9 +104,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     "3D Design",
     "Arts & Humanities",
   ];
-
+  const handleLogout = () => {
+    AsyncStorage.removeItem("currentUser");
+    AsyncStorage.removeItem("accessToken");
+    navigation.navigate("Start");
+  };
   return (
     <View style={homeScreenStyles.container}>
+
       <StatusBar
         barStyle="dark-content"
         backgroundColor={Platform.OS === "android" ? "#f8f9fa" : undefined}
@@ -139,6 +145,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               />
             </TouchableOpacity>
           </View>
+          <TouchableOpacity style={{ padding: 10, backgroundColor: "#FF6347", borderRadius: 5 }} onPress={handleLogout}>
+            <Text style={{ color: "#FFFFFF" }}>Logout</Text>
+          </TouchableOpacity>
           {/* Search Bar */}
           <SearchBar
             onFilterPress={() => console.log("Filter pressed")}
