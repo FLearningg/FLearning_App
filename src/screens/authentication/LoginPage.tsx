@@ -1,11 +1,12 @@
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { AntDesign, Feather, Fontisto } from "@expo/vector-icons";
 import { useState } from "react";
-import ButtonNavigate from "../ButtonNavigate";
+import ButtonNavigate from "../../components/ButtonNavigate";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/NavigationType";
-import ButtonNavigate1 from "../ButtonNavigate1";
+import ButtonNavigate1 from "../../components/ButtonNavigate1";
+import Toast from "react-native-toast-message";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -17,6 +18,17 @@ export default function LoginPage() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const handleSignIn = () => {
         //logic implement here
+        Toast.show({
+            type: 'custom_with_image',
+            text1: 'Login Successful',
+            text2: 'Welcome back!',
+            props: { 
+                imageUrl: require('../../../assets/images/LOGO.png'),
+                status: 'success',
+            },
+            position: 'top',
+            visibilityTime: 3000,
+        });
         navigation.navigate('Home') //pass parameter here
     }
     return (

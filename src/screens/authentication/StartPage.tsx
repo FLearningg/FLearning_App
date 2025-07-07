@@ -1,9 +1,9 @@
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import ButtonNavigate from "../ButtonNavigate";
+import ButtonNavigate from "../../components/ButtonNavigate";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/NavigationType";
-import ButtonNavigate1 from "../ButtonNavigate1";
+import ButtonNavigate1 from "../../components/ButtonNavigate1";
 
 export default function StartPage() {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();

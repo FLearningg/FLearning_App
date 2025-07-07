@@ -3,9 +3,9 @@ import { AntDesign, EvilIcons, Feather, FontAwesome, FontAwesome5 } from "@expo/
 import { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from '@react-native-picker/picker';
-import ButtonNavigate from "../ButtonNavigate";
+import ButtonNavigate from "../../components/ButtonNavigate";
 import * as ImagePicker from "expo-image-picker";
-import ButtonNavigate1 from "../ButtonNavigate1";
+import ButtonNavigate1 from "../../components/ButtonNavigate1";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/NavigationType";
