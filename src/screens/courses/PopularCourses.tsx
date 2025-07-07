@@ -1,4 +1,4 @@
-import React, { useState, FC } from 'react';
+import React, { useState, FC } from "react";
 import {
   View,
   Text,
@@ -7,8 +7,8 @@ import {
   SafeAreaView,
   StatusBar,
   TextInput,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import {
   ArrowLeft,
   Search,
@@ -18,9 +18,10 @@ import {
   CreditCard,
   User,
   X,
-} from 'lucide-react-native';
-import { styles } from '../../../assets/styles/PopularCoursesStyles';
-import CourseCard from './CourseCard';
+} from "lucide-react-native";
+import { styles } from "../../../assets/styles/PopularCoursesStyles";
+import CourseCard from "./CourseCard";
+import BottomNav from "./BottomNav";
 
 // Types
 interface Course {
@@ -34,62 +35,62 @@ interface Course {
 }
 
 // Constants
-const CATEGORIES = ['All', 'Graphic Design', '3D Design', 'Arts & Media'];
+const CATEGORIES = ["All", "Graphic Design", "3D Design", "Arts & Media"];
 
 const COURSES: Course[] = [
   {
-    id: '1',
-    category: 'Graphic Design',
-    title: 'Graphic Design Advanced',
-    price: '7058/-',
+    id: "1",
+    category: "Graphic Design",
+    title: "Graphic Design Advanced",
+    price: "7058/-",
     rating: 4.2,
-    students: '7830 Std',
+    students: "7830 Std",
     isBookmarked: true,
   },
   {
-    id: '2',
-    category: 'Graphic Design',
-    title: 'Advertisement Design',
-    price: '800/-',
+    id: "2",
+    category: "Graphic Design",
+    title: "Advertisement Design",
+    price: "800/-",
     rating: 3.9,
-    students: '12680 Std',
+    students: "12680 Std",
     isBookmarked: false,
   },
   {
-    id: '3',
-    category: 'Programming',
-    title: 'Graphic Design Advanced',
-    price: '599/-',
+    id: "3",
+    category: "Programming",
+    title: "Graphic Design Advanced",
+    price: "599/-",
     rating: 4.2,
-    students: '990 Std',
+    students: "990 Std",
     isBookmarked: true,
   },
   {
-    id: '4',
-    category: 'Web Development',
-    title: 'Web Developer concept',
-    price: '499/-',
+    id: "4",
+    category: "Web Development",
+    title: "Web Developer concept",
+    price: "499/-",
     rating: 4.9,
-    students: '14580 Std',
+    students: "14580 Std",
     isBookmarked: true,
   },
   {
-    id: '5',
-    category: 'SEO & Marketing',
-    title: 'Digital Marketing Course',
-    price: '399/-',
+    id: "5",
+    category: "SEO & Marketing",
+    title: "Digital Marketing Course",
+    price: "399/-",
     rating: 4.5,
-    students: '8920 Std',
+    students: "8920 Std",
     isBookmarked: false,
   },
 ];
 
 const NAV_ITEMS = [
-  { icon: Home, label: 'HOME', active: true },
-  { icon: BookOpen, label: 'MY COURSES', active: false },
-  { icon: MessageCircle, label: 'INBOX', active: false },
-  { icon: CreditCard, label: 'TRANSACTION', active: false },
-  { icon: User, label: 'PROFILE', active: false },
+  { icon: Home, label: "HOME", active: true },
+  { icon: BookOpen, label: "MY COURSES", active: false },
+  { icon: MessageCircle, label: "INBOX", active: false },
+  { icon: CreditCard, label: "TRANSACTION", active: false },
+  { icon: User, label: "PROFILE", active: false },
 ];
 
 // Header Component
@@ -111,14 +112,14 @@ const Header: FC<HeaderProps> = ({
 }) => (
   <View style={styles.header}>
     {showSearchBar ? (
-      <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
         <TextInput
           style={[
             styles.headerTitle,
             {
               flex: 1,
               fontSize: 20,
-              backgroundColor: '#f0f0f0',
+              backgroundColor: "#f0f0f0",
               borderRadius: 8,
               paddingHorizontal: 12,
               marginLeft: 0,
@@ -141,7 +142,7 @@ const Header: FC<HeaderProps> = ({
       </View>
     ) : (
       <>
-        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel="Go back"
@@ -149,7 +150,12 @@ const Header: FC<HeaderProps> = ({
           >
             <ArrowLeft size={28} color="#202244" />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { fontSize: 24, fontWeight: 'bold', marginLeft: 12 }]}>
+          <Text
+            style={[
+              styles.headerTitle,
+              { fontSize: 24, fontWeight: "bold", marginLeft: 12 },
+            ]}
+          >
             Popular Courses
           </Text>
         </View>
@@ -208,39 +214,19 @@ const CategoryFilter: FC<CategoryFilterProps> = ({
   </ScrollView>
 );
 
-// BottomNav Component
-const BottomNav: FC = () => (
-  <View style={styles.bottomNav}>
-    {NAV_ITEMS.map(({ icon: Icon, label, active }) => (
-      <TouchableOpacity
-        key={label}
-        style={styles.navItem}
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        accessibilityState={{ selected: active }}
-      >
-        <Icon size={28} color={active ? '#167f71' : '#a0a4ab'} />
-        <Text style={[styles.navText, active && styles.activeNavText, { fontSize: 14 }]}>
-          {label}
-        </Text>
-      </TouchableOpacity>
-    ))}
-  </View>
-);
-
 // Main Component
 const PopularCoursesScreen: FC = () => {
   const navigation = useNavigation();
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [courses, setCourses] = useState(COURSES);
   const [showSearchBar, setShowSearchBar] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
 
   const filteredCourses = courses.filter((course) => {
     const matchesCategory =
-      selectedCategory === 'All' || course.category === selectedCategory;
+      selectedCategory === "All" || course.category === selectedCategory;
     const matchesSearch =
-      searchValue.trim() === '' ||
+      searchValue.trim() === "" ||
       course.title.toLowerCase().includes(searchValue.trim().toLowerCase());
     return matchesCategory && matchesSearch;
   });
@@ -248,7 +234,9 @@ const PopularCoursesScreen: FC = () => {
   const handleToggleBookmark = (id: string) => {
     setCourses((prevCourses) =>
       prevCourses.map((course) =>
-        course.id === id ? { ...course, isBookmarked: !course.isBookmarked } : course
+        course.id === id
+          ? { ...course, isBookmarked: !course.isBookmarked }
+          : course
       )
     );
   };
@@ -257,7 +245,7 @@ const PopularCoursesScreen: FC = () => {
 
   const handleCloseSearch = () => {
     setShowSearchBar(false);
-    setSearchValue('');
+    setSearchValue("");
   };
 
   return (
@@ -289,7 +277,14 @@ const PopularCoursesScreen: FC = () => {
           />
         ))}
         {filteredCourses.length === 0 && (
-          <Text style={{ textAlign: 'center', marginTop: 40, fontSize: 18, color: '#888' }}>
+          <Text
+            style={{
+              textAlign: "center",
+              marginTop: 40,
+              fontSize: 18,
+              color: "#888",
+            }}
+          >
             No courses found.
           </Text>
         )}
