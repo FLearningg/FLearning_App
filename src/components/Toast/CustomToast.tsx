@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet } from "react-native";
 
 export default function CustomToast({ text1, text2, props }: any) {
     return (
-        <View style={[styles.container, props?.status === 'error' ? { borderColor: 'red' } : { borderColor: 'green' }]}>
+        <View style={[styles.container, props?.status === "error" ? { borderColor: "red" } : { borderColor: "green" }]}>
             {props?.imageUrl && (
                 <Image source={props.imageUrl} style={styles.image} />
             )}
