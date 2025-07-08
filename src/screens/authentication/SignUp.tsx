@@ -31,7 +31,7 @@ export default function SignUp() {
             email,
             password,
         };
-        if(!checked){
+        if (!checked) {
             Toast.show({
                 type: 'custom_with_image',
                 text1: 'Terms & Conditions',

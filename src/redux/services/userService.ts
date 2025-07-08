@@ -21,13 +21,20 @@ export const getAllUsers = (page: number = 1, limit: number = 20) =>
   apiClient.get<User[]>(`/users?page=${page}&limit=${limit}`);
 
 // Search users by name or username
-export const searchUsers = (query: string, page: number = 1, limit: number = 20) =>
+export const searchUsers = (
+  query: string,
+  page: number = 1,
+  limit: number = 20
+) =>
   apiClient.get<User[]>(
-    `/user/search?query=${encodeURIComponent(query)}&page=${page}&limit=${limit}`
+    `/user/search?query=${encodeURIComponent(
+      query
+    )}&page=${page}&limit=${limit}`
   );
 
 // Get user by ID
-export const getUserById = (userId: string) => apiClient.get<User>(`/users/${userId}`);
+export const getUserById = (userId: string) =>
+  apiClient.get<User>(`/users/${userId}`);
 
 // Get current user profile
 export const getCurrentUserProfile = () => apiClient.get<User>("/user/profile");
