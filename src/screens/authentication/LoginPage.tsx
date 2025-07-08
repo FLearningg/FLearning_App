@@ -111,6 +111,19 @@ export default function LoginPage() {
                         visibilityTime: 3000,
                     });
                     setUnverifiedEmail(email);
+                } else if (error.errorCode === 'ACCOUNT_BANNED') {
+                    Toast.show({
+                        type: 'custom_with_image',
+                        text1: 'Login Failed',
+                        text2: 'Your account has been banned. Please contact support.',
+                        props: {
+                            imageUrl: require('../../../assets/images/LOGO.png'),
+                            status: 'error',
+                        },
+                        position: 'top',
+                        visibilityTime: 3000,
+                    });
+                    setApiAlert({ show: true, type: 'danger', message: 'Your account has been banned.' });
                 } else if (email === '' || password === '') {
                     Toast.show({
                         type: 'custom_with_image',
