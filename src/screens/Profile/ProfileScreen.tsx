@@ -8,12 +8,22 @@ import {
   StatusBar,
   ScrollView,
   Image,
+  Platform,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useNavigation } from "@react-navigation/native";
+import {
+  useNavigation,
+  useFocusEffect,
+  useRoute,
+} from "@react-navigation/native";
 import BottomNav from "../courses/BottomNav";
+import { getProfile } from "../../redux/services/profileService";
+import GoBackButton from "../../components/GoBackButton";
+import Toast from "react-native-toast-message";
+import * as ImagePicker from "expo-image-picker";
 
 // --- Định nghĩa màu sắc ---
 const PRIMARY_COLOR = "#66C5B3";
@@ -22,7 +32,103 @@ const AVATAR_SIZE = 110;
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
   const [showSecurityMenu, setShowSecurityMenu] = useState(false);
+
+  // Thêm state cho profile, loading, error
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [newImage, setNewImage] = useState<string | null>(null);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (route.params?.showPasswordChangedToast) {
+        Toast.show({
+          type: "custom_with_image",
+          text1: "Password changed!",
+          text2: "Your password has been updated successfully.",
+          props: {
+            status: "success",
+            imageUrl: require("../../../assets/images/LOGO.png"),
+          },
+          visibilityTime: 1500,
+        });
+        route.params.showPasswordChangedToast = false;
+      }
+      const fetchProfile = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          const res = await getProfile();
+          if (res.success) {
+            setProfile(res.data);
+          } else {
+            setError(res.message || "Không lấy được thông tin hồ sơ");
+          }
+        } catch (err) {
+          setError("Có lỗi xảy ra khi lấy thông tin hồ sơ");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchProfile();
+    }, [route.params])
+  );
+
+  // Hàm xin quyền camera/thư viện
+  const requestPermissions = async () => {
+    const mediaLibraryStatus =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+    if (
+      mediaLibraryStatus.status !== "granted" ||
+      cameraStatus.status !== "granted"
+    ) {
+      Alert.alert(
+        "Permission required",
+        "Please allow camera and photo library access to change your avatar."
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const pickImage = async () => {
+    const hasPermission = await requestPermissions();
+    if (!hasPermission) return;
+    Alert.alert("Change Avatar", "Choose image source", [
+      {
+        text: "Take Photo",
+        onPress: async () => {
+          const result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+          });
+          if (!result.canceled && result.assets && result.assets.length > 0) {
+            setNewImage(result.assets[0].uri);
+          }
+        },
+      },
+      {
+        text: "Choose from Library",
+        onPress: async () => {
+          const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+          });
+          if (!result.canceled && result.assets && result.assets.length > 0) {
+            setNewImage(result.assets[0].uri);
+          }
+        },
+      },
+      { text: "Cancel", style: "cancel" },
+    ]);
+  };
 
   // --- Menu items theo ảnh gần nhất ---
   const menuItems = [
@@ -31,11 +137,11 @@ const ProfileScreen = () => {
       text: "Edit Profile",
       onPress: () => navigation.navigate("EditProfileScreen" as never),
     },
-    {
-      icon: <Icon name="card-outline" size={24} color="#333" />,
-      text: "Payment Option",
-      onPress: () => {},
-    },
+    // {
+    //   icon: <Icon name="card-outline" size={24} color="#333" />,
+    //   text: "Payment Option",
+    //   onPress: () => {},
+    // },
     {
       icon: <Icon name="shield-checkmark-outline" size={24} color="#333" />,
       text: "Security",
@@ -60,6 +166,9 @@ const ProfileScreen = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
+        <View style={{ paddingTop: Platform.OS === "android" ? 24 : 0 }}>
+          <GoBackButton title="Profile" onPress={() => navigation.goBack()} />
+        </View>
         <StatusBar
           barStyle="dark-content"
           backgroundColor={styles.container.backgroundColor}
@@ -71,10 +180,18 @@ const ProfileScreen = () => {
             {/* --- Card được render TRƯỚC --- */}
             <View style={styles.card}>
               <View style={styles.profileSection}>
-                <Text style={styles.userName}>Alex</Text>
-                <Text style={styles.userEmail}>
-                  hernandex.redial@gmail.ac.in
-                </Text>
+                {loading ? (
+                  <Text>Loading...</Text>
+                ) : error ? (
+                  <Text style={{ color: "red" }}>{error}</Text>
+                ) : (
+                  <>
+                    <Text style={styles.userName}>
+                      {profile?.firstName || ""} {profile?.lastName || ""}
+                    </Text>
+                    <Text style={styles.userEmail}>{profile?.email || ""}</Text>
+                  </>
+                )}
               </View>
               <View style={styles.menuSection}>
                 {menuItems.map((item, index) => (
@@ -143,15 +260,14 @@ const ProfileScreen = () => {
             <View style={styles.avatarContainer}>
               <View style={styles.avatar}>
                 <Image
-                  source={{
-                    uri: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=220&q=80",
-                  }}
+                  source={
+                    profile?.userImage
+                      ? { uri: profile.userImage }
+                      : require("../../../assets/images/LOGO.png")
+                  }
                   style={styles.avatarImage}
                 />
               </View>
-              <TouchableOpacity style={styles.cameraIcon}>
-                <MaterialIcons name="image" size={18} color={PRIMARY_COLOR} />
-              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
@@ -164,7 +280,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F0F4F8",
+    backgroundColor: "#F3F7FF",
   },
   header: {
     flexDirection: "row",
@@ -200,28 +316,12 @@ const styles = StyleSheet.create({
     height: AVATAR_SIZE,
     borderRadius: AVATAR_SIZE / 2,
     backgroundColor: "#E9E9E9",
-    borderWidth: 4,
-    borderColor: PRIMARY_COLOR,
     overflow: "hidden",
   },
   avatarImage: {
     width: "100%",
     height: "100%",
     borderRadius: AVATAR_SIZE / 2,
-  },
-  cameraIcon: {
-    position: "absolute",
-    bottom: 5,
-    right: 5,
-    backgroundColor: "#fff",
-    width: 32,
-    height: 32,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-    elevation: 3,
   },
   card: {
     backgroundColor: "#fff",
