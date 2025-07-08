@@ -8,7 +8,7 @@ interface GoBackButtonProps {
 export default function GoBackButton({ title, onPress, backgroundColor }: GoBackButtonProps) {
     return (
         <>
-            <View style={[styles.headerContainer, {backgroundColor: backgroundColor || '#F5F9FF'}]}>
+            <View style={[styles.headerContainer, { backgroundColor: backgroundColor || '#F5F9FF' }]}>
                 <TouchableOpacity onPress={onPress}>
                     <AntDesign name="arrowleft" size={24} color="#000" />
                 </TouchableOpacity>
