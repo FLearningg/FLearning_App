@@ -104,11 +104,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     "3D Design",
     "Arts & Humanities",
   ];
-  const handleLogout = () => {
-    AsyncStorage.removeItem("currentUser");
-    AsyncStorage.removeItem("accessToken");
-    navigation.navigate("Start");
-  };
   return (
     <View style={homeScreenStyles.container}>
 
@@ -145,9 +140,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity style={{ padding: 10, backgroundColor: "#FF6347", borderRadius: 5 }} onPress={handleLogout}>
-            <Text style={{ color: "#FFFFFF" }}>Logout</Text>
-          </TouchableOpacity>
+          
           {/* Search Bar */}
           <SearchBar
             onFilterPress={() => console.log("Filter pressed")}

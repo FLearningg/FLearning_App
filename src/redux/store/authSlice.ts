@@ -5,10 +5,10 @@ import {
   loginUser as loginApi,
   logoutUser as logoutApi,
 } from "../services/authService";
-// import {
-//   updateUserProfile as updateProfileApi,
-//   getCurrentUserProfile as getUserProfile
-// } from "../services/userService";
+import {
+  updateUserProfile as updateProfileApi,
+  getCurrentUserProfile as getUserProfile,
+} from "../services/userService";
 
 // Types
 export interface User {
@@ -72,7 +72,10 @@ export const loginUser = createAsyncThunk<
     // Lưu vào AsyncStorage
     // Chỉ lưu vào AsyncStorage nếu remember là true
     if (credentials.remember) {
-      await AsyncStorage.setItem("currentUser", JSON.stringify(response.data.user));
+      await AsyncStorage.setItem(
+        "currentUser",
+        JSON.stringify(response.data.user)
+      );
       await AsyncStorage.setItem("accessToken", response.data.accessToken);
     } else {
       await AsyncStorage.removeItem("currentUser");
@@ -89,37 +92,37 @@ export const loginUser = createAsyncThunk<
   }
 });
 
-// export const updateUserProfile = createAsyncThunk<
-//   User,
-//   any,
-//   { rejectValue: ErrorPayload }
-// >("auth/updateProfile", async (profileData, { rejectWithValue }) => {
-//   try {
-//     const response = await updateProfileApi(profileData);
-//     await AsyncStorage.setItem("currentUser", JSON.stringify(response.data));
-//     return response.data;
-//   } catch (error: any) {
-//     const errorPayload: ErrorPayload = {
-//       message: error.response?.data?.message || "Cập nhật thất bại",
-//       status: error.response?.status,
-//     };
-//     return rejectWithValue(errorPayload);
-//   }
-// });
+export const updateUserProfile = createAsyncThunk<
+  User,
+  any,
+  { rejectValue: ErrorPayload }
+>("auth/updateProfile", async (profileData, { rejectWithValue }) => {
+  try {
+    const response = await updateProfileApi(profileData);
+    await AsyncStorage.setItem("currentUser", JSON.stringify(response.data));
+    return response.data;
+  } catch (error: any) {
+    const errorPayload: ErrorPayload = {
+      message: error.response?.data?.message || "Cập nhật thất bại",
+      status: error.response?.status,
+    };
+    return rejectWithValue(errorPayload) as any; // need to check if error
+  }
+});
 
-// export const fetchCurrentUser = createAsyncThunk<
-//   User,
-//   void,
-//   { rejectValue: ErrorPayload }
-// >("auth/fetchCurrentUser", async (_, { rejectWithValue }) => {
-//   try {
-//     const response = await getUserProfile();
-//     await AsyncStorage.setItem("currentUser", JSON.stringify(response.data));
-//     return response.data;
-//   } catch (error: any) {
-//     return rejectWithValue(error.response?.data);
-//   }
-// });
+export const fetchCurrentUser = createAsyncThunk<
+  User,
+  void,
+  { rejectValue: ErrorPayload }
+>("auth/fetchCurrentUser", async (_, { rejectWithValue }) => {
+  try {
+    const response = await getUserProfile();
+    await AsyncStorage.setItem("currentUser", JSON.stringify(response.data));
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response?.data) as any; // need to check if error
+  }
+});
 
 // Thunk để khởi tạo state từ AsyncStorage khi app khởi động
 export const loadAuthFromStorage = createAsyncThunk<
@@ -188,23 +191,23 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      //   .addCase(updateUserProfile.pending, (state) => {
-      //     state.isLoading = true;
-      //   })
-      //   .addCase(updateUserProfile.fulfilled, (state, action) => {
-      //     state.isLoading = false;
-      //     state.currentUser = action.payload;
-      //   })
-      //   .addCase(updateUserProfile.rejected, (state, action) => {
-      //     state.isLoading = false;
-      //     state.error = action.payload;
-      //   })
-      //   .addCase(fetchCurrentUser.fulfilled, (state, action) => {
-      //     state.currentUser = action.payload;
-      //   })
-      //   .addCase(fetchCurrentUser.rejected, (state, action) => {
-      //     console.error("Failed to fetch current user:", action.payload);
-      //   })
+      .addCase(updateUserProfile.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentUser = action.payload;
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+        state.currentUser = action.payload;
+      })
+      .addCase(fetchCurrentUser.rejected, (state, action) => {
+        console.error("Failed to fetch current user:", action.payload);
+      })
       // Load từ AsyncStorage khi app khởi động
       .addCase(loadAuthFromStorage.fulfilled, (state, action) => {
         state.currentUser = action.payload.user;

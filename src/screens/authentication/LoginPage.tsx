@@ -19,7 +19,6 @@ export default function LoginPage() {
     const [secureText, setSecureText] = useState(true);
     const [checked, setChecked] = useState(false);
     const togglePassword = () => setSecureText(!secureText);
-    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const { isLoading, isAuthenticated } = useSelector((state: RootState) => state.auth);
