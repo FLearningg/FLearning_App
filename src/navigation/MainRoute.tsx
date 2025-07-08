@@ -47,11 +47,7 @@ const MainRouter: React.FC = () => {
           component={SignUp}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="FillProfile"
-          component={FillProfile}
-          options={{ header: () => <FillProfileHeader /> }}
-        />
+        {/* <Stack.Screen name="FillProfile" component={FillProfile} options={{ header: () => (<FillProfileHeader />) }} /> bỏ màn này*/}
         <Stack.Screen
           name="ForgotPassword"
           component={ForgotPasswordScreen}

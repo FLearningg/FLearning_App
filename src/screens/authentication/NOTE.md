@@ -1,0 +1,11 @@
+để lấy dữ liệu người dùng
+
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+
+const currentUser = useSelector((state: RootState) => state.auth);
+console.log("Current User:", currentUser);
+
+
+result:
+Current User: {"currentUser": {"__v": 0, "_id": "6857695f1bd323add5e1d6d2", "biography": "", "createdAt": "2025-06-22T02:24:31.886Z", "email": "trungnguyenngocktm@gmail.com", "enrolledCourses": ["6857bd159375c0165721340d"], "firstName": "admin", "lastName": "admin", "role": "student", "status": "verified", "updatedAt": "2025-07-01T17:14:19.455Z", "userImage": "https://storage.googleapis.com/flearning-7f88f.firebasestorage.app/UserAvatar/6857695f1bd323add5e1d6d2/Screenshot_2025_06_09_105940_1751383160195.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=firebase-adminsdk-fbsvc%40flearning-7f88f.iam.gserviceaccount.com%2F20250701%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20250701T151923Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&X-Goog-Signature=4334d9fe2efe4ee680a7758b0ee3290cff529b604662e95fcfd75f609c9b7479f46098a4e9de9cab9d452a2491a0503468b8ee7c7a21957587d8fcb41fbd5814054bce80f633d951c754c6319b1b9b87776bbb8ca88e5133edea2e16f1e6e77383b34cc262053d881e8833ff885c36ec8223a9abf15576701d243692b6712db4cfe9225b15fa5e894a81a1fbe34da8ef48ca93a23ac999e1d3fa47bf24378a5c0ceda316dcc7b0d7022c02c198a547419cc41004401345b1a7222528454dd07c13921fb02c5362af78dce63af325d395c593ed4bbc", "userName": "trungnguyenngocktm_1d03b961"}, "error": null, "isAuthenticated": true,e95fcfd75f609c9b7479f46098a4e9de9cab9d452a2491a0503468b8ee7c7a21957587d8fcb41fbd5814054bce80f633d951c754c6319b1b9b87776bbb8ca88e5133edea2e16f1e6e77383b34cc262053d881e8833ff885c36ec8223a9abf15576701d243692b6712db4cfe9225b15fa5e894a81a1fbe34da8ef48ca93a23ac999e1d3fa47bf24378a5c0ceda316dcc7b0d7022c02c198a547419cc41004401345b1a7222528454dd07c13921fb02c5362af78dce63af325d395c593ed4bbc", "userName": "trungnguyenngocktm_1d03b961"}, "error": null, "isAuthenticated": true, "isLoading": false, "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NTc2OTVmMWJkMzIzYWRkNWUxZDZkMiIsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzUxOTAzODMzLCJleHAiOjE3NTE5MDQ3MzN9.wYL2yzVeGPfCQPbb1_d-viYKtRAisIhDbp181VnzjDo"}
