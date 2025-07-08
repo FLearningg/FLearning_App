@@ -106,17 +106,17 @@ const MainRouter: React.FC = () => {
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
-          options={{ headerShown: true }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="EditProfileScreen"
           component={EditProfileScreen}
-          options={{ headerShown: true, title: "Edit Profile" }}
+          options={{ headerShown: false, title: "Edit Profile" }}
         />
         <Stack.Screen
           name="EditPasswordScreen"
           component={EditPasswordScreen}
-          options={{ headerShown: true, title: "Change Password" }}
+          options={{ headerShown: false, title: "Change Password" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
