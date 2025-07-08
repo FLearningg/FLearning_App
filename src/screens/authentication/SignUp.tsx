@@ -5,18 +5,91 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/NavigationType";
 import ButtonNavigate1 from "../../components/ButtonNavigate1";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { registerUser } from "../../redux/store/authSlice";
+import Toast from "react-native-toast-message";
+import LoadingComponent from "../../components/Loading/LoadingComponent";
 
 export default function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [secureText, setSecureText] = useState(true);
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [secureText, setSecureText] = useState(false);
     const [checked, setChecked] = useState(false);
     const togglePassword = () => setSecureText(!secureText);
-
+    const dispatch = useDispatch<AppDispatch>();
+    const { isLoading, isAuthenticated } = useSelector((state: RootState) => state.auth);
+    const [apiError, setApiError] = useState('');
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const handleSignUp = () => {
-        //logic implement here
-        navigation.navigate('FillProfile');
+        setApiError(''); // Xóa lỗi cũ khi submit lại
+        const userData = {
+            firstName,
+            lastName,
+            email,
+            password,
+        };
+        if (!checked) {
+            Toast.show({
+                type: 'custom_with_image',
+                text1: 'Terms & Conditions',
+                text2: 'Please agree to the Terms & Conditions to continue.',
+                props: {
+                    imageUrl: require('../../../assets/images/LOGO.png'),
+                    status: 'error',
+                },
+                position: 'top',
+                visibilityTime: 3000,
+            });
+            return;
+        } else if (!email || !password || !firstName || !lastName) {
+            Toast.show({
+                type: 'custom_with_image',
+                text1: 'Missing Fields',
+                text2: 'Please fill in all fields to continue.',
+                props: {
+                    imageUrl: require('../../../assets/images/LOGO.png'),
+                    status: 'error',
+                },
+                position: 'top',
+                visibilityTime: 3000,
+            });
+            return;
+        }
+        dispatch(registerUser(userData))
+            .unwrap()
+            .then(() => {
+                // Nếu đăng ký thành công, điều hướng đến
+                Toast.show({
+                    type: 'custom_with_image',
+                    text1: 'Registration Successful',
+                    text2: 'We have sent a verification email to your inbox. Please check and follow the instructions to activate your account.',
+                    props: {
+                        imageUrl: require('../../../assets/images/LOGO.png'),
+                        status: 'success',
+                    },
+                    position: 'top',
+                    visibilityTime: 3000,
+                });
+                resetNavigation();
+            })
+            .catch((error: any) => {
+                // Xử lý lỗi từ API
+                Toast.show({
+                    type: 'custom_with_image',
+                    text1: 'Registration Failed',
+                    text2: error.message || 'Please try again.',
+                    props: {
+                        imageUrl: require('../../../assets/images/LOGO.png'),
+                        status: 'error',
+                    },
+                    position: 'top',
+                    visibilityTime: 3000,
+                });
+                setApiError(error.message || 'Registration failed. Please try again.');
+            });
     }
     const resetNavigation = () => {
         navigation.reset({
@@ -34,12 +107,33 @@ export default function SignUp() {
                 <Text style={styles.subText}>Create an Account to Continue your allCourses</Text>
             </View>
             <View style={styles.formBox}>
+                <View style={{ flexDirection: "row", gap: 5 }}>
+                    <View style={[styles.inputWrapper, { flex: 1 }]}>
+                        <Feather name="user" size={24} color="#545454" style={styles.inputIcon} />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="First Name"
+                            placeholderTextColor="#505050"
+                            onChangeText={(text) => setFirstName(text)}
+                        />
+                    </View>
+                    <View style={[styles.inputWrapper, { flex: 1 }]}>
+                        <Feather name="user" size={24} color="#545454" style={styles.inputIcon} />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Last Name"
+                            placeholderTextColor="#505050"
+                            onChangeText={(text) => setLastName(text)}
+                        />
+                    </View>
+                </View>
                 <View style={styles.inputWrapper}>
                     <Fontisto name="email" size={24} color="#545454" style={styles.inputIcon} />
                     <TextInput
                         style={styles.input}
                         placeholder="Email"
                         placeholderTextColor="#505050"
+                        onChangeText={(text) => setEmail(text)}
                     />
                 </View>
                 <View style={styles.inputWrapper}>
@@ -49,6 +143,7 @@ export default function SignUp() {
                         placeholder="Password"
                         placeholderTextColor="#505050"
                         secureTextEntry={secureText}
+                        onChangeText={(text) => setPassword(text)}
                     />
                     <Feather
                         name={secureText ? "eye" : "eye-off"}
@@ -94,7 +189,7 @@ export default function SignUp() {
                     <Text style={styles.signInText} onPress={() => resetNavigation()}>SIGN IN</Text>
                 </View>
             </View>
-
+            <LoadingComponent visible={isLoading} />
         </View>
     );
 }

@@ -7,7 +7,7 @@ export default function CustomToast({ text1, text2, props }: any) {
             {props?.imageUrl && (
                 <Image source={props.imageUrl} style={styles.image} />
             )}
-            <View>
+            <View style={{ flex: 1 }}>
                 <Text style={styles.text1}>{text1}</Text>
                 <Text style={styles.text2}>{text2}</Text>
             </View>
@@ -33,5 +33,5 @@ const styles = StyleSheet.create({
     },
     image: { width: 40, height: 40, marginRight: 10, borderRadius: 20 },
     text1: { fontWeight: 'bold', fontSize: 16 },
-    text2: { fontSize: 14 },
+    text2: { fontSize: 14, flexWrap: 'wrap', flexShrink: 1 },
 });
