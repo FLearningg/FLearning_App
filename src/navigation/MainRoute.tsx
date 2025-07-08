@@ -18,30 +18,108 @@ import CategoryScreen from "../screens/CategoryScreen/CategoryScreen";
 import SearchScreen from "../screens/SearchScreen/SearchScreen";
 import CourseDetail from "../screens/CourseDetail/CourseDetail";
 import FilterScreen from "../screens/courses/FilterComponents";
+import ProfileScreen from "../screens/Profile/ProfileScreen";
+import EditProfileScreen from "../screens/Profile/EditProfileScreen";
+import EditPasswordScreen from "../screens/Profile/EditPasswordScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
-    return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="Launching">
-                <Stack.Screen name="Launching" component={Launching} options={{ headerShown: false }}/>
-                <Stack.Screen name="Start" component={StartPage} options={{ headerShown: false }} />
-                <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
-                <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
-                {/* <Stack.Screen name="FillProfile" component={FillProfile} options={{ header: () => (<FillProfileHeader />) }} /> bỏ màn này*/}
-                <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="VerificationCode" component={VerificationCodeScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="CreateNewPassword" component={CreateNewPasswordScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Congratulations" component={CongratulationsScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="OnlineCourses" component={OnlineCourseScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="FilterOnlineCourses" component={FilterScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="PopularCourses" component={PopularCoursesScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Category" component={CategoryScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Search" component={SearchScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="CourseDetail" component={CourseDetail} options={{ headerShown: false }} />
-            </Stack.Navigator>
-        </NavigationContainer>
-    );
-}
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Launching">
+        <Stack.Screen
+          name="Launching"
+          component={Launching}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Start"
+          component={StartPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUp}
+          options={{ headerShown: false }}
+        />
+        {/* <Stack.Screen name="FillProfile" component={FillProfile} options={{ header: () => (<FillProfileHeader />) }} /> bỏ màn này*/}
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPasswordScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="VerificationCode"
+          component={VerificationCodeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CreateNewPassword"
+          component={CreateNewPasswordScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Congratulations"
+          component={CongratulationsScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="OnlineCourses"
+          component={OnlineCourseScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="FilterOnlineCourses"
+          component={FilterScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="PopularCourses"
+          component={PopularCoursesScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Category"
+          component={CategoryScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Search"
+          component={SearchScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CourseDetail"
+          component={CourseDetail}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="EditProfileScreen"
+          component={EditProfileScreen}
+          options={{ headerShown: true, title: "Edit Profile" }}
+        />
+        <Stack.Screen
+          name="EditPasswordScreen"
+          component={EditPasswordScreen}
+          options={{ headerShown: true, title: "Change Password" }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 export default MainRouter;
