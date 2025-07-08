@@ -137,11 +137,11 @@ const ProfileScreen = () => {
       text: "Edit Profile",
       onPress: () => navigation.navigate("EditProfileScreen" as never),
     },
-    {
-      icon: <Icon name="card-outline" size={24} color="#333" />,
-      text: "Payment Option",
-      onPress: () => {},
-    },
+    // {
+    //   icon: <Icon name="card-outline" size={24} color="#333" />,
+    //   text: "Payment Option",
+    //   onPress: () => {},
+    // },
     {
       icon: <Icon name="shield-checkmark-outline" size={24} color="#333" />,
       text: "Security",
