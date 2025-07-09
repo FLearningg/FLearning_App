@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,9 @@ import {
   SafeAreaView,
   Platform,
   StatusBar,
+  ActivityIndicator,
+  Linking,
+  Modal,
 } from "react-native";
 import {
   AntDesign,
@@ -16,68 +19,184 @@ import {
   FontAwesome,
   FontAwesome6,
 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import {
+  getCourseDetail,
+  getCourseFeedbacks,
+} from "../../redux/services/courseService";
 import CourseDetailAbout from "./CourseDetailAbout";
 import CourseDetailCurriculum from "./CourseDetailCurriculum";
 import ButtonNavigate1 from "../../components/ButtonNavigate1";
+import { Video, ResizeMode } from "expo-av";
+
+// Types for API response
+interface Lesson {
+  _id: string;
+  title: string;
+}
+
+interface Section {
+  _id: string;
+  title: string;
+  lessons: Lesson[];
+}
+
+interface Discount {
+  price?: string;
+  [key: string]: any;
+}
+
+interface Course {
+  _id: string;
+  title: string;
+  sections: Section[];
+  categoryIds?: string[];
+  discountId?: Discount;
+  imageUrl?: string;
+  instructorName?: string;
+  instructorImage?: string;
+  subTitle?: string;
+  [key: string]: any;
+}
+
+interface Feedback {
+  _id: string;
+  content: string;
+  rateStar: number;
+  courseId: string;
+  userId: {
+    _id: string;
+    firstName?: string;
+    lastName?: string;
+    userImage?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface FeedbackResponse {
+  feedback: Feedback[];
+  averageRating: number;
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalFeedback: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}
+
+type RootStackParamList = {
+  CourseDetail: { courseId: string };
+};
 
 const CourseDetail = () => {
   const navigation = useNavigation();
-  const [selectedTab, setSelectedTab] = useState("About");
+  const route = useRoute<RouteProp<RootStackParamList, "CourseDetail">>();
+  const courseId = route.params?.courseId;
+  const [selectedTab, setSelectedTab] = useState<string>("About");
+  const [course, setCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showTrailer, setShowTrailer] = useState(false);
+  const [comments, setComments] = useState<Feedback[]>([]);
+  const [failedAvatars, setFailedAvatars] = useState<Set<string>>(new Set());
 
-  const benefits = [
-    {
-      icon: <Feather name="book-open" size={18} color="#202244" />,
-      text: "25 Lessons",
-    },
-    {
-      icon: <Feather name="smartphone" size={18} color="#202244" />,
-      text: "Access Mobile, Desktop & TV",
-    },
-    {
-      icon: <FontAwesome6 name="chart-line" size={18} color="#202244" />,
-      text: "Beginner Level",
-    },
-    {
-      icon: <FontAwesome name="soundcloud" size={18} color="#202244" />,
-      text: "Audio Book",
-    },
-    {
-      icon: <Feather name="calendar" size={18} color="#202244" />,
-      text: "Lifetime Access",
-    },
-    {
-      icon: <Feather name="clipboard" size={18} color="#202244" />,
-      text: "100 Quizzes",
-    },
-    {
-      icon: <Feather name="award" size={18} color="#202244" />,
-      text: "Certificate of Completion",
-    },
-  ];
+  useEffect(() => {
+    if (!courseId) {
+      setError("No courseId provided");
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    getCourseDetail(courseId)
+      .then((data) => {
+        setCourse(data);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(
+          err.response?.data?.message ||
+            err.response?.data?.error ||
+            err.message ||
+            "Error fetching course details"
+        );
+        setCourse(null);
+      })
+      .finally(() => setLoading(false));
+  }, [courseId]);
 
-  const reviews = [
-    {
-      id: 1,
-      avatar:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80",
-      name: "Will",
-      rating: 4.5,
-      text: "This course has been very useful. Mentor was well spoken totally loved it.",
-      likes: 578,
-      timeAgo: "2 Weeks Ago",
-    },
-    {
-      id: 2,
-      avatar:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80",
-      name: "Martha E. Thompson",
-      rating: 4.5,
-      text: "This course has been very useful. Mentor was well spoken totally loved it. It had fun sessions as well.",
-      likes: 578,
-      timeAgo: "2 Weeks Ago",
-    },
-  ];
+  useEffect(() => {
+    if (courseId) {
+      getCourseFeedbacks(courseId)
+        .then((data) => {
+          setComments(data.feedback || []);
+        })
+        .catch((err) => {
+          console.error("Error fetching feedbacks:", err);
+          console.error("Error details:", err.response?.data);
+        });
+    }
+  }, [courseId]);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <ActivityIndicator
+          size="large"
+          color="#0961F5"
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ color: "red", fontSize: 16 }}>{error}</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!course) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ color: "#202244", fontSize: 16 }}>
+            Course not found
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Lấy thumbnail, trailer, description, detail, v.v. từ course
+  const thumbnail =
+    course.thumbnail ||
+    course.imageUrl ||
+    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80";
+  const trailer = course.trailer;
+  const description = course.subTitle;
+  const willLearn = course.detail?.willLearn || [];
+  const targetAudience = course.detail?.targetAudience || [];
+  const requirement = course.detail?.requirement || [];
+
+  // Helper function to get user avatar
+  const getUserAvatar = (userImage?: string) => {
+    if (!userImage) {
+      return "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80";
+    }
+
+    // Firebase URLs can be very long but are valid - use them directly
+    return userImage;
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -93,12 +212,7 @@ const CourseDetail = () => {
       >
         {/* Header Image and Back Button */}
         <View style={styles.headerImageContainer}>
-          <Image
-            source={{
-              uri: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80",
-            }}
-            style={styles.headerImage}
-          />
+          <Image source={{ uri: thumbnail }} style={styles.headerImage} />
           <View style={styles.headerOverlay} />
           <TouchableOpacity
             style={styles.headerBackButton}
@@ -106,33 +220,55 @@ const CourseDetail = () => {
           >
             <AntDesign name="arrowleft" size={24} color="#FFF" />
           </TouchableOpacity>
+          {trailer && (
+            <TouchableOpacity
+              style={styles.playButtonOnHeader}
+              onPress={() => setShowTrailer(true)}
+            >
+              <AntDesign name="play" size={36} color="#FFF" />
+            </TouchableOpacity>
+          )}
         </View>
-
         {/* Main Content Card with Custom Tab Navigation */}
         <View style={styles.mainCard}>
-          <TouchableOpacity style={styles.floatingPlayButton}>
-            <AntDesign name="play" size={28} color="#FFF" />
-          </TouchableOpacity>
-
-          <Text style={styles.categoryText}>Graphic Design</Text>
+          {/* Category */}
+          <Text style={styles.categoryText}>
+            {Array.isArray(course.categoryIds) && course.categoryIds.length > 0
+              ? course.categoryIds
+                  .map((cat: any) => (typeof cat === "string" ? cat : cat.name))
+                  .join(", ")
+              : "Category"}
+          </Text>
           <View style={styles.designPrinciplesSection}>
-            <Text style={styles.title}>Design Principles: Organizing ..</Text>
+            <Text style={styles.title}>{course.title}</Text>
             <View style={styles.ratingContainer}>
               <AntDesign name="star" size={12} color="#FFC107" />
-              <Text style={styles.ratingText}>4.2</Text>
+              <Text style={styles.ratingText}>{course.rating || "4.2"}</Text>
             </View>
           </View>
 
           <View style={styles.detailsRow}>
             <View style={styles.detailItem}>
               <Feather name="book-open" size={14} color="#202244" />
-              <Text style={styles.detailText}>21 Class</Text>
+              <Text style={styles.detailText}>
+                {course.sections?.reduce(
+                  (acc: number, s: Section) => acc + (s.lessons?.length || 0),
+                  0
+                )}{" "}
+                Lessons
+              </Text>
             </View>
             <View style={styles.detailItem}>
               <Feather name="clock" size={14} color="#202244" />
-              <Text style={styles.detailText}>42 Hours</Text>
+              <Text style={styles.detailText}>
+                {course.duration !== undefined && course.duration !== null
+                  ? course.duration
+                  : "-- Hours"}
+              </Text>
             </View>
-            <Text style={styles.price}>499/-</Text>
+            <Text style={styles.price}>
+              {course.discountId?.price || course.price || "499/-"}
+            </Text>
           </View>
 
           {/* Custom Tab Bar */}
@@ -174,89 +310,136 @@ const CourseDetail = () => {
           {/* Tab Content - About: all sections in card, Curriculum: only curriculum */}
           {selectedTab === "About" ? (
             <>
-              <CourseDetailAbout />
+              {/* Description */}
+              <CourseDetailAbout course={course} />
             </>
           ) : (
-            <CourseDetailCurriculum />
+            <CourseDetailCurriculum sections={course.sections} />
           )}
         </View>
-
+        {/* Kết thúc mainCard */}
         {/* OUTSIDE the card: */}
         {selectedTab === "About" && (
           <>
-            {/* Instructor Section */}
-            <View style={{ marginHorizontal: 20, marginBottom: 16 }}>
-              <Text style={styles.sectionTitle}>Instructor</Text>
-              <View style={styles.instructorContainer}>
-                <Image
-                  source={{
-                    uri: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80",
-                  }}
-                  style={styles.instructorImage}
-                />
-                <View style={styles.instructorInfo}>
-                  <Text style={styles.instructorName}>Robert jr</Text>
-                  <Text style={styles.instructorTitle}>Graphic Design</Text>
+            {/* What you'll learn và Target Audience nằm ngoài card trắng */}
+            {willLearn.length > 0 && (
+              <View
+                style={[
+                  styles.whatYoullGetContainer,
+                  { marginHorizontal: 20, marginTop: 8 },
+                ]}
+              >
+                <View style={styles.sectionTitleContainer}>
+                  <FontAwesome
+                    name="graduation-cap"
+                    size={22}
+                    color="#0961F5"
+                  />
+                  <Text
+                    style={[
+                      styles.sectionTitle,
+                      { marginLeft: 12, marginBottom: 0 },
+                    ]}
+                  >
+                    What you'll learn
+                  </Text>
                 </View>
-                <Feather name="message-circle" size={20} color="#202244" />
-              </View>
-            </View>
-
-            {/* What You'll Get Section */}
-            <View style={{ marginHorizontal: 20, marginBottom: 16 }}>
-              <Text style={styles.sectionTitle}>What You'll Get</Text>
-              <View style={styles.whatYoullGetContainer}>
-                {benefits.map((item, index) => (
-                  <View key={index} style={styles.whatYoullGetItem}>
-                    {item.icon}
-                    <Text style={styles.whatYoullGetText}>{item.text}</Text>
+                {willLearn.map((item: string, idx: number) => (
+                  <View key={idx} style={styles.whatYoullGetItem}>
+                    <AntDesign name="checkcircle" size={18} color="#23C485" />
+                    <Text style={styles.whatYoullGetText}>{item}</Text>
                   </View>
                 ))}
               </View>
-            </View>
-
-            {/* Reviews Section */}
-            <View style={{ marginHorizontal: 20, marginBottom: 16 }}>
-              <View style={styles.reviewsHeader}>
-                <Text style={styles.sectionTitle}>Reviews</Text>
-                <TouchableOpacity style={styles.seeAllButton}>
-                  <Text style={styles.seeAllText}>SEE ALL</Text>
-                  <AntDesign name="right" size={14} color="#007AFF" />
-                </TouchableOpacity>
-              </View>
-              {reviews.map((review) => (
-                <View key={review.id} style={styles.reviewCard}>
-                  <View style={styles.reviewAvatarContainer}>
-                    <Image
-                      source={{ uri: review.avatar }}
-                      style={styles.reviewAvatar}
-                    />
+            )}
+            {targetAudience.length > 0 && (
+              <View
+                style={[
+                  styles.whatYoullGetContainer,
+                  { marginHorizontal: 20, marginTop: 8 },
+                ]}
+              >
+                <View style={styles.sectionTitleContainer}>
+                  <FontAwesome name="users" size={22} color="#0961F5" />
+                  <Text
+                    style={[
+                      styles.sectionTitle,
+                      { marginLeft: 12, marginBottom: 0 },
+                    ]}
+                  >
+                    Target Audience
+                  </Text>
+                </View>
+                {targetAudience.map((item: string, idx: number) => (
+                  <View key={idx} style={styles.whatYoullGetItem}>
+                    <AntDesign name="user" size={18} color="#0961F5" />
+                    <Text style={styles.whatYoullGetText}>{item}</Text>
                   </View>
-                  <View style={styles.reviewContent}>
-                    <View style={styles.reviewMeta}>
-                      <Text style={styles.reviewerName}>{review.name}</Text>
-                      <View style={styles.reviewRating}>
-                        <AntDesign name="star" size={12} color="#FFC107" />
-                        <Text style={styles.reviewRatingText}>
-                          {review.rating}
+                ))}
+              </View>
+            )}
+            {/* Reviews/Comments Section */}
+            {comments.length > 0 && (
+              <View style={{ marginHorizontal: 20, marginBottom: 16 }}>
+                <View style={styles.reviewsHeader}>
+                  <View style={styles.sectionTitleContainer}>
+                    <FontAwesome name="comments" size={22} color="#0961F5" />
+                    <Text
+                      style={[
+                        styles.sectionTitle,
+                        { marginLeft: 12, marginBottom: 0 },
+                      ]}
+                    >
+                      Comments
+                    </Text>
+                  </View>
+                </View>
+                {comments.map((comment: Feedback, idx: number) => (
+                  <View key={comment._id || idx} style={styles.reviewCard}>
+                    <View style={styles.reviewAvatarContainer}>
+                      <Image
+                        source={{
+                          uri: failedAvatars.has(comment._id)
+                            ? "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=80&q=80"
+                            : getUserAvatar(comment.userId?.userImage),
+                        }}
+                        style={styles.reviewAvatar}
+                        onError={() => {
+                          setFailedAvatars((prev) =>
+                            new Set(prev).add(comment._id)
+                          );
+                        }}
+                      />
+                    </View>
+                    <View style={styles.reviewContent}>
+                      <View style={styles.reviewMeta}>
+                        <Text style={styles.reviewerName}>
+                          {comment.userId?.firstName || "User"}
+                        </Text>
+                        <View style={styles.reviewRating}>
+                          <AntDesign name="star" size={12} color="#FFC107" />
+                          <Text style={styles.reviewRatingText}>
+                            {comment.rateStar || ""}
+                          </Text>
+                        </View>
+                      </View>
+                      <Text style={styles.reviewText}>{comment.content}</Text>
+                      <View style={styles.reviewStats}>
+                        <AntDesign name="heart" size={14} color="#E53935" />
+                        <Text style={styles.reviewStatText}>
+                          {/* Likes not available in Feedback schema */}
+                        </Text>
+                        <Text style={styles.reviewStatText}>
+                          {new Date(comment.createdAt).toLocaleDateString()}
                         </Text>
                       </View>
                     </View>
-                    <Text style={styles.reviewText}>{review.text}</Text>
-                    <View style={styles.reviewStats}>
-                      <AntDesign name="heart" size={14} color="#E53935" />
-                      <Text style={styles.reviewStatText}>{review.likes}</Text>
-                      <Text style={styles.reviewStatText}>
-                        {review.timeAgo}
-                      </Text>
-                    </View>
                   </View>
-                </View>
-              ))}
-            </View>
+                ))}
+              </View>
+            )}
           </>
         )}
-
         {/* Spacer for enroll button */}
         <View style={{ height: 100 }} />
       </ScrollView>
@@ -266,11 +449,41 @@ const CourseDetail = () => {
         <ButtonNavigate1
           onPress={() => {
             // Handle enrollment
-            console.log("Enroll pressed");
           }}
-          buttonText="Enroll Course - 499/-"
+          buttonText={`Enroll Course - ${
+            course.discountId?.price || course.price || "499/-"
+          }`}
         />
       </View>
+
+      {/* Modal player */}
+      <Modal
+        visible={showTrailer}
+        animationType="slide"
+        onRequestClose={() => setShowTrailer(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "black",
+            justifyContent: "center",
+          }}
+        >
+          <Video
+            source={{ uri: trailer }}
+            style={{ width: "100%", height: 300 }}
+            useNativeControls
+            resizeMode={ResizeMode.CONTAIN}
+            shouldPlay
+          />
+          <TouchableOpacity
+            onPress={() => setShowTrailer(false)}
+            style={{ position: "absolute", top: 40, right: 20 }}
+          >
+            <AntDesign name="close" size={32} color="#FFF" />
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -356,9 +569,9 @@ const styles = StyleSheet.create({
   tabContent: {
     // paddingTop: 8,
   },
-  floatingPlayButton: {
+  playButtonOnHeader: {
     position: "absolute",
-    top: -28,
+    bottom: 24,
     right: 24,
     backgroundColor: "#23C485",
     width: 56,
@@ -373,6 +586,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 10,
     elevation: 8,
+    zIndex: 3,
   },
   categoryText: {
     fontSize: 13,
@@ -541,9 +755,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   reviewAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: "#f0f0f0",
+    borderWidth: 2,
+    borderColor: "#e0e0e0",
   },
   reviewContent: {
     flex: 1,
@@ -595,6 +812,11 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Regular",
     fontWeight: "bold",
     marginRight: 22,
+  },
+  sectionTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
   },
 });
 
