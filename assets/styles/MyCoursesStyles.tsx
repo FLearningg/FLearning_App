@@ -1,0 +1,483 @@
+import { StyleSheet, Platform, Dimensions } from 'react-native';
+
+const { width: screenWidth } = Dimensions.get('window');
+
+export const styles = StyleSheet.create({
+  myCoursesContainer: {
+    backgroundColor: "#FFFFFF",
+    flex: 1,
+    marginTop: 30,
+  },
+  myCoursesHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    padding: 16,
+  },
+  myCoursesHeaderText: {
+    color: "#202244",
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginLeft: 12,
+    marginTop: 30,
+  },
+  myCoursesSearchContainer: {
+    marginHorizontal: 24,
+    marginBottom: 16,
+  },
+  myCoursesSearchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
+    borderRadius: 16,
+    height: 64,
+    paddingHorizontal: 16,
+    position: "relative",
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+  },
+  myCoursesSearchIcon: {
+    marginRight: 12,
+  },
+  myCoursesSearchInput: {
+    flex: 1,
+    fontSize: 18,
+    color: "#4B5563",
+    paddingRight: 60,
+  },
+  myCoursesFilterButton: {
+    position: "absolute",
+    right: 12,
+    width: 40,
+    height: 40,
+    backgroundColor: "#3B82F6",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  myCoursesTabsContainer: {
+    flexDirection: "row",
+    marginHorizontal: 24,
+    gap: 16,
+    marginBottom: 16,
+  },
+  myCoursesTabButton: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  myCoursesActiveTab: {
+    backgroundColor: "#0D9488",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  myCoursesInactiveTab: {
+    backgroundColor: "#EFF6FF",
+  },
+  myCoursesTabText: {
+    fontSize: 18,
+    fontWeight: "500",
+  },
+  myCoursesActiveTabText: {
+    color: "white",
+  },
+  myCoursesInactiveTabText: {
+    color: "#4B5563",
+  },
+  myCoursesResultHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+    paddingHorizontal: 16,
+  },
+  myCoursesResultText: {
+    color: "#202244",
+  },
+  myCoursesHighlight: {
+    color: "#0961f5",
+  },
+  myCoursesResultCount: {
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  myCoursesResultNumber: {
+    color: "#0961f5",
+    marginRight: 4,
+  },
+  myCoursesList: {
+    paddingBottom: 80,
+    paddingHorizontal: 16,
+    marginTop: 10,
+    marginBottom: 30,
+  },
+  myCoursesCard: {
+    backgroundColor: '#ffffff',
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
+    borderWidth: 2,
+    borderColor: '#E0E0E0',
+    elevation: 8,
+    flexDirection: 'row',
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    marginVertical: 8,
+    maxHeight: 190,
+  },
+  myCoursesCardRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  myCoursesThumbnail: {
+    backgroundColor: "black",
+    borderRadius: 12,
+    height: 80,
+    width: 80,
+  },
+  myCoursesCardContent: {
+    flex: 1,
+  },
+  myCoursesCardCategory: {
+    color: "#ff6b00",
+    fontSize: 12,
+    fontWeight: "500",
+    marginBottom: 4,
+  },
+  myCoursesCategoryTag: {
+    color: '#ff6b00',
+    fontSize: 12,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  myCoursesCardTitle: {
+    color: "#202244",
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  myCoursesStatsRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 8,
+    marginBottom: 8,
+  },
+  myCoursesRating: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 4,
+  },
+  myCoursesRatingText: {
+    color: "#202244",
+    fontSize: 12,
+  },
+  myCoursesDivider: {
+    color: "#b4bdc4",
+    fontSize: 12,
+  },
+  myCoursesStudents: {
+    color: "#202244",
+    fontSize: 12,
+  },
+  myCoursesProgressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  myCoursesProgressBar: {
+    flex: 1,
+    height: 6,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 3,
+    marginRight: 8,
+  },
+  myCoursesProgressFill: {
+    height: '100%',
+    borderRadius: 3,
+  },
+  myCoursesProgressText: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  myCoursesCertificateButton: {
+    backgroundColor: '#0961f5',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginTop: 8,
+  },
+  myCoursesCertificateButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  myCoursesCompletedIconContainer: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+  },
+  myCoursesEmptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  myCoursesEmptyText: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+    marginLeft: 16,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 16,
+    marginBottom: 16,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 12,
+    padding: 4,
+  },
+  activeTabButton: {
+    backgroundColor: '#0961f5',
+  },
+  tabButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  activeTabButtonText: {
+    color: 'white',
+  },
+  coursesList: {
+    paddingBottom: 100,
+  },
+  courseImageContainer: {
+    marginRight: 12,
+  },
+  courseImage: {
+    backgroundColor: '#000000',
+    borderRadius: 8,
+    height: 80,
+    width: 80,
+  },
+  categoryText: {
+    fontSize: 12,
+    color: '#ff6b00',
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  courseStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 8,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  separator: {
+    marginHorizontal: 8,
+    color: '#9CA3AF',
+  },
+  durationText: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  container: {
+    backgroundColor: "#f5f9ff",
+    flex: 1,
+    marginTop: 30,
+  },
+  header: {
+    alignItems: "center",
+    flexDirection: "row",
+    padding: 16,
+  },
+  headerText: {
+    color: "#202244",
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginLeft: 12,
+    marginTop: 30,
+  },
+  searchContainer: {
+    marginHorizontal: 24,
+    marginBottom: 16,
+  },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F9FAFB",
+    borderRadius: 16,
+    height: 64,
+    paddingHorizontal: 16,
+    position: "relative",
+  },
+  searchIcon: {
+    marginRight: 12,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 18,
+    color: "#4B5563",
+    paddingRight: 60,
+  },
+  filterButton: {
+    position: "absolute",
+    right: 12,
+    width: 40,
+    height: 40,
+    backgroundColor: "#3B82F6",
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  tabsContainer: {
+    flexDirection: "row",
+    marginHorizontal: 24,
+    gap: 16,
+    marginBottom: 32,
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  activeTab: {
+    backgroundColor: "#0D9488",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  inactiveTab: {
+    backgroundColor: "#EFF6FF",
+  },
+  tabText: {
+    fontSize: 18,
+    fontWeight: "500",
+  },
+  activeTabText: {
+    color: "white",
+  },
+  inactiveTabText: {
+    color: "#4B5563",
+  },
+  courseList: {
+    paddingBottom: 80,
+    paddingHorizontal: 16,
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  courseCard: {
+    backgroundColor: '#ffffff',
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
+    elevation: 5,
+    flexDirection: 'row',
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    marginVertical: 5,
+    maxHeight: 190,
+  },
+  courseContent: {
+    flex: 1,
+  },
+  categoryTag: {
+    color: '#ff6b00',
+    fontSize: 12,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  courseTitle: {
+    color: "#202244",
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  rating: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 4,
+  },
+  students: {
+    color: "#202244",
+    fontSize: 12,
+  },
+  progressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  progressBar: {
+    flex: 1,
+    height: 6,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 3,
+    marginRight: 8,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 3,
+  },
+  progressText: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  certificateButton: {
+    backgroundColor: '#0961f5',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginTop: 8,
+  },
+  certificateButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  completedIconContainer: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+  },
+}); 

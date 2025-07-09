@@ -21,6 +21,7 @@ import FilterScreen from "../screens/courses/FilterComponents";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import EditProfileScreen from "../screens/Profile/EditProfileScreen";
 import EditPasswordScreen from "../screens/Profile/EditPasswordScreen";
+import MyCoursesScreen from "../screens/MyCourses/MyCoursesScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
@@ -116,7 +117,12 @@ const MainRouter: React.FC = () => {
         <Stack.Screen
           name="EditPasswordScreen"
           component={EditPasswordScreen}
-          options={{ headerShown: false, title: "Change Password" }}
+          options={{ headerShown: true, title: "Change Password" }}
+        />
+        <Stack.Screen
+          name="MyCourses"
+          component={MyCoursesScreen}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
