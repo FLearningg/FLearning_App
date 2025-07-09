@@ -133,7 +133,7 @@ const NotificationScreen = () => {
     const renderItem = ({ item }: { item: any }) => (
         <TouchableOpacity style={notificationScreenStyles.notificationCard}>
             <View style={notificationScreenStyles.iconContainer}>
-                <Ionicons name="notifications-outline" size={24} color="#333" />
+                <Ionicons name="notifications-outline" size={24} color="##202244" />
             </View>
             <View style={notificationScreenStyles.textContainer}>
                 <Text style={notificationScreenStyles.description} numberOfLines={2} ellipsizeMode="tail">{item.message}</Text>
