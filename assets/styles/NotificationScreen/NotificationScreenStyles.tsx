@@ -2,6 +2,11 @@ import { StyleSheet, Platform } from 'react-native';
 import { responsiveWidth, responsiveHeight, responsiveFont } from '../utils/responsive';
 
 export const notificationScreenStyles = StyleSheet.create({
+  container1: {
+    flex: 1,
+    backgroundColor: "#F5F9FF",
+    paddingTop: responsiveWidth(25),
+  },
   container: {
     flex: 1,
     backgroundColor: "#F5F9FF",
