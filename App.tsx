@@ -5,13 +5,17 @@ import { useFonts } from "expo-font";
 import { StyleSheet, ActivityIndicator, View } from "react-native";
 import Toast from "react-native-toast-message";
 import CustomToast from "./src/components/Toast/CustomToast";
+import { Provider } from "react-redux";
+import { store } from "./src/redux/store";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <MainRouter />
-      <Toast config={{ custom_with_image: (props) => <CustomToast {...props} /> }} />
-    </View>
+    <Provider store={store}>
+      <View style={styles.container}>
+        <MainRouter />
+        <Toast config={{ custom_with_image: (props) => <CustomToast {...props} /> }} />
+      </View>
+    </Provider>
   );
 }
 

@@ -1,12 +1,17 @@
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { AntDesign, Feather, Fontisto } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types/NavigationType";
 import ButtonNavigate1 from "../../components/ButtonNavigate1";
 import Toast from "react-native-toast-message";
 import LoadingComponent from "../../components/Loading/LoadingComponent";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { resendVerificationLink } from "../../redux/services/authService";
+import { loginUser } from "../../redux/store/authSlice";
+import UnverifiedEmailModal from "./UnverifiedEmailModal";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -14,18 +19,38 @@ export default function LoginPage() {
     const [secureText, setSecureText] = useState(true);
     const [checked, setChecked] = useState(false);
     const togglePassword = () => setSecureText(!secureText);
-    const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch<AppDispatch>();
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-    const handleSignIn = () => {
+    const { isLoading, isAuthenticated } = useSelector((state: RootState) => state.auth);
+    const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
 
-        // Simulate loading state
-        setLoading(true);
-        setTimeout(() => {
-            //logic implement here
+    // --- State mới để quản lý tất cả các thông báo API ---
+    const [apiAlert, setApiAlert] = useState({ show: false, type: '', message: '' });
+
+    // State cho countdown
+    const [countdown, setCountdown] = useState(0);
+    const [isResendCooldown, setIsResendCooldown] = useState(false);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout | undefined;
+        if (isResendCooldown && countdown > 0) {
+            timer = setInterval(() => setCountdown((prev) => prev - 1), 1000);
+        } else if (countdown === 0) {
+            setIsResendCooldown(false);
+        }
+        return () => clearInterval(timer);
+    }, [isResendCooldown, countdown]);
+
+    const handleResendLink = async () => {
+        if (isResendCooldown || !unverifiedEmail) return;
+        setIsResendCooldown(true); // Vô hiệu hóa nút ngay lập tức
+        try {
+            const response = await resendVerificationLink(unverifiedEmail);
+            // Hiển thị thông báo thành công bằng Bootstrap Alert
             Toast.show({
                 type: 'custom_with_image',
-                text1: 'Login Successful',
-                text2: 'Welcome back!',
+                text1: 'Resend Link Successful',
+                text2: '' + response.data.message,
                 props: {
                     imageUrl: require('../../../assets/images/LOGO.png'),
                     status: 'success',
@@ -33,9 +58,100 @@ export default function LoginPage() {
                 position: 'top',
                 visibilityTime: 3000,
             });
-            navigation.navigate('Home') //pass parameter here
-            setLoading(false);
-        }, 5000);
+            setApiAlert({ show: true, type: 'success', message: response.data.message });
+            setCountdown(60);
+        } catch (error: any) {
+            Toast.show({
+                type: 'custom_with_image',
+                text1: 'Resend Link Failed',
+                text2: '' + error.response?.data?.message || 'Gửi lại link thất bại.',
+                props: {
+                    imageUrl: require('../../../assets/images/LOGO.png'),
+                    status: 'error',
+                },
+                position: 'top',
+                visibilityTime: 3000,
+            });
+            setApiAlert({ show: true, type: 'danger', message: error.response?.data?.message || 'Gửi lại link thất bại.' });
+            setIsResendCooldown(false); // Bật lại nút nếu có lỗi
+        }
+    };
+    const handleSignIn = () => {
+        setUnverifiedEmail(null);
+        setApiAlert({ show: false, type: '', message: '' }); // Ẩn thông báo cũ khi submit
+        const credentials = { email: email, password: password, remember: checked };
+        dispatch(loginUser(credentials))
+            .unwrap()
+            .then(() => {
+                // Có thể hiển thị thông báo thành công ở trang chủ nếu muốn
+                Toast.show({
+                    type: 'custom_with_image',
+                    text1: 'Login Successful',
+                    text2: 'Welcome back!',
+                    props: {
+                        imageUrl: require('../../../assets/images/LOGO.png'),
+                        status: 'success',
+                    },
+                    position: 'top',
+                    visibilityTime: 3000,
+                });
+                navigation.navigate('Home') //pass parameter here
+            })
+            .catch((error) => {
+                if (error.errorCode === 'ACCOUNT_NOT_VERIFIED') {
+                    Toast.show({
+                        type: 'custom_with_image',
+                        text1: 'Login Failed',
+                        text2: 'Account not verified.',
+                        props: {
+                            imageUrl: require('../../../assets/images/LOGO.png'),
+                            status: 'error',
+                        },
+                        position: 'top',
+                        visibilityTime: 3000,
+                    });
+                    setUnverifiedEmail(email);
+                } else if (error.errorCode === 'ACCOUNT_BANNED') {
+                    Toast.show({
+                        type: 'custom_with_image',
+                        text1: 'Login Failed',
+                        text2: 'Your account has been banned. Please contact support.',
+                        props: {
+                            imageUrl: require('../../../assets/images/LOGO.png'),
+                            status: 'error',
+                        },
+                        position: 'top',
+                        visibilityTime: 3000,
+                    });
+                    setApiAlert({ show: true, type: 'danger', message: 'Your account has been banned.' });
+                } else if (email === '' || password === '') {
+                    Toast.show({
+                        type: 'custom_with_image',
+                        text1: 'Login Failed',
+                        text2: 'Email and password cannot be empty.',
+                        props: {
+                            imageUrl: require('../../../assets/images/LOGO.png'),
+                            status: 'error',
+                        },
+                        position: 'top',
+                        visibilityTime: 3000,
+                    });
+                    setApiAlert({ show: true, type: 'danger', message: 'Email and password cannot be empty.' });
+                } else {
+                    Toast.show({
+                        type: 'custom_with_image',
+                        text1: 'Login failed',
+                        text2: 'Email or password is incorrect.',
+                        props: {
+                            imageUrl: require('../../../assets/images/LOGO.png'),
+                            status: 'error',
+                        },
+                        position: 'top',
+                        visibilityTime: 3000,
+                    });
+                    setApiAlert({ show: true, type: 'danger', message: error.message || 'Email or password is incorrect.' });
+                }
+            });
     }
     return (
         <View style={styles.container}>
@@ -119,7 +235,14 @@ export default function LoginPage() {
                     <Text style={styles.signInText} onPress={() => navigation.navigate("SignUp")}>SIGN UP</Text>
                 </View>
             </View>
-            <LoadingComponent visible={loading} />
+            <LoadingComponent visible={isLoading} />
+            <UnverifiedEmailModal
+                visible={!!unverifiedEmail}
+                countdown={countdown}
+                isResendCooldown={isResendCooldown}
+                onResend={handleResendLink}
+                onClose={() => setUnverifiedEmail(null)}
+            />
         </View>
     );
 }
