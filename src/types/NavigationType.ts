@@ -19,7 +19,7 @@ export type RootStackParamList = {
   Home: undefined;
   Category: undefined;
   Search: undefined;
-  CourseDetail: undefined;
+  CourseDetail: { courseId: string };
   Profile: undefined;
   EditProfileScreen: undefined;
   EditPasswordScreen: undefined;

@@ -1,16 +1,35 @@
 import React from "react";
 import { Text, StyleSheet } from "react-native";
 
-const CourseDetailAbout = () => {
-  return (
-    <Text style={styles.description}>
-      Graphic Design now a popular profession graphic design by off your career
-      about tantas regiones barbarorum pedibus obiit{"\n\n"}
-      Graphic Design n a popular profession I Cur tantas regiones barbarorum
-      pedibus obiit, maria transmi Et ne nimium beatus est; Addidisti ad
-      extremum etiam <Text style={styles.readMore}>Read More</Text>
-    </Text>
-  );
+// Import Course type
+interface Lesson {
+  _id: string;
+  title: string;
+}
+interface Section {
+  _id: string;
+  title: string;
+  lessons: Lesson[];
+}
+interface Discount {
+  price?: string;
+  [key: string]: any;
+}
+interface Course {
+  _id: string;
+  title: string;
+  sections: Section[];
+  categoryIds?: string[];
+  discountId?: Discount;
+  imageUrl?: string;
+  instructorName?: string;
+  instructorImage?: string;
+  subTitle?: string;
+  [key: string]: any;
+}
+
+const CourseDetailAbout = ({ course }: { course?: Course | null }) => {
+  return <Text style={styles.description}>{course?.subTitle || ""}</Text>;
 };
 
 const styles = StyleSheet.create({
@@ -20,12 +39,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: 24,
     fontFamily: "Inter-Regular",
-  },
-  readMore: {
-    color: "#0961F5",
-    fontWeight: "600",
-    fontFamily: "Inter-SemiBold",
-    textDecorationLine: "underline",
   },
 });
 

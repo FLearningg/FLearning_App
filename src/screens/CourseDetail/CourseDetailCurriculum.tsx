@@ -5,37 +5,36 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
+  Modal,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { Video, ResizeMode } from "expo-av";
 
-const curriculumSections = [
-  {
-    title: "Section 01 - Introduction",
-    duration: "25 Mins",
-    lessons: [
-      { number: "01", title: "Why Using Graphic De..", duration: "15 Mins" },
-      { number: "02", title: "Setup Your Graphic De..", duration: "10 Mins" },
-    ],
-  },
-  {
-    title: "Section 02 - Advanced Topics",
-    duration: "60 Mins",
-    lessons: [
-      { number: "03", title: "Color Theory", duration: "20 Mins" },
-      { number: "04", title: "Typography Basics", duration: "15 Mins" },
-      { number: "05", title: "Layout & Composition", duration: "15 Mins" },
-      { number: "06", title: "Branding Essentials", duration: "10 Mins" },
-    ],
-  },
-  {
-    title: "Section 03 - Projects",
-    duration: "30 Mins",
-    lessons: [{ number: "07", title: "Final Project", duration: "30 Mins" }],
-  },
-];
+// Types for API response
+interface Lesson {
+  _id: string;
+  title: string;
+  duration?: string;
+  videoUrl?: string;
+}
+interface Section {
+  _id: string;
+  title: string;
+  lessons: Lesson[];
+  duration?: string;
+  name?: string;
+}
 
-const CourseDetailCurriculum = () => {
-  const [expandedSections, setExpandedSections] = useState(new Set());
+const curriculumSections: Section[] = [];
+
+const CourseDetailCurriculum = ({ sections }: { sections?: Section[] }) => {
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(
+    new Set()
+  );
+  const [showLessonVideo, setShowLessonVideo] = useState(false);
+  const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
+  const data = sections && sections.length > 0 ? sections : curriculumSections;
 
   const toggleSection = (index: number) => {
     setExpandedSections((prev) => {
@@ -49,14 +48,32 @@ const CourseDetailCurriculum = () => {
     });
   };
 
+  // Function to check if lesson is unlocked (only first lesson of first section is unlocked)
+  const isLessonUnlocked = (sectionIndex: number, lessonIndex: number) => {
+    return sectionIndex === 0 && lessonIndex === 0;
+  };
+
+  const playLessonVideo = (
+    lesson: Lesson,
+    sectionIndex: number,
+    lessonIndex: number
+  ) => {
+    if (!isLessonUnlocked(sectionIndex, lessonIndex)) {
+      // Show alert or toast that user needs to enroll
+      return;
+    }
+    setCurrentLesson(lesson);
+    setShowLessonVideo(true);
+  };
+
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.scrollViewContent}
       showsVerticalScrollIndicator={false}
     >
-      {curriculumSections.map((section, sIdx) => (
-        <View key={section.title}>
+      {data.map((section, sIdx) => (
+        <View key={section._id || section.title}>
           <TouchableOpacity
             onPress={() => toggleSection(sIdx)}
             style={styles.sectionHeader}
@@ -66,10 +83,12 @@ const CourseDetailCurriculum = () => {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {section.title}
+              {section.title || section.name}
             </Text>
             <View style={styles.sectionDurationContainer}>
-              <Text style={styles.sectionDuration}>{section.duration}</Text>
+              <Text style={styles.sectionDuration}>
+                {section.duration || ""}
+              </Text>
             </View>
             <AntDesign
               name={expandedSections.has(sIdx) ? "up" : "down"}
@@ -79,32 +98,134 @@ const CourseDetailCurriculum = () => {
           </TouchableOpacity>
           {expandedSections.has(sIdx) && (
             <>
-              {section.lessons.map((lesson) => (
-                <View key={lesson.number} style={styles.lessonItem}>
-                  <View style={styles.lessonNumberContainer}>
-                    <Text style={styles.lessonNumber}>{lesson.number}</Text>
-                  </View>
-                  <View style={styles.lessonTextContainer}>
-                    <Text
-                      style={styles.lessonTitle}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
+              {section.lessons.map((lesson, lIdx) => {
+                const isUnlocked = isLessonUnlocked(sIdx, lIdx);
+                return (
+                  <View
+                    key={lesson._id}
+                    style={[
+                      styles.lessonItem,
+                      !isUnlocked && styles.lockedLessonItem,
+                    ]}
+                  >
+                    <View
+                      style={[
+                        styles.lessonNumberContainer,
+                        !isUnlocked && styles.lockedLessonNumberContainer,
+                      ]}
                     >
-                      {lesson.title}
-                    </Text>
+                      <Image
+                        source={require("../../../assets/images/LOGO.png")}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          resizeMode: "contain",
+                          opacity: isUnlocked ? 1 : 0.3,
+                        }}
+                      />
+                    </View>
+                    <View style={styles.lessonTextContainer}>
+                      <Text
+                        style={[
+                          styles.lessonTitle,
+                          !isUnlocked && styles.lockedLessonTitle,
+                        ]}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                      >
+                        {lesson.title}
+                      </Text>
+                      {!isUnlocked && (
+                        <Text style={styles.lockedText}>
+                          Enroll to unlock this lesson
+                        </Text>
+                      )}
+                    </View>
+                    <View style={styles.lessonDurationContainer}>
+                      <Text
+                        style={[
+                          styles.lessonDuration,
+                          !isUnlocked && styles.lockedLessonDuration,
+                        ]}
+                      >
+                        {lesson.duration || ""}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      style={[
+                        styles.playIcon,
+                        !isUnlocked && styles.lockedPlayIcon,
+                      ]}
+                      onPress={() => playLessonVideo(lesson, sIdx, lIdx)}
+                      disabled={!isUnlocked}
+                    >
+                      {isUnlocked ? (
+                        <AntDesign
+                          name="playcircleo"
+                          size={24}
+                          color="#0961F5"
+                        />
+                      ) : (
+                        <AntDesign name="lock" size={24} color="#CCCCCC" />
+                      )}
+                    </TouchableOpacity>
                   </View>
-                  <View style={styles.lessonDurationContainer}>
-                    <Text style={styles.lessonDuration}>{lesson.duration}</Text>
-                  </View>
-                  <TouchableOpacity style={styles.playIcon}>
-                    <AntDesign name="playcircleo" size={24} color="#0961F5" />
-                  </TouchableOpacity>
-                </View>
-              ))}
+                );
+              })}
             </>
           )}
         </View>
       ))}
+
+      {/* Modal player for lesson videos */}
+      <Modal
+        visible={showLessonVideo}
+        animationType="slide"
+        onRequestClose={() => setShowLessonVideo(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "black",
+            justifyContent: "center",
+          }}
+        >
+          {currentLesson?.videoUrl && (
+            <Video
+              source={{ uri: currentLesson.videoUrl }}
+              style={{ width: "100%", height: 300 }}
+              useNativeControls
+              resizeMode={ResizeMode.CONTAIN}
+              shouldPlay
+            />
+          )}
+          <TouchableOpacity
+            onPress={() => setShowLessonVideo(false)}
+            style={{ position: "absolute", top: 40, right: 20 }}
+          >
+            <AntDesign name="close" size={32} color="#FFF" />
+          </TouchableOpacity>
+
+          {/* Lesson info overlay */}
+          <View
+            style={{ position: "absolute", bottom: 60, left: 20, right: 20 }}
+          >
+            <Text
+              style={{
+                color: "#FFF",
+                fontSize: 18,
+                fontWeight: "600",
+                marginBottom: 8,
+              }}
+            >
+              {currentLesson?.title}
+            </Text>
+            <Text style={{ color: "#FFF", fontSize: 14, opacity: 0.8 }}>
+              Duration: {currentLesson?.duration || "N/A"}
+            </Text>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -157,6 +278,9 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 10,
   },
+  lockedLessonItem: {
+    opacity: 0.9,
+  },
   lessonNumberContainer: {
     width: 40,
     height: 40,
@@ -166,11 +290,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 15,
   },
-  lessonNumber: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#555",
-    fontFamily: "Inter-Bold",
+  lockedLessonNumberContainer: {
+    opacity: 0.3,
   },
   lessonTextContainer: {
     flex: 1,
@@ -181,6 +302,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
     fontFamily: "Inter-SemiBold",
+  },
+  lockedLessonTitle: {
+    color: "#CCCCCC",
+  },
+  lockedText: {
+    fontSize: 12,
+    color: "#CCCCCC",
+    marginTop: 4,
   },
   lessonDurationContainer: {
     width: 70,
@@ -193,8 +322,14 @@ const styles = StyleSheet.create({
     textAlign: "right",
     fontFamily: "Inter-Bold",
   },
+  lockedLessonDuration: {
+    color: "#CCCCCC",
+  },
   playIcon: {
     marginLeft: 10,
+  },
+  lockedPlayIcon: {
+    opacity: 0.3,
   },
 });
 

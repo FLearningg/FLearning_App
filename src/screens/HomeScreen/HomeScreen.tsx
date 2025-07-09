@@ -43,7 +43,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       };
 
       // Add event listener for hardware back button on Android
-      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress
+      );
 
       return () => subscription.remove();
     }, [])
@@ -119,7 +122,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   };
   return (
     <View style={homeScreenStyles.container}>
-
       <StatusBar
         barStyle="dark-content"
         backgroundColor={Platform.OS === "android" ? "#f8f9fa" : undefined}
@@ -269,7 +271,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <TouchableOpacity
                   key={course.id}
                   style={homeScreenStyles.courseCard}
-                  onPress={() => navigation.navigate("CourseDetail")}
+                  onPress={() =>
+                    navigation.navigate("CourseDetail", {
+                      courseId: "686d385d6aef0b860bdbdd5d",
+                    })
+                  }
                 >
                   <View style={homeScreenStyles.courseImage}>
                     {/* Placeholder for course image */}
