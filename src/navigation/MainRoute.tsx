@@ -21,6 +21,8 @@ import FilterScreen from "../screens/courses/FilterComponents";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import EditProfileScreen from "../screens/Profile/EditProfileScreen";
 import EditPasswordScreen from "../screens/Profile/EditPasswordScreen";
+import NotificationScreen from "../screens/Notification/NotificationScreen";
+import NotificationHeader from "../screens/Notification/NotificationHeader";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
@@ -117,6 +119,11 @@ const MainRouter: React.FC = () => {
           name="EditPasswordScreen"
           component={EditPasswordScreen}
           options={{ headerShown: true, title: "Change Password" }}
+        />
+        <Stack.Screen
+          name="Notification"
+          component={NotificationScreen}
+          options={{ header: () => (<NotificationHeader />) }}
         />
       </Stack.Navigator>
     </NavigationContainer>
