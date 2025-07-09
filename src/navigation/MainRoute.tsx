@@ -124,7 +124,7 @@ const MainRouter: React.FC = () => {
         <Stack.Screen
           name="Notification"
           component={NotificationScreen}
-          options={{ header: () => (<NotificationHeader />) }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="MyCourses"

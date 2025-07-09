@@ -14,6 +14,10 @@ import { AppDispatch } from "../../redux/store";
 import { notificationScreenStyles } from "../../../assets/styles/NotificationScreen/NotificationScreenStyles";
 import LoadingComponent from "../../components/Loading/LoadingComponent";
 import { SafeAreaView } from "react-native-safe-area-context";
+import GoBackButton from "../../components/GoBackButton";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../types/NavigationType";
 
 const PAGE_SIZE = 10;
 const RENDER_STEP = 7;
@@ -40,6 +44,7 @@ const NotificationScreen = () => {
     const [loading, setLoading] = useState(false);
     const [visibleCount, setVisibleCount] = useState(RENDER_STEP);
     const [showInfinite, setShowInfinite] = useState(false);
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
     const fetchNotificationPage = async (pageNum: number) => {
         setLoading(true);
@@ -155,25 +160,34 @@ const NotificationScreen = () => {
         </View>
     );
     return (
-        <View style={notificationScreenStyles.container}>
-            {sections.length === 0 ? (
-                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                    <Image source={require("../../../assets/images/no_notification.jpg")} />
-                    <Text style={{ color: "#888", fontSize: 16 }}>You have no notifications</Text>
-                </View>
-            ) : (
-                <SectionList
-                    sections={sections}
-                    keyExtractor={(item) => item._id}
-                    renderItem={renderItem}
-                    renderSectionHeader={renderSectionHeader}
-                    onEndReached={handleLoadMore}
-                    onEndReachedThreshold={0.2}
-                    ListFooterComponent={loading ? <ActivityIndicator /> : null}
-                    contentContainerStyle={{ paddingBottom: 20 }}
-                />
-            )}
-            <LoadingComponent visible={loading} />
+        <View style={notificationScreenStyles.container1}>
+            <GoBackButton
+                title="Notifications"
+                onPress={() => {
+                    navigation.goBack();
+                }}
+                backgroundColor="#F5F9FF"
+            />
+            <View style={notificationScreenStyles.container}>
+                {sections.length === 0 ? (
+                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                        <Image source={require("../../../assets/images/no_notification.jpg")} />
+                        <Text style={{ color: "#888", fontSize: 16 }}>You have no notifications</Text>
+                    </View>
+                ) : (
+                    <SectionList
+                        sections={sections}
+                        keyExtractor={(item) => item._id}
+                        renderItem={renderItem}
+                        renderSectionHeader={renderSectionHeader}
+                        onEndReached={handleLoadMore}
+                        onEndReachedThreshold={0.2}
+                        ListFooterComponent={loading ? <ActivityIndicator /> : null}
+                        contentContainerStyle={{ paddingBottom: 20 }}
+                    />
+                )}
+                <LoadingComponent visible={loading} />
+            </View>
         </View>
     );
 };
