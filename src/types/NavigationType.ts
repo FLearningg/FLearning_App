@@ -23,5 +23,6 @@ export type RootStackParamList = {
   Profile: undefined;
   EditProfileScreen: undefined;
   EditPasswordScreen: undefined;
+  Notification: undefined;
   MyCourses: undefined;
 };

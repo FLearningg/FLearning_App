@@ -29,6 +29,9 @@ interface HomeScreenProps {
 import { homeScreenStyles } from "../../../assets/styles/HomeScreen/HomeScreenStyles";
 import { responsiveWidth } from "../../../assets/styles/utils/responsive";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { markNotificationAsRead } from "../../redux/services/notificationService";
+import { AppDispatch, RootState } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // Prevent back navigation when on Home screen
@@ -104,6 +107,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     "3D Design",
     "Arts & Humanities",
   ];
+  const currentUser = useSelector((state: RootState) => state.auth.currentUser);
+  const dispatch = useDispatch<AppDispatch>();
+  const markAllAsRead = async () => {
+    try {
+      await markNotificationAsRead(currentUser?._id, dispatch);
+      navigation.navigate("Notification")
+    } catch (error) {
+      console.error("Error marking as read:", error);
+    }
+  };
   return (
     <View style={homeScreenStyles.container}>
 
@@ -132,7 +145,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </Text>
               <Text style={homeScreenStyles.searchHint}>Search Below.</Text>
             </View>
-            <TouchableOpacity style={homeScreenStyles.notificationButton}>
+            <TouchableOpacity style={homeScreenStyles.notificationButton} onPress={markAllAsRead}>           
               <Image
                 source={require("../../../assets/images/NOTIFICATIONS.jpg")}
                 style={homeScreenStyles.notificationIcon}
@@ -140,7 +153,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               />
             </TouchableOpacity>
           </View>
-          
+
           {/* Search Bar */}
           <SearchBar
             onFilterPress={() => console.log("Filter pressed")}
