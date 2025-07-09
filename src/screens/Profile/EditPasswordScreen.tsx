@@ -8,10 +8,15 @@ import {
   StatusBar,
   ScrollView,
   TextInput,
+  Platform,
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import ButtonNavigate1 from "../../components/ButtonNavigate1";
+import LoadingComponent from "../../components/Loading/LoadingComponent";
+import { changePassword } from "../../redux/services/authService";
+import GoBackButton from "../../components/GoBackButton";
+import Toast from "react-native-toast-message";
 
 // --- Định nghĩa màu sắc ---
 const PRIMARY_COLOR = "#66C5B3";
@@ -26,47 +31,78 @@ const EditPasswordScreen = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleUpdatePassword = () => {
-    // Validate passwords
+  const handleUpdatePassword = async () => {
+    setError(null);
     if (!currentPassword || !newPassword || !confirmPassword) {
-      // Show error message
+      setError("Please fill in all fields");
       return;
     }
-
     if (newPassword !== confirmPassword) {
-      // Show error message - passwords don't match
+      setError("Passwords do not match");
       return;
     }
-
     if (newPassword.length < 8) {
-      // Show error message - password too short
+      setError("Password must be at least 8 characters");
       return;
     }
-
-    // Handle password update logic here
-    console.log("Updating password...");
+    setLoading(true);
+    try {
+      const res = await changePassword({
+        currentPassword,
+        newPassword,
+        confirmNewPassword: confirmPassword,
+      });
+      if (
+        (res.data && res.data.success) ||
+        (res.data &&
+          res.data.message &&
+          res.data.message.toLowerCase().includes("success"))
+      ) {
+        navigation.navigate("Profile", { showPasswordChangedToast: true });
+      } else {
+        Toast.show({
+          type: "custom_with_image",
+          text1: "Error",
+          text2: res.data?.message || "Failed to change password",
+          props: {
+            status: "error",
+            imageUrl: require("../../../assets/images/LOGO.png"),
+          },
+          visibilityTime: 1500,
+        });
+      }
+    } catch (err: any) {
+      Toast.show({
+        type: "custom_with_image",
+        text1: "Error",
+        text2: err?.response?.data?.message || "Failed to change password",
+        props: {
+          status: "error",
+          imageUrl: require("../../../assets/images/LOGO.png"),
+        },
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor={styles.container.backgroundColor}
-      />
+      <View style={{ paddingTop: Platform.OS === "android" ? 24 : 0 }}>
+        <GoBackButton
+          title="Change Password"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
+      <LoadingComponent visible={loading} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
       >
         <View style={styles.content}>
-          {/* Header Section */}
-          <View style={styles.headerSection}>
-            <Text style={styles.headerTitle}>Change Password</Text>
-            <Text style={styles.headerSubtitle}>
-              Update your password to keep your account secure
-            </Text>
-          </View>
-
           {/* Form Section */}
           <View style={styles.formSection}>
             {/* Current Password */}
@@ -231,23 +267,6 @@ const styles = StyleSheet.create({
   content: {
     alignItems: "center",
     paddingHorizontal: 20,
-  },
-  headerSection: {
-    alignItems: "center",
-    marginBottom: 30,
-    marginTop: 40,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#22223B",
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: "#666",
-    textAlign: "center",
-    lineHeight: 22,
   },
   formSection: {
     width: "100%",

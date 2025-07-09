@@ -23,6 +23,7 @@ import EditProfileScreen from "../screens/Profile/EditProfileScreen";
 import EditPasswordScreen from "../screens/Profile/EditPasswordScreen";
 import NotificationScreen from "../screens/Notification/NotificationScreen";
 import NotificationHeader from "../screens/Notification/NotificationHeader";
+import MyCoursesScreen from "../screens/MyCourses/MyCoursesScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
@@ -108,12 +109,12 @@ const MainRouter: React.FC = () => {
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
-          options={{ headerShown: true }}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="EditProfileScreen"
           component={EditProfileScreen}
-          options={{ headerShown: true, title: "Edit Profile" }}
+          options={{ headerShown: false, title: "Edit Profile" }}
         />
         <Stack.Screen
           name="EditPasswordScreen"
@@ -124,6 +125,11 @@ const MainRouter: React.FC = () => {
           name="Notification"
           component={NotificationScreen}
           options={{ header: () => (<NotificationHeader />) }}
+        />
+        <Stack.Screen
+          name="MyCourses"
+          component={MyCoursesScreen}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -12,8 +12,8 @@ import { styles } from "../../../assets/styles/OnlineCourseStyles";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 const NAV_ITEMS = [
-  { icon: Home, label: "HOME", route: "Home" },
-  { icon: BookOpen, label: "MY COURSES", route: "OnlineCourses" },
+  { icon: Home, label: "HOME", route: "OnlineCourses" },
+  { icon: BookOpen, label: "MY COURSES", route: "MyCourses" },
   { icon: MessageSquare, label: "INBOX", route: "INBOX" },
   { icon: CreditCard, label: "TRANSACTION", route: "TRANSACTION" },
   { icon: User, label: "PROFILE", route: "Profile" },
