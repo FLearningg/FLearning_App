@@ -96,6 +96,16 @@ export const forgotPassword = (email: string) =>
 export const resetPassword = (token: string, newPassword: string) =>
   apiClient.post(`/auth/reset-password/${token}`, { newPassword });
 
+export const sendMobileResetCode = (email: string) =>
+  apiClient.post("/auth/mobile/send-reset-code", { email });
+
+export const resetPasswordWithCode = (data: {
+  email: string;
+  code: string;
+
+  newPassword: string;
+}) => apiClient.post("/auth/mobile/reset-with-code", data);
+
 // User Routes
 export const getUserProfile = () => apiClient.get("/user/profile");
 export const setPassword = (passwordData: PasswordData) =>
