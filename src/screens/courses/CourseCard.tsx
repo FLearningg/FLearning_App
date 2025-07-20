@@ -1,214 +1,205 @@
-import React, { memo, FC, useState } from 'react';
+import React, { memo, FC, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Image,
   ActivityIndicator,
-} from 'react-native';
-import { Star, Bookmark } from 'lucide-react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { styles } from '../../../assets/styles/PopularCoursesStyles';
+} from "react-native";
+import { Star, Bookmark } from "lucide-react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { styles } from "../../../assets/styles/Courses/CourseCardStyles";
 
-// Types
-interface BaseCourse {
-  id: string;
+// --- Types ---
+interface OnlineCourseType {
+  _id: string;
+  categoryName: string;
+  title: string;
+  rating: number;
+  studentsEnrolledCount: number;
+  thumbnail: string;
+  price: number;
+  isBookmarked: boolean;
+  duration?: string;
+}
+
+interface MyCourseType {
+  _id: string;
   category: string;
   title: string;
   rating: number;
-  students?: string;
+  thumbnail?: string;
   duration?: string;
-  image?: string;
-}
-
-interface OnlineCourse extends BaseCourse {
-  price: string;
-  isBookmarked: boolean;
-}
-
-interface MyCourse extends BaseCourse {
   isCompleted: boolean;
-  progress?: number;
+  progressPercentage?: number;
   totalLessons?: number;
   completedLessons?: number;
-  progressPercentage?: number;
+  studentsEnrolledCount?: number;
 }
 
 interface CourseCardProps {
-  course: OnlineCourse | MyCourse;
+  course: OnlineCourseType | MyCourseType;
   onToggleBookmark?: (id: string) => void;
-  variant?: 'online' | 'mycourses';
+  onPress: () => void;
 }
 
-const CourseCard: FC<CourseCardProps> = memo(({ course, onToggleBookmark, variant = 'online' }) => {
-  const [imageLoading, setImageLoading] = useState(true);
-  const [imageError, setImageError] = useState(false);
+const getProgressColor = (progress: number) => {
+  if (progress >= 80) return "#167F71";
+  if (progress >= 50) return "#FF9500";
+  if (progress >= 20) return "#FFD60A";
+  return "#007AFF";
+};
 
-  const getProgressColor = (progress: number) => {
-    if (progress >= 80) return '#167F71'; // Green
-    if (progress >= 50) return '#FF9500'; // Orange  
-    if (progress >= 20) return '#FFD60A'; // Yellow
-    return '#007AFF'; // Blue
-  };
+const isOnlineCourse = (c: any): c is OnlineCourseType =>
+  "price" in c && "isBookmarked" in c && "studentsEnrolledCount" in c;
 
-  const isOnlineCourse = (course: OnlineCourse | MyCourse): course is OnlineCourse => {
-    return 'price' in course && 'isBookmarked' in course;
-  };
+const isMyCourse = (c: any): c is MyCourseType => "isCompleted" in c;
 
-  const isMyCourse = (course: OnlineCourse | MyCourse): course is MyCourse => {
-    return 'isCompleted' in course;
-  };
+const CourseCard: FC<CourseCardProps> = memo(
+  ({ course, onToggleBookmark, onPress }) => {
+    const [imageLoading, setImageLoading] = useState(true);
+    const [imageError, setImageError] = useState(false);
 
-  return (
-    <TouchableOpacity
-      style={{
-        height: 150,
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        marginTop: 8,
-        marginBottom: 8,
-        flexDirection: 'row',
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
-      }}
-      accessibilityRole="button"
-      accessibilityLabel={`View ${course.title}`}
-      activeOpacity={0.8}
-    >
-      <View
-        style={{
-          width: 134,
-          height: 150,
-          borderTopLeftRadius: 16,
-          borderBottomLeftRadius: 16,
-          backgroundColor: '#F3F4F6',
-          overflow: 'hidden',
-        }}
-      >
-        {course.image && !imageError ? (
-          <>
-            <Image
-              source={{ uri: course.image }}
-              style={{
-                width: '100%',
-                height: '100%',
-              }}
-              resizeMode="contain"
-              onLoad={() => setImageLoading(false)}
-              onError={() => {
-                setImageError(true);
-                setImageLoading(false);
-              }}
-            />
-            {imageLoading && (
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(255,255,255,0.8)',
-                }}
-              >
-                <ActivityIndicator size="small" color="#0961f5" />
-              </View>
-            )}
-          </>
-        ) : (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Image
-              source={require('../../../assets/images/LOGO.png')}
-              style={{
-                width: 60,
-                height: 60,
-                opacity: 0.5,
-              }}
-              resizeMode="contain"
-            />
-          </View>
-        )}
-      </View>
-      <View style={{ flex: 1, padding: 16, justifyContent: 'space-between' }}>
-        <View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={[styles.categoryTag, { fontSize: 12 }]}>{course.category}</Text>
-            {isOnlineCourse(course) && onToggleBookmark && (
-              <TouchableOpacity
-                style={styles.bookmarkButton}
-                onPress={() => onToggleBookmark(course.id)}
-                accessibilityRole="button"
-                accessibilityLabel={course.isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
-                accessibilityState={{ checked: course.isBookmarked }}
-              >
-                <Bookmark
-                  size={20}
-                  color={course.isBookmarked ? '#167f71' : '#a0a4ab'}
-                  fill={course.isBookmarked ? '#167f71' : 'transparent'}
-                />
-              </TouchableOpacity>
-            )}
-            {isMyCourse(course) && course.isCompleted && (
-              <View>
-                <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
-              </View>
-            )}
-          </View>
-          <Text style={[styles.courseTitle, { fontSize: 14, marginTop: 4 }]} numberOfLines={1} ellipsizeMode="tail">{course.title}</Text>
-          {isOnlineCourse(course) && (
-            <Text style={[styles.coursePrice, { fontSize: 16, marginTop: 4 }]}>{course.price}</Text>
+    const courseThumbnail = course.thumbnail || null;
+
+    const handleImageError = () => {
+      setImageError(true);
+      setImageLoading(false);
+    };
+
+    const renderImage = () =>
+      courseThumbnail && !imageError ? (
+        <>
+          <Image
+            source={{ uri: courseThumbnail }}
+            style={styles.courseImage}
+            resizeMode="cover"
+            onLoadStart={() => setImageLoading(true)}
+            onLoadEnd={() => setImageLoading(false)}
+            onError={handleImageError}
+          />
+          {imageLoading && (
+            <View style={styles.imageOverlay}>
+              <ActivityIndicator size="small" color="#0961f5" />
+            </View>
           )}
+        </>
+      ) : (
+        <View style={styles.placeholderImageContainer}>
+          <Image
+            source={require("../../../assets/images/LOGO.png")}
+            style={styles.placeholderImage}
+            resizeMode="contain"
+          />
         </View>
+      );
 
-        {isMyCourse(course) && course.isCompleted ? (
-          <TouchableOpacity style={{ backgroundColor: '#0961f5', paddingVertical: 6, paddingHorizontal: 12, borderRadius: 16, alignSelf: 'flex-start' }}>
-            <Text style={{ color: 'white', fontSize: 10, fontWeight: '600' }}>VIEW CERTIFICATE</Text>
+    const renderBookmarkOrCompleted = () => {
+      if (isOnlineCourse(course) && onToggleBookmark) {
+        return (
+          <TouchableOpacity
+            style={styles.bookmarkButton}
+            onPress={() => onToggleBookmark(course._id)}
+            accessibilityState={{ checked: course.isBookmarked }}
+          >
+            <Bookmark
+              size={20}
+              color={course.isBookmarked ? "#167f71" : "#a0a4ab"}
+              fill={course.isBookmarked ? "#167f71" : "transparent"}
+            />
           </TouchableOpacity>
-        ) : isMyCourse(course) && !course.isCompleted ? (
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
-            <View style={{ flex: 1, height: 6, backgroundColor: '#E5E7EB', borderRadius: 16, marginRight: 8 }}>
+        );
+      }
+      if (isMyCourse(course) && course.isCompleted) {
+        return <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />;
+      }
+      return null;
+    };
+
+    const renderStats = () => (
+      <View style={[styles.footerContainer, styles.courseStats]}>
+        <View style={styles.ratingContainer}>
+          <Star size={14} color="#fac025" fill="#fac025" />
+          <Text style={styles.ratingText}>{course.rating ?? 0}</Text>
+        </View>
+        <Text style={styles.separator}>|</Text>
+        <Text style={styles.studentsText}>
+          {isOnlineCourse(course)
+            ? `${course.studentsEnrolledCount} student${
+                course.studentsEnrolledCount !== 1 ? "s" : ""
+              }`
+            : course.duration}
+        </Text>
+      </View>
+    );
+
+    const renderProgress = () => {
+      if (isMyCourse(course) && !course.isCompleted) {
+        const progress = course.progressPercentage || 0;
+        return (
+          <View
+            style={[
+              styles.footerContainer,
+              styles.progressContainer,
+              { marginTop: 8 },
+            ]}
+          >
+            <View style={styles.progressBarBackground}>
               <View
-                style={{
-                  width: `${course.progressPercentage || course.progress || 0}%`,
-                  backgroundColor: getProgressColor(course.progressPercentage || course.progress || 0),
-                  height: 6,
-                  borderRadius: 16,
-                }}
+                style={[
+                  styles.progressBarFill,
+                  {
+                    width: `${progress}%`,
+                    backgroundColor: getProgressColor(progress),
+                  },
+                ]}
               />
             </View>
-            <Text style={{ fontSize: 12, color: '#6B7280', fontWeight: '500' }}>
-              {course.completedLessons || Math.round(((course.progressPercentage || course.progress || 0) * (course.totalLessons || 100)) / 100)}/{course.totalLessons}
+            <Text style={styles.progressText}>
+              {course.completedLessons || "0"}/{course.totalLessons}
             </Text>
           </View>
-        ) : null}
+        );
+      }
+      return null;
+    };
 
-        <View style={[styles.courseStats, { marginTop: 8 }]}>
-          <View style={styles.ratingContainer}>
-            <Star size={14} color="#fac025" fill="#fac025" />
-            <Text style={[styles.rating, { fontSize: 12, marginLeft: 4 }]}>{course.rating}</Text>
+    return (
+      <TouchableOpacity
+        onPress={onPress}
+        style={styles.cardContainer}
+        accessibilityRole="button"
+        accessibilityLabel={`View ${course.title}`}
+        activeOpacity={0.8}
+      >
+        <View style={styles.imageWrapper}>{renderImage()}</View>
+        <View style={styles.contentWrapper}>
+          <View>
+            <View style={styles.contentHeader}>
+              <Text style={styles.categoryTag}>
+                {isOnlineCourse(course) ? course.categoryName : course.category}
+              </Text>
+              {renderBookmarkOrCompleted()}
+            </View>
+            <Text
+              style={styles.courseTitle}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {course.title}
+            </Text>
+            {isOnlineCourse(course) && (
+              <Text style={styles.coursePrice}>
+                {course.price > 0 ? `$${course.price.toFixed(2)}` : "Free"}
+              </Text>
+            )}
           </View>
-          <Text style={[styles.separator, { fontSize: 12, marginHorizontal: 8 }]}>|</Text>
-          <Text style={{ fontSize: 12, color: "#202244" }}>
-            {course.students || course.duration}
-          </Text>
+          {renderStats()}
+          {renderProgress()}
         </View>
-      </View>
-    </TouchableOpacity>
-  );
-});
+      </TouchableOpacity>
+    );
+  }
+);
 
 export default CourseCard;

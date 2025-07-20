@@ -1,80 +1,99 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
-export // Styles
-const styles = StyleSheet.create({
+const { width, height } = Dimensions.get("window");
+
+// Đặt chiều rộng cơ sở của thiết bị thiết kế (ví dụ: iPhone 11, SE)
+const guidelineBaseWidth = 375;
+/**
+ * Hàm co giãn kích thước theo chiều rộng của màn hình.
+ * size: Kích thước gốc (px) trong thiết kế.
+ */
+const scale = (size: number): number => (width / guidelineBaseWidth) * size;
+/**
+ * Hàm co giãn kích thước theo chiều dọc, hữu ích cho các thuộc tính như height, margin-top, v.v.
+ * size: Kích thước gốc (px).
+ * factor: Yếu tố điều chỉnh.
+ */
+const verticalScale = (size: number): number => (height / 812) * size; // 812 là chiều cao của iPhone 11
+/**
+ * Hàm co giãn cho font-size, giúp văn bản không bị quá to hoặc quá nhỏ.
+ * size: Kích thước font gốc.
+ * factor: Yếu tố điều chỉnh, giảm tốc độ co giãn so với scale().
+ */
+const moderateScale = (size: number, factor: number = 0.5): number =>
+  size + (scale(size) - size) * factor;
+
+// --- Styles đã được cập nhật ---
+export const styles = StyleSheet.create({
   // Container
   container: {
     backgroundColor: "#f5f9ff",
     flex: 1,
-    marginTop: 30,
   },
 
   // Header
   header: {
     alignItems: "center",
     flexDirection: "row",
-    padding: 16,
+    paddingHorizontal: scale(16),
+    paddingTop: verticalScale(0),
   },
   headerText: {
     color: "#202244",
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginLeft: 12,
-    marginTop: 30,
+    fontSize: moderateScale(24), // Giảm size gốc để có không gian
+    fontWeight: "bold",
+    marginLeft: scale(12),
+    marginTop: verticalScale(28), // Giảm khoảng cách trên
   },
 
+  // Search
   searchContainer: {
-    marginHorizontal: 24,
-    marginBottom: 16,
+    marginHorizontal: scale(24),
+    marginVertical: verticalScale(16),
   },
   searchBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F9FAFB",
-    borderRadius: 16,
-    height: 64,
-    paddingHorizontal: 16,
-    position: "relative",
+    backgroundColor: "#eeeff0ff",
+    borderRadius: moderateScale(16),
+    height: verticalScale(56), // Giảm chiều cao một chút
+    paddingHorizontal: scale(16),
   },
   searchIcon: {
-    marginRight: 12,
+    marginRight: scale(12),
   },
   searchInput: {
     flex: 1,
-    fontSize: 18,
+    fontSize: moderateScale(16),
     color: "#4B5563",
-    paddingRight: 60,
   },
   filterButton: {
-    position: "absolute",
-    right: 12,
-    width: 40,
-    height: 40,
+    width: moderateScale(30),
+    height: moderateScale(30),
     backgroundColor: "#3B82F6",
-    borderRadius: 12,
+    borderRadius: moderateScale(8),
     justifyContent: "center",
     alignItems: "center",
   },
+
+  // Tabs
   tabsContainer: {
     flexDirection: "row",
-    marginHorizontal: 24,
-    gap: 16,
-    marginBottom: 32,
+    marginHorizontal: scale(24),
+    gap: scale(16),
+    marginBottom: verticalScale(24),
   },
   tabButton: {
     flex: 1,
-    paddingVertical: 16,
-    borderRadius: 24,
+    paddingVertical: verticalScale(12),
+    borderRadius: moderateScale(24),
     alignItems: "center",
     justifyContent: "center",
   },
   activeTab: {
     backgroundColor: "#0D9488",
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 4,
@@ -83,7 +102,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#EFF6FF",
   },
   tabText: {
-    fontSize: 18,
+    fontSize: moderateScale(16),
     fontWeight: "500",
   },
   activeTabText: {
@@ -92,29 +111,19 @@ const styles = StyleSheet.create({
   inactiveTabText: {
     color: "#4B5563",
   },
-  contentArea: {
-    backgroundColor: "#F9FAFB",
-    borderRadius: 12,
-    padding: 24,
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: 100,
-  },
-  contentText: {
-    color: "#6B7280",
-    textAlign: "center",
-    fontSize: 16,
-  },
 
   // Result Header
   resultHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 12,
-    paddingHorizontal: 16,
+    alignItems: "center",
+    marginBottom: verticalScale(12),
+    paddingHorizontal: scale(16),
   },
   resultText: {
     color: "#202244",
+    fontSize: moderateScale(16),
+    fontWeight: "bold",
   },
   highlight: {
     color: "#0961f5",
@@ -125,102 +134,43 @@ const styles = StyleSheet.create({
   },
   resultNumber: {
     color: "#0961f5",
-    marginRight: 4,
+    marginRight: scale(4),
+    fontSize: moderateScale(14),
+    fontWeight: "bold",
   },
 
   // Course List
   courseList: {
-    paddingBottom: 80,
-    paddingHorizontal: 16,
-    marginTop: 30,
-    marginBottom: 30,
+    paddingHorizontal: scale(16),
+    paddingBottom: verticalScale(100), // Tăng padding để không bị che bởi navbar
   },
-  courseCard: {
-    backgroundColor: "white",
-    borderRadius: 16,
-    elevation: 2,
-    marginBottom: 12,
-    padding: 12,
-  },
-  courseRow: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  thumbnail: {
-    backgroundColor: "black",
-    borderRadius: 12,
-    height: 80,
-    width: 80,
-  },
-  courseContent: {
-    flex: 1,
-  },
-  courseCategory: {
-    color: "#ff6b00",
-    fontSize: 12,
-    fontWeight: "500",
-    marginBottom: 4,
-  },
-  courseTitle: {
-    color: "#202244",
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: 4,
-  },
-  priceRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  coursePrice: {
-    color: "#0961f5",
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  originalPrice: {
-    color: "#b4bdc4",
-    fontSize: 12,
-    marginLeft: 8,
-    textDecorationLine: "line-through",
-  },
-  statsRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 8,
-  },
-  rating: {
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 4,
-  },
-  ratingText: {
-    color: "#202244",
-  },
-  divider: {
-    color: "#b4bdc4",
-  },
-  students: {
-    color: "#202244",
+  noResultsText: {
+    textAlign: "center",
+    marginTop: verticalScale(50),
+    fontSize: moderateScale(16),
+    color: "#6B7280",
   },
 
   // Bottom Navigation
   navbar: {
     backgroundColor: "white",
-    borderColor: "#e2e6ea",
+    borderTopColor: "#e2e6ea",
     borderTopWidth: 1,
+    position: "absolute",
     bottom: 0,
+    width: "100%",
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 12,
-    position: "absolute",
-    width: "100%",
+    paddingTop: verticalScale(12),
+    paddingBottom: verticalScale(18), // Thêm padding cho các thiết bị có tai thỏ
   },
   navItem: {
     alignItems: "center",
+    flex: 1,
   },
   navText: {
-    fontSize: 12,
+    fontSize: moderateScale(10),
     fontWeight: "500",
-    marginTop: 2,
+    marginTop: verticalScale(2),
   },
 });

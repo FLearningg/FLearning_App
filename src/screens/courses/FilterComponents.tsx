@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState } from "react";
 import {
   View,
   Text,
@@ -6,62 +6,79 @@ import {
   ScrollView,
   SafeAreaView,
   StyleSheet,
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import type { RouteProp } from '@react-navigation/native';
-import type { RootStackParamList } from '../../types/NavigationType';
-import { ArrowLeft as LucideArrowLeft, ArrowRight as LucideArrowRight } from 'lucide-react-native';
+  Dimensions,
+} from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import type { RouteProp } from "@react-navigation/native";
+import type { RootStackParamList } from "../../types/NavigationType";
+import {
+  ArrowLeft as LucideArrowLeft,
+  ArrowRight as LucideArrowRight,
+  Check as LucideCheck,
+} from "lucide-react-native";
 
-// Types
+// --- Responsive Scaling Utilities ---
+const { width, height } = Dimensions.get("window");
+const guidelineBaseWidth = 375;
+const guidelineBaseHeight = 812;
+
+const scale = (size: number) => (width / guidelineBaseWidth) * size;
+const verticalScale = (size: number) => (height / guidelineBaseHeight) * size;
+const moderateScale = (size: number, factor = 0.5) =>
+  size + (scale(size) - size) * factor;
+
+// --- Types ---
 export type Filters = typeof INITIAL_FILTERS;
 export type FilterCategory = keyof Filters;
 export type FilterItem<C extends FilterCategory> = keyof Filters[C];
 
 export const INITIAL_FILTERS = {
   subCategories: {
-    'Web Development': false,
-    '3D Animation': false,
-    '3D Design': false,
-    'Graphic Design': false,
-    'SEO & Marketing': false,
-    'Arts & Humanities': false,
+    "Web Development": false,
+    "3D Animation": false,
+    "3D Design": false,
+    "Graphic Design": false,
+    "SEO & Marketing": false,
+    "Arts & Humanities": false,
   },
   levels: {
-    'All Levels': false,
+    "All Levels": false,
     Beginners: false,
     Intermediate: false,
     Expert: false,
   },
   price: { Paid: false, Free: false },
   features: {
-    'All Caption': false,
+    "All Caption": false,
     Quizzes: false,
-    'Coding Exercise': false,
-    'Practice Tests': false,
+    "Coding Exercise": false,
+    "Practice Tests": false,
   },
   rating: {
-    '4.5 & Up Above': false,
-    '4.0 & Up Above': false,
-    '3.5 & Up Above': false,
-    '3.0 & Up Above': false,
+    "4.5 & Up Above": false,
+    "4.0 & Up Above": false,
+    "3.5 & Up Above": false,
+    "3.0 & Up Above": false,
   },
   videoDurations: {
-    '0-2 Hours': false,
-    '3-6 Hours': false,
-    '7-16 Hours': false,
-    '17+ Hours': false,
+    "0-2 Hours": false,
+    "3-6 Hours": false,
+    "7-16 Hours": false,
+    "17+ Hours": false,
   },
 };
 
-const ArrowLeft = ({ color = '#000000' }: { color?: string }) => (
-  <LucideArrowLeft color={color} size={32} />
+// --- Helper Components ---
+
+const ArrowLeft = ({ color = "#000000" }: { color?: string }) => (
+  <LucideArrowLeft color={color} size={scale(28)} />
 );
 
-const ArrowRight = () => (
-  <LucideArrowRight color="#0961f5" size={32} />
-);
+const ArrowRight = () => <LucideArrowRight color="#0961f5" size={scale(28)} />;
 
-const Check = () => <Text style={styles.checkIcon}>✓</Text>;
+const Check = () => <LucideCheck color="#ffffffff" size={scale(24)} />;
+
+// --- Filter Section Component ---
 
 type FilterSectionProps<C extends FilterCategory> = {
   title: string;
@@ -89,7 +106,12 @@ function FilterSection<C extends FilterCategory>({
             accessibilityState={{ checked }}
             accessibilityLabel={`${item} filter`}
           >
-            <View style={[styles.checkbox, checked ? styles.checkboxChecked : styles.checkboxUnchecked]}>
+            <View
+              style={[
+                styles.checkbox,
+                checked ? styles.checkboxChecked : styles.checkboxUnchecked,
+              ]}
+            >
               {checked && <Check />}
             </View>
             <Text style={styles.optionLabel}>{item}</Text>
@@ -102,11 +124,18 @@ function FilterSection<C extends FilterCategory>({
 
 const MemoFilterSection = memo(FilterSection) as typeof FilterSection;
 
+// --- Main Filter Screen Component ---
+
 const FilterScreen = () => {
-  const navigation = useNavigation();
-  const route = useRoute<RouteProp<RootStackParamList, 'FilterOnlineCourses'>>();
-  const { filters: initialFilters, onApplyFilters } = route.params;
-  const [filters, setFilters] = useState<Filters>(initialFilters);
+  const navigation = useNavigation<any>();
+  const route =
+    useRoute<RouteProp<RootStackParamList, "FilterOnlineCourses">>();
+
+  const { filters: initialFilters } = route.params;
+
+  const [filters, setFilters] = useState<Filters>(
+    initialFilters || INITIAL_FILTERS
+  );
 
   const handleFilterChange = <C extends FilterCategory>(
     category: C,
@@ -124,8 +153,7 @@ const FilterScreen = () => {
   const handleClearFilters = () => setFilters(INITIAL_FILTERS);
 
   const handleApplyFilters = () => {
-    onApplyFilters(filters);
-    navigation.navigate('OnlineCourses', { filters });
+    navigation.navigate("OnlineCourses", { filters });
   };
 
   return (
@@ -152,10 +180,13 @@ const FilterScreen = () => {
       </View>
 
       {/* Filter Sections */}
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.filterSections}>
           <MemoFilterSection
-            title="SubCategories:"
+            title="Categories:"
             items={filters.subCategories}
             category="subCategories"
             onFilterChange={handleFilterChange}
@@ -214,139 +245,121 @@ const FilterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 30,
-    backgroundColor: '#f5f9ff',
+    backgroundColor: "#f5f9ff",
+    paddingTop: verticalScale(10),
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 32,
-    paddingVertical: 20,
-    marginBottom: 30,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: scale(24),
+    paddingTop: verticalScale(20),
+    paddingBottom: verticalScale(10),
   },
   headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: scale(16),
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#000000',
+    fontSize: moderateScale(24),
+    fontWeight: "600",
+    color: "#000000",
   },
   clearButton: {
-    color: '#545454',
-    fontWeight: '500',
-    fontSize: 20,
+    color: "#545454",
+    fontWeight: "500",
+    fontSize: moderateScale(18),
   },
   scrollView: {
     flex: 1,
   },
   filterSections: {
-    paddingHorizontal: 32,
-    paddingBottom: 40,
+    paddingHorizontal: scale(24),
+    paddingBottom: verticalScale(40),
   },
   section: {
-    marginBottom: 40,
+    marginBottom: verticalScale(30),
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#202244',
-    marginBottom: 20,
+    fontSize: moderateScale(20),
+    fontWeight: "600",
+    color: "#202244",
+    marginBottom: verticalScale(20),
   },
   optionsContainer: {
-    gap: 20,
+    gap: verticalScale(18),
   },
   optionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: scale(16),
   },
   checkbox: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    borderWidth: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: 20,
+    width: scale(28),
+    height: scale(28),
+    borderRadius: moderateScale(8),
+    borderWidth: moderateScale(2.5),
+    alignItems: "center",
+    justifyContent: "center",
   },
   checkboxChecked: {
-    backgroundColor: '#167f71',
-    borderColor: '#167f71',
+    backgroundColor: "#167f71",
+    borderColor: "#167f71",
   },
   checkboxUnchecked: {
-    backgroundColor: '#ffffff',
-    borderColor: '#b4bdc4',
+    backgroundColor: "#ffffff",
+    borderColor: "#b4bdc4",
   },
   optionLabel: {
-    fontSize: 20,
-    fontWeight: '500',
-    color: '#545454',
+    fontSize: moderateScale(18),
+    fontWeight: "500",
+    color: "#545454",
     flex: 1,
   },
   applyContainer: {
-    paddingHorizontal: 32,
-    paddingVertical: 40,
+    paddingHorizontal: scale(24),
+    paddingVertical: verticalScale(20),
+    borderTopWidth: 1,
+    borderTopColor: "#e0e0e0",
+    backgroundColor: "#f5f9ff",
   },
   applyButton: {
-    backgroundColor: '#0961f5',
-    borderRadius: 60,
-    paddingVertical: 32,
-    paddingHorizontal: 32,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    shadowColor: '#000',
+    backgroundColor: "#0961f5",
+    borderRadius: moderateScale(30),
+    paddingVertical: verticalScale(16),
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 6,
+      height: 4,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 10,
+    shadowRadius: 8,
     elevation: 6,
   },
   applyText: {
-    color: '#ffffff',
-    fontSize: 24,
-    fontWeight: '600',
+    color: "#ffffff",
+    fontSize: moderateScale(20),
+    fontWeight: "600",
   },
   arrowContainer: {
-    position: 'absolute',
-    right: 16,
-    width: 64,
-    height: 64,
-    backgroundColor: '#ffffff',
-    borderRadius: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  icon: {
-    width: 32,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconText: {
-    fontSize: 24,
-    color: '#000000',
-  },
-  arrowRightIcon: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  arrowRightText: {
-    fontSize: 24,
-    color: '#0961f5',
-    fontWeight: 'bold',
+    position: "absolute",
+    right: scale(16),
+    width: scale(40),
+    height: scale(40),
+    backgroundColor: "#ffffff",
+    borderRadius: scale(24),
+    alignItems: "center",
+    justifyContent: "center",
   },
   checkIcon: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: "#ffffff",
+    fontSize: moderateScale(16),
+    fontWeight: "bold",
   },
 });
 
