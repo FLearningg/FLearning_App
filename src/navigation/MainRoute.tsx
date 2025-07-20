@@ -22,7 +22,7 @@ import ProfileScreen from "../screens/Profile/ProfileScreen";
 import EditProfileScreen from "../screens/Profile/EditProfileScreen";
 import EditPasswordScreen from "../screens/Profile/EditPasswordScreen";
 import NotificationScreen from "../screens/Notification/NotificationScreen";
-import NotificationHeader from "../screens/Notification/NotificationHeader";
+// import NotificationHeader from "../screens/Notification/NotificationHeader";
 import MyCoursesScreen from "../screens/MyCourses/MyCoursesScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

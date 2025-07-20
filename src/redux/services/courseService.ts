@@ -1,5 +1,10 @@
 import apiClient from "./authService";
 
+// Lấy danh sách khoá học nổi bật
+export const getPopularCourses = async () => {
+  const response = await apiClient.get(`courses/top-selling?limit=5`);
+  return response.data;
+};
 // Lấy chi tiết khoá học
 export const getCourseDetail = async (courseId: string) => {
   const res = await apiClient.get(`/courses/${courseId}`);
