@@ -248,7 +248,7 @@ export const homeScreenStyles = StyleSheet.create({
   },
   courseImage: {
     height: Platform.OS === 'android' ? responsiveHeight(130) : responsiveHeight(120),
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     borderTopLeftRadius: responsiveWidth(12),
     borderTopRightRadius: responsiveWidth(12),
     position: 'relative',
