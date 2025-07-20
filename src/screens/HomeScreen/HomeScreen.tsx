@@ -288,7 +288,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   ]}
                   onPress={() => {
                     setActiveCategoryId(category._id);
-                    navigation.navigate("OnlineCourses", {
+                    navigation.navigate("MainTabs", {
                       filters: {
                         ...INITIAL_FILTERS,
                         subCategories: {
@@ -339,7 +339,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   ]}
                   onPress={() => {
                     if (tab === "All") {
-                      navigation.navigate("OnlineCourses");
+                      navigation.navigate("MainTabs");
                     }
                     setActiveTab(tab);
                   }}

@@ -6,6 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  SafeAreaView,
+  StatusBar,
+  Platform,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
@@ -19,8 +22,9 @@ import CourseCard from "./CourseCard";
 import { Filters, INITIAL_FILTERS } from "./FilterComponents";
 import type { RootStackParamList } from "../../types/NavigationType";
 import type { RouteProp } from "@react-navigation/native";
-import BottomNav from "./BottomNav";
+
 import { getCourses } from "../../redux/services/courseService";
+import GoBackButton from "../../components/GoBackButton";
 
 // --- Types ---
 interface ApiCourse {
@@ -51,25 +55,6 @@ interface Course {
 }
 
 // --- Components ---
-const Header = memo(
-  ({
-    onBackPress,
-    navigation,
-  }: {
-    onBackPress: () => void;
-    navigation: any;
-  }) => (
-    <View style={styles.header}>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Home")}
-        style={{ marginTop: 30 }}
-      >
-        <ArrowLeft color="#202244" />
-      </TouchableOpacity>
-      <Text style={styles.headerText}>Online Courses</Text>
-    </View>
-  )
-);
 
 const SearchBar = memo(
   ({
@@ -264,8 +249,21 @@ const OnlineCourseScreen = () => {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      <Header onBackPress={() => navigation.goBack()} navigation={navigation} />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={Platform.OS === "android" ? "#fff" : undefined}
+        translucent={false}
+      />
+      {Platform.OS === "android" && (
+        <View style={{ height: 10, backgroundColor: "#fff" }} />
+      )}
+      {!route.params?.fromBottomTab && (
+        <GoBackButton
+          title="Online Courses"
+          onPress={() => navigation.navigate("Home")}
+        />
+      )}
       <SearchBar
         onFilterPress={navigateToFilter}
         onChangeText={setSearchQuery}
@@ -291,8 +289,7 @@ const OnlineCourseScreen = () => {
           <Text style={styles.noResultsText}>Cannot find any courses.</Text>
         )}
       </ScrollView>
-      <BottomNav />
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -12,6 +12,11 @@ import {
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import {
+  RootStackParamList,
+  MainTabsParamList,
+} from "../../types/NavigationType";
 import ButtonNavigate1 from "../../components/ButtonNavigate1";
 import LoadingComponent from "../../components/Loading/LoadingComponent";
 import { changePassword } from "../../redux/services/authService";
@@ -22,7 +27,8 @@ import Toast from "react-native-toast-message";
 const PRIMARY_COLOR = "#66C5B3";
 
 const EditPasswordScreen = () => {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   // State management for password fields
   const [currentPassword, setCurrentPassword] = useState("");
@@ -61,7 +67,10 @@ const EditPasswordScreen = () => {
           res.data.message &&
           res.data.message.toLowerCase().includes("success"))
       ) {
-        navigation.navigate("Profile", { showPasswordChangedToast: true });
+        navigation.navigate("MainTabs", {
+          screen: "ProfileTab",
+          params: { fromBottomTab: true } as MainTabsParamList["ProfileTab"],
+        });
       } else {
         Toast.show({
           type: "custom_with_image",

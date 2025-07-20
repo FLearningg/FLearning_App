@@ -26,6 +26,7 @@ import {
   checkCourseEnrollment,
   enrollCourse,
 } from "../../redux/services/courseService";
+import { getCourseProgress } from "../../redux/services/progressService";
 import CourseDetailAbout from "./CourseDetailAbout";
 import CourseDetailCurriculum from "./CourseDetailCurriculum";
 import ButtonNavigate1 from "../../components/ButtonNavigate1";
@@ -206,19 +207,51 @@ const CourseDetail = () => {
   };
 
   // Handle go to course
-  const handleGoToCourse = () => {
-    // Navigate to course learning screen
-    // You'll need to implement this navigation based on your app structure
-    console.log("Navigate to course learning screen");
+  const handleGoToCourse = async () => {
+    try {
+      const progressResponse = await getCourseProgress(course._id);
+      const progressData = progressResponse.data.data;
+      const isCompleted = progressData.progressPercentage === 100;
+
+      navigation.navigate("Progress", {
+        courseId: course._id,
+        status: isCompleted ? "Completed" : "Ongoing",
+      });
+    } catch (error) {
+      console.error("Error fetching course progress:", error);
+      // Default to Ongoing if there's an error
+      navigation.navigate("Progress", {
+        courseId: course._id,
+        status: "Ongoing",
+      });
+    }
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="transparent"
-        translucent
-      />
+    <View style={styles.safeArea}>
+      {Platform.OS === "ios" && (
+        <>
+          <View
+            style={{
+              height: 44,
+              backgroundColor: "#000",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 10,
+            }}
+          />
+          <StatusBar barStyle="light-content" backgroundColor="#000" />
+        </>
+      )}
+      {Platform.OS === "android" && (
+        <StatusBar
+          barStyle="light-content"
+          backgroundColor="transparent"
+          translucent
+        />
+      )}
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.scrollViewContent}
@@ -336,7 +369,10 @@ const CourseDetail = () => {
               <CourseDetailAbout course={course} />
             </>
           ) : (
-            <CourseDetailCurriculum sections={course.sections} />
+            <CourseDetailCurriculum
+              sections={course.sections}
+              isEnrolled={isEnrolled}
+            />
           )}
         </View>
         {/* Kết thúc mainCard */}
@@ -519,7 +555,7 @@ const CourseDetail = () => {
           </TouchableOpacity>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 };
 

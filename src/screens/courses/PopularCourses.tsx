@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { ArrowLeft, Search, X } from "lucide-react-native";
 import { styles } from "../../../assets/styles/PopularCoursesStyles";
 import CourseCard from "./CourseCard";
-import BottomNav from "./BottomNav";
+
 import { getBestSelling } from "../../redux/services/courseService";
 
 // --- Types ---
@@ -321,9 +321,6 @@ const PopularCoursesScreen: FC = () => {
           )}
         </ScrollView>
       </View>
-
-      {/* BottomNav nằm ngoài View đó */}
-      <BottomNav />
     </SafeAreaView>
   );
 };

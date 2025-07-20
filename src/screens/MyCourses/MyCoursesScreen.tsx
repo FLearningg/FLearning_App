@@ -8,6 +8,8 @@ import {
   StatusBar,
   Alert,
   ActivityIndicator,
+  SafeAreaView,
+  Platform,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
@@ -22,9 +24,10 @@ import {
   clearError,
 } from "../../redux/store/progressSlice";
 import { CourseProgress } from "../../redux/services/progressService";
-import BottomNav from "../courses/BottomNav";
+
 import CourseCard from "../courses/CourseCard";
 import { styles } from "../../../assets/styles/MyCoursesStyles";
+import GoBackButton from "../../components/GoBackButton";
 
 type MyCoursesScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -64,15 +67,6 @@ const MyCourseCard = memo(
     <CourseCard course={course as any} variant="mycourses" onPress={onPress} />
   )
 );
-
-const Header = memo(({ onBackPress }: { onBackPress: () => void }) => (
-  <View style={styles.myCoursesHeader}>
-    <TouchableOpacity onPress={onBackPress} style={{ marginTop: 30 }}>
-      <ArrowLeft color="#202244" />
-    </TouchableOpacity>
-    <Text style={styles.myCoursesHeaderText}>My Courses</Text>
-  </View>
-));
 
 const SearchBar = memo(
   ({
@@ -180,7 +174,10 @@ const convertCourseProgressToUIFormat = (
   progress: courseProgress.progressPercentage,
 });
 
-const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({ navigation }) => {
+const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({
+  navigation,
+  route,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const { completedCourses, incompleteCourses, loading, error } = useSelector(
     (state: RootState) => state.progress
@@ -259,13 +256,18 @@ const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({ navigation }) => {
   const handleBack = useCallback(() => navigation.goBack(), [navigation]);
 
   return (
-    <View style={styles.myCoursesContainer}>
+    <SafeAreaView style={styles.myCoursesContainer}>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor="#FFFFFF"
+        backgroundColor={Platform.OS === "android" ? "#FFFFFF" : undefined}
         translucent={false}
       />
-      <Header onBackPress={handleBack} />
+      {Platform.OS === "android" && (
+        <View style={{ height: 10, backgroundColor: "#FFFFFF" }} />
+      )}
+      {!route.params?.fromBottomTab && (
+        <GoBackButton title="My Courses" onPress={handleBack} />
+      )}
       <SearchBar onChangeText={setSearchText} searchQuery={searchText} />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
       {loading ? (
@@ -326,8 +328,7 @@ const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({ navigation }) => {
           )}
         </ScrollView>
       )}
-      <BottomNav />
-    </View>
+    </SafeAreaView>
   );
 };
 

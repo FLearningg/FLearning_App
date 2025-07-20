@@ -153,7 +153,7 @@ const FilterScreen = () => {
   const handleClearFilters = () => setFilters(INITIAL_FILTERS);
 
   const handleApplyFilters = () => {
-    navigation.navigate("OnlineCourses", { filters });
+    navigation.navigate("MainTabs", { filters });
   };
 
   return (

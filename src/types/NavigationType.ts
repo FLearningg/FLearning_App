@@ -10,7 +10,7 @@ export type RootStackParamList = {
   VerificationCode: undefined;
   CreateNewPassword: undefined;
   Congratulations: undefined;
-  OnlineCourses: { filters?: Filters } | undefined;
+  OnlineCourses: { filters?: Filters; fromBottomTab?: boolean } | undefined;
   FilterOnlineCourses: {
     filters: Filters;
     onApplyFilters: (filters: Filters) => void;
@@ -20,11 +20,19 @@ export type RootStackParamList = {
   Category: undefined;
   Search: undefined;
   CourseDetail: { courseId: string };
-  Profile: undefined;
+  Profile: { fromBottomTab?: boolean } | undefined;
   EditProfileScreen: undefined;
   EditPasswordScreen: undefined;
   Notification: undefined;
-  MyCourses: undefined;
+  MyCourses: { fromBottomTab?: boolean } | undefined;
   Cart: { courseId: string };
-  Progress: { courseId: string, status: "Completed" | "Ongoing" };
+  Progress: { courseId: string; status: "Completed" | "Ongoing" };
+  MainTabs: { filters?: Filters } | undefined;
+};
+
+export type MainTabsParamList = {
+  Home: undefined;
+  OnlineCourses: { fromBottomTab?: boolean } | undefined;
+  MyCoursesTab: { fromBottomTab?: boolean } | undefined;
+  ProfileTab: { fromBottomTab?: boolean } | undefined;
 };
