@@ -131,7 +131,7 @@ const FilterScreen = () => {
   const route =
     useRoute<RouteProp<RootStackParamList, "FilterOnlineCourses">>();
 
-  const { filters: initialFilters } = route.params;
+  const { filters: initialFilters, searchQuery } = route.params;
 
   const [filters, setFilters] = useState<Filters>(
     initialFilters || INITIAL_FILTERS
@@ -153,7 +153,7 @@ const FilterScreen = () => {
   const handleClearFilters = () => setFilters(INITIAL_FILTERS);
 
   const handleApplyFilters = () => {
-    navigation.navigate("MainTabs", { filters });
+    navigation.navigate("OnlineCourses", { filters, searchQuery });
   };
 
   return (

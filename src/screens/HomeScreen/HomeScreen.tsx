@@ -135,9 +135,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       .catch((error) => {
         setError(
           error.response?.data?.message ||
-            error.response?.data?.error ||
-            error.message ||
-            "Error fetching popular courses"
+          error.response?.data?.error ||
+          error.message ||
+          "Error fetching popular courses"
         );
         setPopularCourses([]);
       })
@@ -149,8 +149,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     activeTab === "All"
       ? popularCourses
       : popularCourses.filter(
-          (course) => course.categoryIds[0]?.name === activeTab
-        );
+        (course) => course.categoryIds[0]?.name === activeTab
+      );
 
   // Prevent back navigation when on Home screen
   useFocusEffect(
@@ -190,10 +190,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const navigateToFilter = () => {
     navigation.navigate("FilterOnlineCourses", {
       filters: INITIAL_FILTERS,
-      onApplyFilters: (filters) => {
-        // Handle filter application logic here
-        console.log("Filters applied:", filters);
-      },
     });
   };
   return (
@@ -284,7 +280,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   style={[
                     homeScreenStyles.categoryItem,
                     activeCategoryId === category._id &&
-                      homeScreenStyles.activeCategoryItem,
+                    homeScreenStyles.activeCategoryItem,
                   ]}
                   onPress={() => {
                     setActiveCategoryId(category._id);
@@ -303,7 +299,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                     style={[
                       homeScreenStyles.categoryText,
                       activeCategoryId === category._id &&
-                        homeScreenStyles.activeCategoryText,
+                      homeScreenStyles.activeCategoryText,
                     ]}
                   >
                     {category.name}

@@ -10,10 +10,10 @@ export type RootStackParamList = {
   VerificationCode: undefined;
   CreateNewPassword: undefined;
   Congratulations: undefined;
-  OnlineCourses: { filters?: Filters; fromBottomTab?: boolean } | undefined;
+  OnlineCourses: { filters?: Filters; fromBottomTab?: boolean; searchQuery?: string } | undefined;
   FilterOnlineCourses: {
     filters: Filters;
-    onApplyFilters: (filters: Filters) => void;
+    searchQuery?: string;
   };
   PopularCourses: undefined;
   Home: undefined;

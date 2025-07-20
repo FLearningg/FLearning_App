@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
   myCoursesContainer: {
     backgroundColor: "#FFFFFF",
     flex: 1,
-    marginTop: 30,
   },
   myCoursesHeader: {
     alignItems: "center",
@@ -114,8 +113,7 @@ export const styles = StyleSheet.create({
   myCoursesList: {
     paddingBottom: 80,
     paddingHorizontal: 16,
-    marginTop: 10,
-    marginBottom: 30,
+    paddingTop: 10,
   },
   myCoursesCard: {
     backgroundColor: '#ffffff',

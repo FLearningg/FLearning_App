@@ -15,7 +15,7 @@ export default function Launching() {
             // nếu có thì chuyển đến Home, nếu không thì chuyển đến Start
             AsyncStorage.getItem("currentUser").then((currentUser) => {
               if (currentUser) {
-                navigation.navigate("Home")
+                navigation.navigate("MainTabs")
               } else {
                 navigation.navigate("Start")
               }

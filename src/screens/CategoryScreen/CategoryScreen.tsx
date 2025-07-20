@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../types/NavigationType';
 import SearchBar from '../../components/SearchBar/SearchBar';
+import { INITIAL_FILTERS } from '../courses/FilterComponents';
 
 type CategoryScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Category'>;
 type CategoryScreenRouteProp = RouteProp<RootStackParamList, 'Category'>;
@@ -25,6 +26,8 @@ interface CategoryScreenProps {
 import { categoryScreenStyles } from '../../../assets/styles/CategoryScreen/CategoryScreenStyles';
 
 const CategoryScreen: React.FC<CategoryScreenProps> = ({ navigation }) => {
+  const [searchText, setSearchText] = useState('');
+
   const categories = [
     { id: '1', name: '3D Design', image: require('../../../assets/images/3D.png'), color: '#8E44AD' },
     { id: '2', name: 'Graphic Design', image: require('../../../assets/images/Graphic.png'), color: '#E74C3C' },
@@ -36,20 +39,47 @@ const CategoryScreen: React.FC<CategoryScreenProps> = ({ navigation }) => {
     { id: '8', name: 'HR Management', image: require('../../../assets/images/HR.png'), color: '#34495E' },
   ];
 
+  const handleCategoryPress = (categoryName: string) => {
+    // Create filters with the selected category
+    const filters = {
+      ...INITIAL_FILTERS,
+      subCategories: {
+        ...INITIAL_FILTERS.subCategories,
+        [categoryName]: true,
+      },
+    };
+
+    // Navigate to OnlineCourses with the category filter
+    navigation.navigate('OnlineCourses', {
+      filters,
+      fromBottomTab: false,
+    });
+  };
+
+  const handleSearch = () => {
+    if (searchText.trim()) {
+      // Navigate to OnlineCourses with search query
+      navigation.navigate('OnlineCourses', {
+        searchQuery: searchText.trim(),
+        fromBottomTab: false,
+      });
+    }
+  };
+
   return (
     <View style={categoryScreenStyles.container}>
-      <StatusBar 
-        barStyle="dark-content" 
+      <StatusBar
+        barStyle="dark-content"
         backgroundColor={Platform.OS === 'android' ? '#f8f9fa' : undefined}
         translucent={false}
       />
-      
+
       <SafeAreaView style={categoryScreenStyles.safeArea}>
         {Platform.OS === 'android' && <View style={categoryScreenStyles.androidStatusBarSpacer} />}
-        
+
         {/* Header */}
         <View style={categoryScreenStyles.header}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={categoryScreenStyles.backButton}
             onPress={() => navigation.goBack()}
           >
@@ -59,16 +89,18 @@ const CategoryScreen: React.FC<CategoryScreenProps> = ({ navigation }) => {
           <View style={categoryScreenStyles.headerSpacer} />
         </View>
 
-        <ScrollView 
+        <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={categoryScreenStyles.scrollContent}
         >
           {/* Search Bar */}
           <SearchBar
             onFilterPress={() => console.log('Filter pressed')}
-            onSearchPress={() => navigation.navigate('Search')}
-            onChangeText={(text) => console.log('Search text:', text)}
+            onSearchPress={handleSearch}
+            onChangeText={setSearchText}
+            value={searchText}
             variant="separated"
+            placeholder="Search courses..."
           />
 
           {/* Categories Grid */}
@@ -77,10 +109,11 @@ const CategoryScreen: React.FC<CategoryScreenProps> = ({ navigation }) => {
               <TouchableOpacity
                 key={category.id}
                 style={categoryScreenStyles.categoryCard}
+                onPress={() => handleCategoryPress(category.name)}
               >
                 <View style={[categoryScreenStyles.iconContainer, { backgroundColor: `${category.color}20` }]}>
-                  <Image 
-                    source={category.image} 
+                  <Image
+                    source={category.image}
                     style={categoryScreenStyles.categoryImage}
                     resizeMode="contain"
                   />
