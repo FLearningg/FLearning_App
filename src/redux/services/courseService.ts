@@ -1,5 +1,22 @@
 import apiClient from "./authService";
 
+// Lấy tất cả khoá học
+export const getCourses = async () => {
+  const res = await apiClient.get(`/courses`);
+  return res.data;
+};
+// Lấy tất cả khoá học bán chạy
+export const getBestSelling = async () => {
+  const res = await apiClient.get(`/courses/top-selling`);
+  return res.data;
+};
+
+// Lấy tất cả thể loại khoá học
+export const getCategories = async () => {
+  const res = await apiClient.get(`/categories/top`);
+  return res.data;
+};
+
 // Lấy danh sách khoá học nổi bật
 export const getPopularCourses = async () => {
   const response = await apiClient.get(`courses/top-selling?limit=5`);
@@ -10,6 +27,13 @@ export const getCourseDetail = async (courseId: string) => {
   const res = await apiClient.get(`/courses/${courseId}`);
   return res.data;
 };
+
+// Lấy thông tin rằng user đã học khoá học hay chưa
+export const getCourseProgress = async (courseId: string) => {
+  const res = await apiClient.get(`/progress/${courseId}`);
+  return res.data;
+};
+
 
 // Lấy khoá học liên quan
 export const getRelatedCourses = async (courseId: string) => {

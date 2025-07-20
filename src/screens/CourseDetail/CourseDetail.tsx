@@ -448,7 +448,7 @@ const CourseDetail = () => {
       <View style={styles.enrollButtonContainer}>
         <ButtonNavigate1
           onPress={() => {
-            // Handle enrollment
+            navigation.navigate("Cart", { courseId: course._id });
           }}
           buttonText={`Enroll Course - ${
             course.discountId?.price || course.price || "499/-"
