@@ -115,7 +115,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const markAllAsRead = async () => {
     try {
       await markNotificationAsRead(currentUser?._id, dispatch);
-      navigation.navigate("Notification")
+      navigation.navigate("Notification");
     } catch (error) {
       console.error("Error marking as read:", error);
     }
@@ -147,7 +147,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               </Text>
               <Text style={homeScreenStyles.searchHint}>Search Below.</Text>
             </View>
-            <TouchableOpacity style={homeScreenStyles.notificationButton} onPress={markAllAsRead}>           
+            <TouchableOpacity
+              style={homeScreenStyles.notificationButton}
+              onPress={markAllAsRead}
+            >
               <Image
                 source={require("../../../assets/images/NOTIFICATIONS.jpg")}
                 style={homeScreenStyles.notificationIcon}
@@ -273,7 +276,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   style={homeScreenStyles.courseCard}
                   onPress={() =>
                     navigation.navigate("CourseDetail", {
-                      courseId: "686d385d6aef0b860bdbdd5d",
+                      courseId: "6857bd159375c0165721340d",
+                      // courseId: "686d385d6aef0b860bdbdd5d",
                     })
                   }
                 >
