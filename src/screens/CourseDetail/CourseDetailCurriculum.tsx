@@ -28,7 +28,13 @@ interface Section {
 
 const curriculumSections: Section[] = [];
 
-const CourseDetailCurriculum = ({ sections }: { sections?: Section[] }) => {
+const CourseDetailCurriculum = ({ 
+  sections, 
+  isEnrolled = false 
+}: { 
+  sections?: Section[]; 
+  isEnrolled?: boolean; 
+}) => {
   const [expandedSections, setExpandedSections] = useState<Set<number>>(
     new Set()
   );
@@ -48,8 +54,9 @@ const CourseDetailCurriculum = ({ sections }: { sections?: Section[] }) => {
     });
   };
 
-  // Function to check if lesson is unlocked (only first lesson of first section is unlocked)
+  // Function to check if lesson is unlocked
   const isLessonUnlocked = (sectionIndex: number, lessonIndex: number) => {
+    // Only first lesson of first section is unlocked for preview
     return sectionIndex === 0 && lessonIndex === 0;
   };
 
@@ -137,7 +144,10 @@ const CourseDetailCurriculum = ({ sections }: { sections?: Section[] }) => {
                       </Text>
                       {!isUnlocked && (
                         <Text style={styles.lockedText}>
-                          Enroll to unlock this lesson
+                          {isEnrolled 
+                            ? "Go to course to watch full" 
+                            : "Enroll to unlock this lesson"
+                          }
                         </Text>
                       )}
                     </View>

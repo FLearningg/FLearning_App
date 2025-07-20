@@ -23,11 +23,15 @@ import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import {
   getCourseDetail,
   getCourseFeedbacks,
+  checkCourseEnrollment,
+  enrollCourse,
 } from "../../redux/services/courseService";
 import CourseDetailAbout from "./CourseDetailAbout";
 import CourseDetailCurriculum from "./CourseDetailCurriculum";
 import ButtonNavigate1 from "../../components/ButtonNavigate1";
 import { Video, ResizeMode } from "expo-av";
+import { RootStackParamList } from "../../types/NavigationType";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 // Types for API response
 interface Lesson {
@@ -86,12 +90,8 @@ interface FeedbackResponse {
   };
 }
 
-type RootStackParamList = {
-  CourseDetail: { courseId: string };
-};
-
 const CourseDetail = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, "CourseDetail">>();
   const courseId = route.params?.courseId;
   const [selectedTab, setSelectedTab] = useState<string>("About");
@@ -101,6 +101,8 @@ const CourseDetail = () => {
   const [showTrailer, setShowTrailer] = useState(false);
   const [comments, setComments] = useState<Feedback[]>([]);
   const [failedAvatars, setFailedAvatars] = useState<Set<string>>(new Set());
+  const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
+  const [enrollmentLoading, setEnrollmentLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!courseId) {
@@ -113,6 +115,11 @@ const CourseDetail = () => {
       .then((data) => {
         setCourse(data);
         setError(null);
+        // Check enrollment status after getting course details
+        return checkCourseEnrollment(courseId);
+      })
+      .then((enrollmentData) => {
+        setIsEnrolled(enrollmentData?.isEnrolled || false);
       })
       .catch((err) => {
         setError(
@@ -198,6 +205,13 @@ const CourseDetail = () => {
     return userImage;
   };
 
+  // Handle go to course
+  const handleGoToCourse = () => {
+    // Navigate to course learning screen
+    // You'll need to implement this navigation based on your app structure
+    console.log("Navigate to course learning screen");
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar
@@ -266,9 +280,17 @@ const CourseDetail = () => {
                   : "-- Hours"}
               </Text>
             </View>
-            <Text style={styles.price}>
-              {course.discountId?.price || course.price || "499/-"}
-            </Text>
+            {!isEnrolled && (
+              <Text style={styles.price}>
+                {course.discountId?.price || course.price || "499/-"}
+              </Text>
+            )}
+            {isEnrolled && (
+              <View style={styles.enrolledBadge}>
+                <AntDesign name="checkcircle" size={16} color="#23C485" />
+                <Text style={styles.enrolledText}>Enrolled</Text>
+              </View>
+            )}
           </View>
 
           {/* Custom Tab Bar */}
@@ -446,14 +468,27 @@ const CourseDetail = () => {
 
       {/* Enrollment Button */}
       <View style={styles.enrollButtonContainer}>
-        <ButtonNavigate1
-          onPress={() => {
-            navigation.navigate("Cart", { courseId: course._id });
-          }}
-          buttonText={`Enroll Course - ${
-            course.discountId?.price || course.price || "499/-"
-          }`}
-        />
+        {isEnrolled ? (
+          <ButtonNavigate1
+            onPress={handleGoToCourse}
+            buttonText="Go to Course"
+            disabled={enrollmentLoading}
+          />
+        ) : (
+          <ButtonNavigate1
+            onPress={() => {
+              navigation.navigate("Cart", { courseId: course._id });
+            }}
+            buttonText={
+              enrollmentLoading
+                ? "Enrolling..."
+                : `Enroll Course - ${
+                    course.discountId?.price || course.price || "499/-"
+                  }`
+            }
+            disabled={enrollmentLoading}
+          />
+        )}
       </View>
 
       {/* Modal player */}
@@ -645,6 +680,22 @@ const styles = StyleSheet.create({
     color: "#0961F5",
     marginLeft: "auto",
     fontFamily: "Inter-Bold",
+  },
+  enrolledBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#E8F8F5",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginLeft: "auto",
+  },
+  enrolledText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#23C485",
+    marginLeft: 4,
+    fontFamily: "Inter-SemiBold",
   },
   enrollButtonContainer: {
     paddingHorizontal: 24,
