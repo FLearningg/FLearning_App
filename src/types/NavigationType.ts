@@ -25,4 +25,6 @@ export type RootStackParamList = {
   EditPasswordScreen: undefined;
   Notification: undefined;
   MyCourses: undefined;
+  Cart: { courseId: string };
+  Progress: { courseId: string, status: "Completed" | "Ongoing" };
 };

@@ -22,8 +22,10 @@ import ProfileScreen from "../screens/Profile/ProfileScreen";
 import EditProfileScreen from "../screens/Profile/EditProfileScreen";
 import EditPasswordScreen from "../screens/Profile/EditPasswordScreen";
 import NotificationScreen from "../screens/Notification/NotificationScreen";
-import NotificationHeader from "../screens/Notification/NotificationHeader";
+// import NotificationHeader from "../screens/Notification/NotificationHeader";
 import MyCoursesScreen from "../screens/MyCourses/MyCoursesScreen";
+import Cart from "../screens/Cart/Cart";
+import Progress from "../screens/Progress/Progress";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
@@ -129,6 +131,16 @@ const MainRouter: React.FC = () => {
         <Stack.Screen
           name="MyCourses"
           component={MyCoursesScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Cart"
+          component={Cart}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Progress"
+          component={Progress}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

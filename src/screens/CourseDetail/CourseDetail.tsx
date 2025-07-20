@@ -30,6 +30,8 @@ import CourseDetailAbout from "./CourseDetailAbout";
 import CourseDetailCurriculum from "./CourseDetailCurriculum";
 import ButtonNavigate1 from "../../components/ButtonNavigate1";
 import { Video, ResizeMode } from "expo-av";
+import { RootStackParamList } from "../../types/NavigationType";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 // Types for API response
 interface Lesson {
@@ -88,12 +90,8 @@ interface FeedbackResponse {
   };
 }
 
-type RootStackParamList = {
-  CourseDetail: { courseId: string };
-};
-
 const CourseDetail = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, "CourseDetail">>();
   const courseId = route.params?.courseId;
   const [selectedTab, setSelectedTab] = useState<string>("About");
@@ -205,24 +203,6 @@ const CourseDetail = () => {
 
     // Firebase URLs can be very long but are valid - use them directly
     return userImage;
-  };
-
-  // Handle enrollment
-  const handleEnrollment = async () => {
-    if (!courseId || enrollmentLoading) return;
-
-    setEnrollmentLoading(true);
-    try {
-      await enrollCourse(courseId);
-      // Re-check enrollment status after enrolling
-      const enrollmentData = await checkCourseEnrollment(courseId);
-      setIsEnrolled(enrollmentData?.isEnrolled || true); // Fallback to true if API doesn't confirm
-    } catch (error) {
-      console.error("Enrollment failed:", error);
-      // You might want to show an error message here
-    } finally {
-      setEnrollmentLoading(false);
-    }
   };
 
   // Handle go to course
@@ -356,7 +336,7 @@ const CourseDetail = () => {
               <CourseDetailAbout course={course} />
             </>
           ) : (
-            <CourseDetailCurriculum sections={course.sections} isEnrolled={isEnrolled} />
+            <CourseDetailCurriculum sections={course.sections} />
           )}
         </View>
         {/* Kết thúc mainCard */}
@@ -496,7 +476,9 @@ const CourseDetail = () => {
           />
         ) : (
           <ButtonNavigate1
-            onPress={handleEnrollment}
+            onPress={() => {
+              navigation.navigate("Cart", { courseId: course._id });
+            }}
             buttonText={
               enrollmentLoading
                 ? "Enrolling..."
