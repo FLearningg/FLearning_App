@@ -19,6 +19,7 @@ import { RootStackParamList } from "../../types/NavigationType";
 
 // Import component Modal từ file cùng thư mục
 import PaymentModal from "./PaymentModal";
+import { useSelector } from "react-redux";
 
 // --- Types ---
 interface CourseDetailType {
@@ -39,6 +40,7 @@ export default function MobileCart() {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<RootStackParamList, "Cart">>();
   const { courseId } = route.params;
+  const currentUser = useSelector((state: any) => state.auth.currentUser);
 
   const [course, setCourse] = useState<CourseDetailType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,7 +50,7 @@ export default function MobileCart() {
   const [isPaymentModalVisible, setPaymentModalVisible] = useState(false);
 
   // ⚠️ LƯU Ý: Thay thế bằng ID người dùng đã đăng nhập thực tế của bạn
-  const userId = "YOUR_LOGGED_IN_USER_ID";
+  const userId = currentUser?._id;
 
   useEffect(() => {
     if (!courseId) {

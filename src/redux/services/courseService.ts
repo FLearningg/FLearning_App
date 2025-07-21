@@ -140,6 +140,35 @@ export const updateCourseFeedback = async (
   return res.data;
 };
 
+
+//Enrolls a user in one or more courses.
+export const enrollInCourses = async (userId: string, courseIds: string[]) => {
+  if (!userId || !courseIds || courseIds.length === 0) {
+    const errorMessage =
+      "User ID and a list of course IDs are required for enrollment.";
+    console.error(errorMessage);
+    throw new Error(errorMessage);
+  }
+
+  const payload = { userId, courseIds };
+
+  try {
+    const response = await apiClient.post("/courses/enroll-course", payload);
+    return response.data;
+  } catch (error: unknown) {
+    console.error("Error during course enrollment:", error);
+    let message = "Failed to enroll user in courses";
+    if (typeof error === "object" && error !== null) {
+      if ("response" in error && typeof (error as any).response?.data?.message === "string") {
+        message = (error as any).response.data.message;
+      } else if ("message" in error && typeof (error as any).message === "string") {
+        message = (error as any).message;
+      }
+    }
+    throw new Error(message);
+  }
+};
+
 // Kiểm tra xem user đã enroll course hay chưa
 export const checkCourseEnrollment = async (courseId: string) => {
   try {
@@ -174,3 +203,4 @@ export const enrollCourse = async (courseId: string) => {
   const res = await apiClient.post(`/courses/${courseId}/enroll`);
   return res.data;
 };
+
