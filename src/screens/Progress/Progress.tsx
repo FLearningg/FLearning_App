@@ -9,7 +9,13 @@ import {
   SafeAreaView,
   ActivityIndicator,
 } from "react-native";
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+// 💡 1. Import thêm useFocusEffect
+import {
+  useNavigation,
+  useRoute,
+  RouteProp,
+  useFocusEffect,
+} from "@react-navigation/native";
 import {
   ArrowLeft,
   Search,
@@ -48,7 +54,7 @@ interface CourseDetailType {
   sections: Section[];
 }
 
-// --- Helper Components ---
+// --- Helper Components (Không thay đổi) ---
 const LoadingView = () => (
   <SafeAreaView style={[styles.container, styles.centerContent]}>
     <ActivityIndicator size="large" color="#0961f5" />
@@ -197,52 +203,79 @@ export default function Progress() {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<RootStackParamList, "Progress">>();
   const courseId = route.params?.courseId;
-  const status = route.params?.status;
+  // Bỏ status từ route.params vì sẽ tính toán động
+  // const status = route.params?.status;
 
   const [course, setCourse] = useState<CourseDetailType | null>(null);
-  const [completedCount, setCompletedCount] = useState<number>(0);
+  // Thay đổi ở đây: lấy completedLessons thay vì completedCount để chính xác hơn
+  const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [isPlayerVisible, setIsPlayerVisible] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
-
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
 
-  useEffect(() => {
-    if (!courseId) {
-      setIsError(true);
-      setIsLoading(false);
-      return;
-    }
-    const fetchCourseData = async () => {
-      try {
-        setIsLoading(true);
-        const [courseDetailResponse, courseProgressResponse] =
-          await Promise.all([
-            getCourseDetail(courseId),
-            getCourseProgress(courseId),
-          ]);
-        setCourse(courseDetailResponse);
-        if (courseProgressResponse && courseProgressResponse.data) {
-          setCompletedCount(courseProgressResponse.data.completedLessons);
-        }
-      } catch (error) {
-        console.error("Failed to fetch course data:", error);
+  // 💡 2. Dùng useFocusEffect để fetch dữ liệu mỗi khi màn hình được focus
+  useFocusEffect(
+    useCallback(() => {
+      if (!courseId) {
         setIsError(true);
-      } finally {
         setIsLoading(false);
+        return;
       }
-    };
-    fetchCourseData();
-  }, [courseId]);
+      const fetchCourseData = async () => {
+        try {
+          setIsLoading(true);
+          const [courseDetailResponse, courseProgressResponse] =
+            await Promise.all([
+              getCourseDetail(courseId),
+              getCourseProgress(courseId),
+            ]);
+
+          setCourse(courseDetailResponse);
+          if (
+            courseProgressResponse?.success &&
+            courseProgressResponse.data?.completedLessons
+          ) {
+            setCompletedLessons(courseProgressResponse.data.completedLessons);
+          } else {
+            setCompletedLessons([]);
+          }
+        } catch (error) {
+          console.error("Failed to fetch course data:", error);
+          setIsError(true);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchCourseData();
+
+      // Cleanup function (optional)
+      return () => {
+        // Có thể reset state hoặc thực hiện hành động dọn dẹp khi rời màn hình
+      };
+    }, [courseId])
+  );
+
+  // 💡 3. Tính toán tổng số bài học và trạng thái hoàn thành một cách linh hoạt
+  const totalLessons = useMemo(() => {
+    if (!course) return 0;
+    return course.sections.flatMap((section) => section.lessons).length;
+  }, [course]);
+
+  const isCourseCompleted = useMemo(() => {
+    if (totalLessons === 0) return false;
+    return completedLessons.length >= totalLessons;
+  }, [completedLessons, totalLessons]);
 
   const unlockedLessonIds = useMemo<Set<string>>(() => {
     if (!course) return new Set<string>();
     const allLessons = course.sections.flatMap((section) => section.lessons);
+    // Bài học được mở khóa bao gồm các bài đã hoàn thành + 1 bài tiếp theo
     return new Set<string>(
-      allLessons.slice(0, completedCount + 1).map((l) => l._id)
+      allLessons.slice(0, completedLessons.length + 1).map((l) => l._id)
     );
-  }, [course, completedCount]);
+  }, [course, completedLessons]);
 
   const getTotalDuration = (lessons: Lesson[]) => {
     const totalSeconds = lessons.reduce((sum, l) => sum + (l.duration || 0), 0);
@@ -273,45 +306,34 @@ export default function Progress() {
   const handleMarkComplete = useCallback(async () => {
     if (!courseId || !currentLesson?._id) return;
 
-    try {
-      // Chỉ gọi API nếu bài học này chưa nằm trong danh sách hoàn thành
-      const allLessons = course?.sections.flatMap((s) => s.lessons) || [];
-      const currentLessonIndex = allLessons.findIndex(
-        (l) => l._id === currentLesson._id
+    // Chỉ gọi API nếu bài học này chưa được hoàn thành
+    if (completedLessons.includes(currentLesson._id)) {
+      console.log(
+        `Bài học "${currentLesson.title}" đã được hoàn thành trước đó.`
       );
+      return;
+    }
 
-      if (currentLessonIndex >= completedCount) {
-        console.log(`Đánh dấu hoàn thành cho bài: ${currentLesson.title}`);
-        const response = await markLessonAsCompleted(
-          courseId,
-          currentLesson._id
-        );
+    try {
+      console.log(`Đánh dấu hoàn thành cho bài: ${currentLesson.title}`);
+      const response = await markLessonAsCompleted(courseId, currentLesson._id);
 
-        // Cập nhật lại số bài đã hoàn thành từ response của API
-        if (response.success && response.data) {
-          setCompletedCount(response.data.completedLessonsCount);
-        }
-      } else {
-        console.log(
-          `Bài học "${currentLesson.title}" đã được hoàn thành trước đó.`
-        );
+      if (response.success && response.data) {
+        // Thêm bài học vừa hoàn thành vào danh sách state
+        setCompletedLessons((prev) => [...prev, currentLesson._id]);
       }
     } catch (error) {
       console.error("Lỗi khi đánh dấu hoàn thành bài học:", error);
     }
-  }, [courseId, currentLesson, completedCount, course]);
+  }, [courseId, currentLesson, completedLessons]);
 
-  // 💡 1. Hàm xử lý cho nút "Continue Course"
   const handleContinueCourse = () => {
     if (!course) return;
-
-    // Gộp tất cả các bài học thành một mảng duy nhất
     const allLessons = course.sections.flatMap((section) => section.lessons);
 
-    // Bài học tiếp theo chính là bài học ở vị trí có chỉ số bằng số bài đã hoàn thành
-    // Kiểm tra xem chỉ số này có nằm trong giới hạn của mảng không
-    if (completedCount < allLessons.length) {
-      const nextLessonToPlay = allLessons[completedCount];
+    // Bài học tiếp theo là bài có index bằng với số lượng bài đã hoàn thành
+    if (completedLessons.length < allLessons.length) {
+      const nextLessonToPlay = allLessons[completedLessons.length];
       handleLessonPress(nextLessonToPlay);
     } else {
       console.log("Course already completed.");
@@ -344,9 +366,9 @@ export default function Progress() {
         onClose={handleClosePlayer}
         onMarkComplete={handleMarkComplete}
       />
-      {/* 💡 2. Cập nhật prop onContinue */}
+      {/* 💡 4. Sử dụng trạng thái động isCourseCompleted */}
       <BottomSection
-        status={status}
+        status={isCourseCompleted ? "Completed" : "In Progress"}
         onStartAgain={() => console.log("Starting course again")}
         onContinue={handleContinueCourse}
       />

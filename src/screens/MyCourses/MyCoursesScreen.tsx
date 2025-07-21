@@ -12,7 +12,8 @@ import {
   Platform,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RouteProp } from "@react-navigation/native";
+// 💡 1. Import thêm useFocusEffect
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
 import { ArrowLeft, Search } from "lucide-react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { RootStackParamList } from "../../types/NavigationType";
@@ -29,17 +30,8 @@ import CourseCard from "../courses/CourseCard";
 import { styles } from "../../../assets/styles/MyCoursesStyles";
 import GoBackButton from "../../components/GoBackButton";
 
-type MyCoursesScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "MyCourses"
->;
-type MyCoursesScreenRouteProp = RouteProp<RootStackParamList, "MyCourses">;
-
-interface MyCoursesScreenProps {
-  navigation: MyCoursesScreenNavigationProp;
-  route: MyCoursesScreenRouteProp;
-}
-
+// ... (Các interface và component con không thay đổi)
+// --- Types ---
 interface Course {
   courseId: string;
   courseTitle: string;
@@ -62,9 +54,10 @@ interface Course {
   studentsEnrolledCount?: number;
 }
 
+// --- Helper Components (Không thay đổi) ---
 const MyCourseCard = memo(
   ({ course, onPress }: { course: Course; onPress?: () => void }) => (
-    <CourseCard course={course as any} onPress={onPress || (() => { })} />
+    <CourseCard course={course as any} onPress={onPress || (() => {})} />
   )
 );
 
@@ -174,6 +167,7 @@ const convertCourseProgressToUIFormat = (
   progress: courseProgress.progressPercentage,
 });
 
+// --- Main Component ---
 const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({
   navigation,
   route,
@@ -190,13 +184,18 @@ const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({
     {}
   );
 
-  useEffect(() => {
-    dispatch(
-      activeTab === "Completed"
-        ? fetchCompletedCourses()
-        : fetchIncompleteCourses()
-    );
-  }, [dispatch, activeTab]);
+  // 💡 2. Thay thế useEffect bằng useFocusEffect để tải lại dữ liệu khi màn hình được focus
+  useFocusEffect(
+    useCallback(() => {
+      // Khi màn hình được focus, dispatch action để lấy danh sách khóa học
+      // tương ứng với tab đang hoạt động.
+      dispatch(
+        activeTab === "Completed"
+          ? fetchCompletedCourses()
+          : fetchIncompleteCourses()
+      );
+    }, [dispatch, activeTab])
+  );
 
   const coursesData =
     activeTab === "Completed" ? completedCourses : incompleteCourses;
@@ -266,7 +265,11 @@ const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({
         <View style={{ height: 30, backgroundColor: "#FFFFFF" }} />
       )}
       {!route.params?.fromBottomTab && (
-        <GoBackButton title="My Courses" onPress={handleBack} backgroundColor="#FFFFFF" />
+        <GoBackButton
+          title="My Courses"
+          onPress={handleBack}
+          backgroundColor="#FFFFFF"
+        />
       )}
       <SearchBar onChangeText={setSearchText} searchQuery={searchText} />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -305,8 +308,8 @@ const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({
                 {searchText
                   ? `No ${activeTab.toLowerCase()} courses found matching "${searchText}"`
                   : coursesData.length === 0
-                    ? `You have no ${activeTab.toLowerCase()} courses yet`
-                    : `No ${activeTab.toLowerCase()} courses found`}
+                  ? `You have no ${activeTab.toLowerCase()} courses yet`
+                  : `No ${activeTab.toLowerCase()} courses found`}
               </Text>
               {!searchText && coursesData.length === 0 && (
                 <Text

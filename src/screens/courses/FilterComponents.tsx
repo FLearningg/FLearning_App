@@ -35,11 +35,9 @@ export type FilterItem<C extends FilterCategory> = keyof Filters[C];
 export const INITIAL_FILTERS = {
   subCategories: {
     "Web Development": false,
-    "3D Animation": false,
-    "3D Design": false,
-    "Graphic Design": false,
-    "SEO & Marketing": false,
-    "Arts & Humanities": false,
+    "Mobile Development": false,
+    "Design": false,
+    "Programming": false,
   },
   levels: {
     "All Levels": false,
