@@ -172,7 +172,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               "You have been enrolled in the course.",
               [
                 {
-                  text: "Watch my recipe",
+                  text: "Watch my E-receipt",
                   onPress: () => navigationStack.navigate("ERecipe", {
                   }),
                 },
