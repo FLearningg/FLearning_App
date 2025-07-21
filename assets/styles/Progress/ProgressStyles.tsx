@@ -72,7 +72,7 @@ export const styles = StyleSheet.create({
     right: scale(8),
     backgroundColor: "#0961f5",
     padding: moderateScale(4),
-    borderRadius: moderateScale(12),
+    borderRadius: moderateScale(8),
     marginRight: moderateScale(8),
   },
   content: {

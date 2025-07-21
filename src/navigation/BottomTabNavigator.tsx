@@ -1,14 +1,36 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Platform } from "react-native";
 import { Home, BookOpen, User, GraduationCap } from "lucide-react-native";
 import HomeScreen from "../screens/HomeScreen/HomeScreen";
+import PopularCoursesScreen from "../screens/courses/PopularCourses";
 import OnlineCourseScreen from "../screens/courses/OnlineCourses";
+import FilterScreen from "../screens/courses/FilterComponents";
 import MyCoursesScreen from "../screens/MyCourses/MyCoursesScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import { MainTabsParamList } from "../types/NavigationType";
 
 const Tab = createBottomTabNavigator<MainTabsParamList>();
+const HomeStack = createNativeStackNavigator();
+
+// Home Stack with PopularCourses
+const HomeStackScreen = ({ route }: { route: any }) => {
+  return (
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen
+        name="HomeMain"
+        component={HomeScreen as any}
+        initialParams={route.params}
+      />
+      <HomeStack.Screen
+        name="PopularCourses"
+        component={PopularCoursesScreen}
+      />
+    </HomeStack.Navigator>
+  );
+};
+
 
 const BottomTabNavigator = ({ route }: { route: any }) => {
   return (
@@ -33,7 +55,7 @@ const BottomTabNavigator = ({ route }: { route: any }) => {
     >
       <Tab.Screen
         name="Home"
-        component={HomeScreen as any}
+        component={HomeStackScreen as any}
         initialParams={route.params}
         options={{
           tabBarLabel: "HOME",

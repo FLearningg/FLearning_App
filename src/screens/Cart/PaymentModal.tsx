@@ -171,7 +171,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               [
                 {
                   text: "Go to My Courses",
-                  onPress: () => navigation.navigate("MyCourses" as never),
+                  onPress: () => navigation.navigate('MainTabs', { screen: 'MyCoursesTab' }),
                 },
               ],
               { cancelable: false }
