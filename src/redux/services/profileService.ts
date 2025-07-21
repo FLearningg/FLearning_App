@@ -39,3 +39,49 @@ export const checkCourseEnrolled = async (courseId: string) => {
     return { isEnrolled: false };
   }
 };
+
+export interface PurchaseHistoryItem {
+  paymentId: string;
+  amount: number;
+  currency: string;
+  status: string;
+  type: string;
+  description: string;
+  gatewayTransactionId: string;
+  createdAt: string;
+  updatedAt: string;
+  paymentMethod: string | null;
+  paymentDate: string;
+  course: {
+    id: string;
+    title: string;
+    subTitle: string;
+    thumbnail: string;
+    price: number;
+    rating: number;
+    level: string;
+    duration: string;
+    language: string;
+    category: string;
+    createdAt: string;
+  } | null;
+  transaction: {
+    gatewayTransactionId: string;
+    status: string;
+    type: string;
+  };
+}
+
+export interface PurchaseHistoryResponse {
+  success: boolean;
+  message: string;
+  data: PurchaseHistoryItem[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalTransactions: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+    totalPayments: number;
+  };
+}

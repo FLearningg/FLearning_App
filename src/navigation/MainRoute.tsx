@@ -23,6 +23,7 @@ import Cart from "../screens/Cart/Cart";
 import Progress from "../screens/Progress/Progress";
 import BottomTabNavigator from "./BottomTabNavigator";
 import FilterScreen from "../screens/courses/FilterComponents";
+import ERecipeScreen from "../screens/ERecipe/ERecipeScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
@@ -131,6 +132,11 @@ const MainRouter: React.FC = () => {
         <Stack.Screen
           name="FilterOnlineCourses"
           component={FilterScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ERecipe"
+          component={ERecipeScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
