@@ -15,6 +15,8 @@ import { useNavigation } from "@react-navigation/native";
 import apiClient from "../../redux/services/authService"; // Adjust the import path as necessary
 import { saveTransactionToDB } from "../../redux/services/paymentService";
 import { enrollInCourses } from "../../redux/services/courseService";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../types/NavigationType";
 
 // --- Constants ---
 
@@ -53,10 +55,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   const [isPolling, setIsPolling] = useState(false);
   const navigation = useNavigation();
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
-
+  const navigationStack = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   // --- Memoized Values for Payment ---
-  // const expectedAmount = "2000";
-  // const paymentContent = "COURSE611";
+  // const expectedAmount = "23000";
+  // const paymentContent = "MBVCB.10274451961.457131.COURSEQ7XJ0B6857d110f8e1891ea2238561.CT tu 9836040204 PHAN LE THANH HOANG toi 0828006916 TRUONG NGUYEN TIEN DAT tai";
   const expectedAmount = React.useMemo(
     () => (course ? Math.round(course.price * 25000) : 0),
     [course]
@@ -102,9 +104,10 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       "Mô tả": paymentContent,
     };
     const userIdentifier = { _id: userId };
+    const courseArray = [course]; 
 
     // 2. Save transaction, then enroll in the course
-    saveTransactionToDB(transactionData, userIdentifier)
+    saveTransactionToDB(transactionData, userIdentifier, courseArray)
       .then((response) => {
         console.log("Transaction saved successfully:", response);
         // 3. Chain the enrollment call with CORRECT arguments
@@ -151,7 +154,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           const response = await apiClient.get("/payment/transactions");
           const recentTransactions = response.data;
           const transactions = recentTransactions.data || [];
-
           const matchedTx = transactions.find((tx: any) => {
             const amountInTx = Number(tx["Giá trị"]);
             const descInTx = (tx["Mô tả"] || "").toLowerCase();
@@ -170,8 +172,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               "You have been enrolled in the course.",
               [
                 {
-                  text: "Go to My Courses",
-                  onPress: () => navigation.navigate('MainTabs', { screen: 'MyCoursesTab' }),
+                  text: "Watch my E-receipt",
+                  onPress: () => navigationStack.navigate("ERecipe", {
+                  }),
                 },
               ],
               { cancelable: false }

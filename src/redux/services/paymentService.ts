@@ -44,7 +44,7 @@ interface CurrentUser {
   [key: string]: any;
 }
 
-export const saveTransactionToDB = async (bankTransaction: BankTransaction, currentUser: CurrentUser) => {
+export const saveTransactionToDB = async (bankTransaction: BankTransaction, currentUser: CurrentUser, courseArray: any[]) => {
   if (!currentUser?._id) {
     throw new Error("Cannot save transaction without a valid user ID.");
   }
@@ -57,15 +57,15 @@ export const saveTransactionToDB = async (bankTransaction: BankTransaction, curr
     const payload = {
       userId: currentUser._id,
       paymentId: createCustomPaymentId(bankTransaction["Mã GD"]),
-      gatewayId: generateGatewayId(),
+      gatewayTransactionId: generateGatewayId(),
       type: "sale",
       amount: Number(bankTransaction["Giá trị"]),
       currency: "VND",
       createdAt: transactionDate,
       updatedAt: transactionDate,
       description: bankTransaction["Mô tả"],
+      courseId: courseArray.map((course) => course._id || course.courseId),
     };
-
     const response = await apiClient.post("/payment/transactions", payload);
     return response.data;
   } catch (error: unknown) {

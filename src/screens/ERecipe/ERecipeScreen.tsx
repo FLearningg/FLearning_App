@@ -212,18 +212,18 @@ const EReceiptScreen = () => {
 
       // Otherwise, fetch from API
       const response = await getPurchaseHistory(1, 1);
-      
-      if (response.data.success && response.data.data.length > 0) {
+
+      if (response.success && response.data.length > 0) {
         // If transactionId is provided, find specific transaction
         if (params?.transactionId) {
-          const specificTransaction = response.data.data.find(
+          const specificTransaction = response.data.find(
             (item: PurchaseHistoryItem) => item.paymentId === params.transactionId || 
                    item.transaction.gatewayTransactionId === params.transactionId
           );
-          setReceiptData(specificTransaction || response.data.data[0]);
+          setReceiptData(specificTransaction || response.data[0]);
         } else {
           // Use the most recent transaction
-          setReceiptData(response.data.data[0]);
+          setReceiptData(response.data[0]);
         }
       } else {
         setError("No purchase history found");
@@ -260,7 +260,8 @@ const EReceiptScreen = () => {
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    // navigation.goBack();
+    navigation.navigate('MainTabs', { screen: 'MyCoursesTab' } as any)
   };
 
   // 1. Share functionality - Chia sẻ receipt qua các app khác
@@ -691,7 +692,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 15,
+    paddingVertical: 35,
   },
   headerTitle: {
     fontSize: 20,
