@@ -1,28 +1,53 @@
-import React, { useRef, useEffect } from "react";
-import { Video, ResizeMode } from "expo-av";
+import React, { useRef, useEffect, useState } from "react"; // Thêm useState
+import { Video, ResizeMode, AVPlaybackStatus } from "expo-av"; // Thêm AVPlaybackStatus
 import { Modal, View, TouchableOpacity, StyleSheet } from "react-native";
 import { X } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { markLessonAsCompleted } from "../../redux/services/progressService";
 
 type VideoPlayerModalProps = {
   isVisible: boolean;
   videoUrl: string;
   onClose: () => void;
+  // 💡 1. Thêm prop mới để xử lý khi video đạt mốc thời gian
+  onMarkComplete: () => Promise<void>;
 };
 
 export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
   isVisible,
   videoUrl,
   onClose,
+  onMarkComplete, // 💡 Nhận prop mới
 }) => {
   const videoRef = useRef<Video>(null);
   const insets = useSafeAreaInsets();
+  // 💡 2. State để đảm bảo chỉ gọi API một lần
+  const [isMarked, setIsMarked] = useState(false);
 
+  // Reset trạng thái khi video mới được mở
   useEffect(() => {
-    if (!isVisible && videoRef.current) {
+    if (isVisible) {
+      setIsMarked(false);
+    } else if (videoRef.current) {
       videoRef.current.stopAsync();
     }
   }, [isVisible]);
+
+  const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
+    // Nếu video không load được thì bỏ qua
+    if (!status.isLoaded) return;
+
+    // 💡 3. Kiểm tra nếu video đã chạy hơn 4s và chưa được đánh dấu
+    if (status.positionMillis >= 4000 && !isMarked) {
+      setIsMarked(true); // Đánh dấu là đã xử lý
+      onMarkComplete(); // Gọi hàm callback từ component cha
+    }
+
+    // Tự động đóng khi xem xong
+    if (status.didJustFinish) {
+      onClose();
+    }
+  };
 
   if (!videoUrl) return null;
 
@@ -42,19 +67,12 @@ export const VideoPlayerModal: React.FC<VideoPlayerModalProps> = ({
           useNativeControls
           resizeMode={ResizeMode.CONTAIN}
           shouldPlay
-          onPlaybackStatusUpdate={(status) => {
-            if (status.isLoaded && status.didJustFinish) {
-              onClose();
-            }
-          }}
+          onPlaybackStatusUpdate={handlePlaybackStatusUpdate} // 💡 4. Gắn hàm xử lý
         />
         <TouchableOpacity
           style={[
             styles.closeButton,
-            {
-              top: insets.top + 10,
-              right: insets.right + 20,
-            },
+            { top: insets.top + 10, right: insets.right + 20 },
           ]}
           onPress={onClose}
         >

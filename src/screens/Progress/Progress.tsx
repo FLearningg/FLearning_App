@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   View,
   Text,
@@ -26,6 +26,7 @@ import {
 } from "../../redux/services/courseService";
 import { RootStackParamList } from "../../types/NavigationType";
 import { VideoPlayerModal } from "./VideoPlayerModal";
+import { markLessonAsCompleted } from "../../redux/services/progressService";
 
 // --- Types ---
 interface Lesson {
@@ -205,6 +206,8 @@ export default function Progress() {
   const [isPlayerVisible, setIsPlayerVisible] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
 
+  const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
+
   useEffect(() => {
     if (!courseId) {
       setIsError(true);
@@ -254,6 +257,7 @@ export default function Progress() {
   const handleLessonPress = (lesson: Lesson) => {
     if (lesson.videoUrl) {
       setCurrentVideoUrl(lesson.videoUrl);
+      setCurrentLesson(lesson);
       setIsPlayerVisible(true);
     } else {
       console.warn(`Lesson ${lesson._id} does not have a videoUrl.`);
@@ -263,7 +267,39 @@ export default function Progress() {
   const handleClosePlayer = () => {
     setIsPlayerVisible(false);
     setCurrentVideoUrl("");
+    setCurrentLesson(null);
   };
+
+  const handleMarkComplete = useCallback(async () => {
+    if (!courseId || !currentLesson?._id) return;
+
+    try {
+      // Chỉ gọi API nếu bài học này chưa nằm trong danh sách hoàn thành
+      const allLessons = course?.sections.flatMap((s) => s.lessons) || [];
+      const currentLessonIndex = allLessons.findIndex(
+        (l) => l._id === currentLesson._id
+      );
+
+      if (currentLessonIndex >= completedCount) {
+        console.log(`Đánh dấu hoàn thành cho bài: ${currentLesson.title}`);
+        const response = await markLessonAsCompleted(
+          courseId,
+          currentLesson._id
+        );
+
+        // Cập nhật lại số bài đã hoàn thành từ response của API
+        if (response.success && response.data) {
+          setCompletedCount(response.data.completedLessonsCount);
+        }
+      } else {
+        console.log(
+          `Bài học "${currentLesson.title}" đã được hoàn thành trước đó.`
+        );
+      }
+    } catch (error) {
+      console.error("Lỗi khi đánh dấu hoàn thành bài học:", error);
+    }
+  }, [courseId, currentLesson, completedCount, course]);
 
   // 💡 1. Hàm xử lý cho nút "Continue Course"
   const handleContinueCourse = () => {
@@ -306,6 +342,7 @@ export default function Progress() {
         isVisible={isPlayerVisible}
         videoUrl={currentVideoUrl}
         onClose={handleClosePlayer}
+        onMarkComplete={handleMarkComplete}
       />
       {/* 💡 2. Cập nhật prop onContinue */}
       <BottomSection
