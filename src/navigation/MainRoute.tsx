@@ -5,19 +5,15 @@ import Launching from "../components/Launching";
 import LoginPage from "../screens/authentication/LoginPage";
 import StartPage from "../screens/authentication/StartPage";
 import SignUp from "../screens/authentication/SignUp";
-import FillProfile from "../screens/authentication/FillProfile";
-import FillProfileHeader from "../screens/authentication/FillProfileHeader";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen/ForgotPasswordScreen";
 import VerificationCodeScreen from "../screens/ForgotPasswordScreen/VerificationCodeScreen";
 import CreateNewPasswordScreen from "../screens/ForgotPasswordScreen/CreateNewPasswordScreen";
 import CongratulationsScreen from "../screens/ForgotPasswordScreen/CongratulationsScreen";
 import OnlineCourseScreen from "../screens/courses/OnlineCourses";
-import PopularCoursesScreen from "../screens/courses/PopularCourses";
 import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import CategoryScreen from "../screens/CategoryScreen/CategoryScreen";
 import SearchScreen from "../screens/SearchScreen/SearchScreen";
 import CourseDetail from "../screens/CourseDetail/CourseDetail";
-import FilterScreen from "../screens/courses/FilterComponents";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import EditProfileScreen from "../screens/Profile/EditProfileScreen";
 import EditPasswordScreen from "../screens/Profile/EditPasswordScreen";
@@ -26,6 +22,7 @@ import MyCoursesScreen from "../screens/MyCourses/MyCoursesScreen";
 import Cart from "../screens/Cart/Cart";
 import Progress from "../screens/Progress/Progress";
 import BottomTabNavigator from "./BottomTabNavigator";
+import FilterScreen from "../screens/courses/FilterComponents";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
@@ -73,21 +70,22 @@ const MainRouter: React.FC = () => {
           component={CongratulationsScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="Notification"
+          component={NotificationScreen}
+          options={{ headerShown: false }}
+        />
+        {/* Main Tab Navigator - This should be the main screen */}
+        <Stack.Screen
+          name="MainTabs"
+          component={BottomTabNavigator}
+          options={{ headerShown: false }}
+        />
 
+        {/* Other standalone screens */}
         <Stack.Screen
           name="OnlineCourses"
           component={OnlineCourseScreen}
-          options={{ headerShown: false }}
-        />
-
-        <Stack.Screen
-          name="FilterOnlineCourses"
-          component={FilterScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="PopularCourses"
-          component={PopularCoursesScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -130,10 +128,9 @@ const MainRouter: React.FC = () => {
           component={Cart}
           options={{ headerShown: false }}
         />
-        {/* Main Tab Navigator */}
         <Stack.Screen
-          name="MainTabs"
-          component={BottomTabNavigator}
+          name="FilterOnlineCourses"
+          component={FilterScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

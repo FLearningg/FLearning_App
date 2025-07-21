@@ -10,7 +10,9 @@ export type RootStackParamList = {
   VerificationCode: undefined;
   CreateNewPassword: undefined;
   Congratulations: undefined;
-  OnlineCourses: { filters?: Filters; fromBottomTab?: boolean; searchQuery?: string } | undefined;
+  OnlineCourses:
+    | { filters?: Filters; fromBottomTab?: boolean; searchQuery?: string }
+    | undefined;
   FilterOnlineCourses: {
     filters: Filters;
     searchQuery?: string;

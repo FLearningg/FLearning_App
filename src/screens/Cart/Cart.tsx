@@ -138,7 +138,7 @@ export default function MobileCart() {
               <View style={styles.courseBigHeader}>
                 <View style={styles.courseHeader}>
                   <Text style={styles.categoryText}>
-                    {course.categoryIds?.[0]?.name || "Chưa phân loại"}
+                    {course.categoryIds?.[0]?.name || "Uncategorized"}
                   </Text>
                   <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Trash2 size={20} color="#8e8e93" />

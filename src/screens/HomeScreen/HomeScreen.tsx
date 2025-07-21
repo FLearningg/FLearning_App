@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RouteProp, useFocusEffect } from "@react-navigation/native";
+import { RouteProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types/NavigationType";
 import SearchBar from "../../components/SearchBar/SearchBar";
 
@@ -129,7 +129,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     setLoading(true);
     getPopularCourses()
       .then((courses) => {
-        setPopularCourses(courses);
+        // setPopularCourses(courses);
+        setPopularCourses(Array.isArray(courses) ? courses : []);
         setError(null);
       })
       .catch((error) => {
@@ -149,7 +150,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     activeTab === "All"
       ? popularCourses
       : popularCourses.filter(
-        (course) => course.categoryIds[0]?.name === activeTab
+        (course) =>
+          Array.isArray(course.categoryIds) &&
+          course.categoryIds.length > 0 &&
+          course.categoryIds[0].name === activeTab
       );
 
   // Prevent back navigation when on Home screen
@@ -169,7 +173,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       return () => subscription.remove();
     }, [])
   );
-
   // Also set navigation options to disable gesture back on iOS
   useEffect(() => {
     navigation.setOptions({
@@ -182,8 +185,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     ...Array.from(
       new Set(
         popularCourses
-          .map((course) => course.categoryIds[0]?.name)
-          .filter((name) => !!name)
+          .flatMap(course =>
+            Array.isArray(course.categoryIds)
+              ? course.categoryIds.map(cat => cat.name).filter(Boolean)
+              : []
+          )
       )
     ),
   ];
@@ -284,7 +290,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   ]}
                   onPress={() => {
                     setActiveCategoryId(category._id);
-                    navigation.navigate("MainTabs", {
+                    navigation.navigate("OnlineCourses", {
                       filters: {
                         ...INITIAL_FILTERS,
                         subCategories: {
@@ -357,7 +363,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={homeScreenStyles.coursesScrollContainer}
             >
-              {filteredCourses.map((course) => {
+              {filteredCourses?.map((course) => {
                 let finalPrice = course.price;
                 if (course.discountId) {
                   if (course.discountId.typee === "fixedAmount") {
@@ -392,7 +398,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                     </View>
                     <View style={homeScreenStyles.courseInfo}>
                       <Text style={homeScreenStyles.courseCategory}>
-                        {course.categoryIds[0]?.name}
+                        {course.categoryIds?.[0]?.name || "Uncategorized"}
                       </Text>
                       <Text
                         style={homeScreenStyles.courseTitle}
