@@ -64,7 +64,7 @@ interface Course {
 
 const MyCourseCard = memo(
   ({ course, onPress }: { course: Course; onPress?: () => void }) => (
-    <CourseCard course={course as any} variant="mycourses" onPress={onPress} />
+    <CourseCard course={course as any} onPress={onPress || (() => { })} />
   )
 );
 
@@ -259,14 +259,14 @@ const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({
     <SafeAreaView style={styles.myCoursesContainer}>
       <StatusBar
         barStyle="dark-content"
-        backgroundColor={Platform.OS === "android" ? "#FFFFFF" : undefined}
+        backgroundColor="#FFFFFF"
         translucent={false}
       />
       {Platform.OS === "android" && (
-        <View style={{ height: 10, backgroundColor: "#FFFFFF" }} />
+        <View style={{ height: 30, backgroundColor: "#FFFFFF" }} />
       )}
       {!route.params?.fromBottomTab && (
-        <GoBackButton title="My Courses" onPress={handleBack} />
+        <GoBackButton title="My Courses" onPress={handleBack} backgroundColor="#FFFFFF" />
       )}
       <SearchBar onChangeText={setSearchText} searchQuery={searchText} />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -283,10 +283,8 @@ const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({
         </View>
       ) : (
         <ScrollView
-          contentContainerStyle={[
-            styles.myCoursesList,
-            { paddingHorizontal: 16 },
-          ]}
+          contentContainerStyle={styles.myCoursesList}
+          showsVerticalScrollIndicator={false}
         >
           {filteredCourses.length > 0 ? (
             filteredCourses.map((course) => (
@@ -307,8 +305,8 @@ const MyCoursesScreen: React.FC<MyCoursesScreenProps> = ({
                 {searchText
                   ? `No ${activeTab.toLowerCase()} courses found matching "${searchText}"`
                   : coursesData.length === 0
-                  ? `You have no ${activeTab.toLowerCase()} courses yet`
-                  : `No ${activeTab.toLowerCase()} courses found`}
+                    ? `You have no ${activeTab.toLowerCase()} courses yet`
+                    : `No ${activeTab.toLowerCase()} courses found`}
               </Text>
               {!searchText && coursesData.length === 0 && (
                 <Text

@@ -117,24 +117,105 @@ const Tabs = memo(
 );
 
 const ResultHeader = memo(
-  ({ count, searchQuery }: { count: number; searchQuery: string }) => (
-    <View style={styles.resultHeader}>
-      <Text style={[styles.resultText, { fontSize: 20, fontWeight: "bold" }]}>
-        Result for{" "}
-        <Text style={[styles.highlight, { fontSize: 20, fontWeight: "bold" }]}>
-          "{searchQuery || "All"}"
+  ({ count, searchQuery, filters }: { count: number; searchQuery: string; filters: Filters }) => {
+    const getFilterDescription = () => {
+      const descriptions: string[] = [];
+
+      // Check search query
+      if (searchQuery.trim()) {
+        descriptions.push(`"${searchQuery}"`);
+      }
+
+      // Check categories
+      const selectedCategories = Object.entries(filters.subCategories)
+        .filter(([_, selected]) => selected)
+        .map(([category, _]) => category);
+
+      if (selectedCategories.length > 0) {
+        if (selectedCategories.length === 1) {
+          descriptions.push(selectedCategories[0]);
+        } else {
+          descriptions.push(`${selectedCategories.length} categories`);
+        }
+      }
+
+      // Check price
+      if (filters.price.Free && !filters.price.Paid) {
+        descriptions.push("Free");
+      } else if (filters.price.Paid && !filters.price.Free) {
+        descriptions.push("Paid");
+      }
+
+      // Check rating
+      const selectedRatings = Object.entries(filters.rating)
+        .filter(([_, selected]) => selected)
+        .map(([rating, _]) => rating);
+
+      if (selectedRatings.length > 0) {
+        descriptions.push(`${selectedRatings[0]}+ rating`);
+      }
+
+      // Check levels
+      const selectedLevels = Object.entries(filters.levels)
+        .filter(([_, selected]) => selected)
+        .map(([level, _]) => level);
+
+      if (selectedLevels.length > 0) {
+        if (selectedLevels.length === 1) {
+          descriptions.push(selectedLevels[0]);
+        } else {
+          descriptions.push(`${selectedLevels.length} levels`);
+        }
+      }
+
+      // Check features
+      const selectedFeatures = Object.entries(filters.features)
+        .filter(([_, selected]) => selected)
+        .map(([feature, _]) => feature);
+
+      if (selectedFeatures.length > 0) {
+        if (selectedFeatures.length === 1) {
+          descriptions.push(selectedFeatures[0]);
+        } else {
+          descriptions.push(`${selectedFeatures.length} features`);
+        }
+      }
+
+      // Check video durations
+      const selectedDurations = Object.entries(filters.videoDurations)
+        .filter(([_, selected]) => selected)
+        .map(([duration, _]) => duration);
+
+      if (selectedDurations.length > 0) {
+        if (selectedDurations.length === 1) {
+          descriptions.push(selectedDurations[0]);
+        } else {
+          descriptions.push(`${selectedDurations.length} durations`);
+        }
+      }
+
+      return descriptions.length > 0 ? descriptions.join(", ") : "All";
+    };
+
+    return (
+      <View style={styles.resultHeader}>
+        <Text style={[styles.resultText, { fontSize: 20, fontWeight: "bold" }]}>
+          Result for{" "}
+          <Text style={[styles.highlight, { fontSize: 20, fontWeight: "bold" }]}>
+            "{getFilterDescription()}"
+          </Text>
         </Text>
-      </Text>
-      <View style={styles.resultCount}>
-        <Text
-          style={[styles.resultNumber, { fontSize: 18, fontWeight: "bold" }]}
-        >
-          {count} RESULTS
-        </Text>
-        <ChevronRight color="#0961f5" size={16} />
+        <View style={styles.resultCount}>
+          <Text
+            style={[styles.resultNumber, { fontSize: 18, fontWeight: "bold" }]}
+          >
+            {count} RESULTS
+          </Text>
+          <ChevronRight color="#0961f5" size={16} />
+        </View>
       </View>
-    </View>
-  )
+    );
+  }
 );
 
 // --- Main Component ---
@@ -146,7 +227,7 @@ const OnlineCourseScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(route.params?.searchQuery || "");
   const [activeTab, setActiveTab] = useState<"courses" | "mentors">("courses");
 
   useEffect(() => {
@@ -176,6 +257,7 @@ const OnlineCourseScreen = () => {
 
   useEffect(() => {
     if (route.params?.filters) setFilters(route.params.filters);
+    if (route.params?.searchQuery) setSearchQuery(route.params.searchQuery);
   }, [route.params]);
 
   const filteredCourses = courses.filter((course) => {
@@ -219,6 +301,7 @@ const OnlineCourseScreen = () => {
     // Just pass the current state of the filters
     navigation.navigate("FilterOnlineCourses", {
       filters,
+      searchQuery,
     });
   };
 
@@ -261,7 +344,7 @@ const OnlineCourseScreen = () => {
       {!route.params?.fromBottomTab && (
         <GoBackButton
           title="Online Courses"
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("MainTabs")}
         />
       )}
       <SearchBar
@@ -270,7 +353,7 @@ const OnlineCourseScreen = () => {
         searchQuery={searchQuery}
       />
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-      <ResultHeader count={filteredCourses.length} searchQuery={searchQuery} />
+      <ResultHeader count={filteredCourses.length} searchQuery={searchQuery} filters={filters} />
       <ScrollView contentContainerStyle={styles.courseList}>
         {filteredCourses.length > 0 ? (
           filteredCourses.map((course) => (

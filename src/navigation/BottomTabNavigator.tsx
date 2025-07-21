@@ -6,8 +6,9 @@ import HomeScreen from "../screens/HomeScreen/HomeScreen";
 import OnlineCourseScreen from "../screens/courses/OnlineCourses";
 import MyCoursesScreen from "../screens/MyCourses/MyCoursesScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
+import { MainTabsParamList } from "../types/NavigationType";
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<MainTabsParamList>();
 
 const BottomTabNavigator = ({ route }: { route: any }) => {
   return (

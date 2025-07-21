@@ -95,7 +95,7 @@ export default function LoginPage() {
                     position: 'top',
                     visibilityTime: 3000,
                 });
-                navigation.navigate('Home') //pass parameter here
+                navigation.navigate('MainTabs') //pass parameter here
             })
             .catch((error) => {
                 if (error.errorCode === 'ACCOUNT_NOT_VERIFIED') {
