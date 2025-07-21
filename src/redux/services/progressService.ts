@@ -55,6 +55,13 @@ export const getIncompleteCourses = () =>
 export const getCourseProgress = (courseId: string) =>
   apiClient.get<SingleCourseProgressResponse>(`/progress/${courseId}`);
 
+export const markLessonAsCompleted = async (courseId: string, lessonId: string) => {
+  const res = await apiClient.post(
+    `/progress/${courseId}/lessons/${lessonId}/complete`
+  );
+  return res.data;
+};
+
 export default {
   testProgressAPI,
   getAllCoursesProgress,
