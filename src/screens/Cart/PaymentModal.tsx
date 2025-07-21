@@ -13,6 +13,8 @@ import {
 import { X } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 import apiClient from "../../redux/services/authService"; // Adjust the import path as necessary
+import { saveTransactionToDB } from "../../redux/services/paymentService";
+import { enrollInCourses } from "../../redux/services/courseService";
 
 // --- Constants ---
 
@@ -38,7 +40,7 @@ type PaymentModalProps = {
   isVisible: boolean;
   onClose: () => void;
   course: { _id: string; price: number } | null;
-  userId: string; // userId is passed but not used, can be removed if not needed for future logic
+  userId: string;
 };
 
 // --- Main Component ---
@@ -46,22 +48,23 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   isVisible,
   onClose,
   course,
+  userId,
 }) => {
   const [isPolling, setIsPolling] = useState(false);
   const navigation = useNavigation();
   const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
 
   // --- Memoized Values for Payment ---
-  //   const expectedAmount = "2000";
-  //   const paymentContent = "COURSE611";
+  // const expectedAmount = "2000";
+  // const paymentContent = "COURSE611";
   const expectedAmount = React.useMemo(
     () => (course ? Math.round(course.price * 25000) : 0),
     [course]
   );
   const [randomSuffix] = useState(generateRandomSuffix);
   const paymentContent = React.useMemo(
-    () => (course ? `COURSE${course._id}_${randomSuffix}` : ""),
-    [course, randomSuffix]
+    () => (course ? `COURSE${course._id}_${userId}` : ""),
+    [course, userId] // randomSuffix is constant and not needed here
   );
   const qrCodeUrl = React.useMemo(
     () =>
@@ -70,6 +73,65 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         : "",
     [expectedAmount, paymentContent, course]
   );
+
+  // --- Post-Payment Logic ---
+  const afterSuccessfulPayment = useCallback(() => {
+    if (!course) {
+      console.error("afterSuccessfulPayment called without a course.");
+      return;
+    }
+
+    // GIẢI PHÁP TẠM THỜI: Tạo một chuỗi ngẫu nhiên 24 ký tự hexa hợp lệ
+    // để server có thể chuyển đổi thành ObjectId mà không bị lỗi.
+    const generateObjectIdString = () => {
+      const chars = "0123456789abcdef";
+      let result = "";
+      for (let i = 0; i < 24; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    };
+
+    // 1. Define transaction data
+    const transactionData = {
+      "Ngày diễn ra": new Date().toISOString(),
+      // THAY ĐỔI: Sử dụng chuỗi ObjectId ngẫu nhiên cho "Mã GD"
+      // để khắc phục tạm thời lỗi phía server.
+      "Mã GD": generateObjectIdString(),
+      "Giá trị": expectedAmount,
+      "Mô tả": paymentContent,
+    };
+    const userIdentifier = { _id: userId };
+
+    // 2. Save transaction, then enroll in the course
+    saveTransactionToDB(transactionData, userIdentifier)
+      .then((response) => {
+        console.log("Transaction saved successfully:", response);
+        // 3. Chain the enrollment call with CORRECT arguments
+        return enrollInCourses(userId, [course._id]);
+      })
+      .then(() => {
+        console.log("Successfully enrolled in course:", course._id);
+      })
+      .catch((error) => {
+        // Enhanced error logging for debugging the server-side issue
+        console.error("Error during post-payment process:", error);
+        console.error(
+          "Data sent to server that may have caused the error:",
+          transactionData
+        );
+
+        let alertMessage =
+          "Your payment was successful, but there was an issue finalizing your enrollment. Please contact support.";
+
+        // Axios wraps the response error in `error.response`. Log it for more details.
+        if (error.response) {
+          console.error("Server Error Response Data:", error.response.data);
+        }
+
+        Alert.alert("Post-Payment Error", alertMessage);
+      });
+  }, [course, userId, randomSuffix, expectedAmount, paymentContent]);
 
   // --- Polling Logic ---
   const stopPolling = useCallback(() => {
@@ -87,7 +149,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       const checkPaymentStatus = async () => {
         try {
           const response = await apiClient.get("/payment/transactions");
-
           const recentTransactions = response.data;
           const transactions = recentTransactions.data || [];
 
@@ -138,7 +199,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     expectedAmount,
     navigation,
     stopPolling,
-    onClose, // Added onClose to dependency array
+    onClose,
+    afterSuccessfulPayment, // Added afterSuccessfulPayment to dependency array
   ]);
 
   // --- Event Handlers ---
@@ -146,10 +208,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     stopPolling();
     onClose();
   }, [stopPolling, onClose]);
-
-  const afterSuccessfulPayment = useCallback(() => {
-    // Add any additional logic you want to execute after a successful payment
-  }, []);
 
   // --- Render ---
   return (
