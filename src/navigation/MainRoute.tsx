@@ -22,10 +22,10 @@ import ProfileScreen from "../screens/Profile/ProfileScreen";
 import EditProfileScreen from "../screens/Profile/EditProfileScreen";
 import EditPasswordScreen from "../screens/Profile/EditPasswordScreen";
 import NotificationScreen from "../screens/Notification/NotificationScreen";
-// import NotificationHeader from "../screens/Notification/NotificationHeader";
 import MyCoursesScreen from "../screens/MyCourses/MyCoursesScreen";
 import Cart from "../screens/Cart/Cart";
 import Progress from "../screens/Progress/Progress";
+import BottomTabNavigator from "./BottomTabNavigator";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const MainRouter: React.FC = () => {
@@ -73,11 +73,13 @@ const MainRouter: React.FC = () => {
           component={CongratulationsScreen}
           options={{ headerShown: false }}
         />
+
         <Stack.Screen
           name="OnlineCourses"
           component={OnlineCourseScreen}
           options={{ headerShown: false }}
         />
+
         <Stack.Screen
           name="FilterOnlineCourses"
           component={FilterScreen}
@@ -109,11 +111,6 @@ const MainRouter: React.FC = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="EditProfileScreen"
           component={EditProfileScreen}
           options={{ headerShown: false, title: "Edit Profile" }}
@@ -124,13 +121,8 @@ const MainRouter: React.FC = () => {
           options={{ headerShown: true, title: "Change Password" }}
         />
         <Stack.Screen
-          name="Notification"
-          component={NotificationScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="MyCourses"
-          component={MyCoursesScreen}
+          name="Progress"
+          component={Progress}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -138,9 +130,10 @@ const MainRouter: React.FC = () => {
           component={Cart}
           options={{ headerShown: false }}
         />
+        {/* Main Tab Navigator */}
         <Stack.Screen
-          name="Progress"
-          component={Progress}
+          name="MainTabs"
+          component={BottomTabNavigator}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

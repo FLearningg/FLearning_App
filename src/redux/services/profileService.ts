@@ -26,3 +26,16 @@ export const getPurchaseHistory = async (page = 1, limit = 10) => {
   );
   return res.data;
 };
+
+// Kiểm tra xem user đã enroll course cụ thể hay chưa
+export const checkCourseEnrolled = async (courseId: string) => {
+  try {
+    const enrolledCourses = await getEnrolledCourses();
+    const isEnrolled = enrolledCourses.some(
+      (course: any) => course._id === courseId || course.courseId === courseId
+    );
+    return { isEnrolled };
+  } catch (error) {
+    return { isEnrolled: false };
+  }
+};

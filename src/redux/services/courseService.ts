@@ -140,6 +140,7 @@ export const updateCourseFeedback = async (
   return res.data;
 };
 
+
 //Enrolls a user in one or more courses.
 export const enrollInCourses = async (userId: string, courseIds: string[]) => {
   if (!userId || !courseIds || courseIds.length === 0) {
@@ -167,3 +168,39 @@ export const enrollInCourses = async (userId: string, courseIds: string[]) => {
     throw new Error(message);
   }
 };
+
+// Kiểm tra xem user đã enroll course hay chưa
+export const checkCourseEnrollment = async (courseId: string) => {
+  try {
+    const res = await apiClient.get("/profile/enrolled-courses");
+    const responseData = res.data;
+
+    // API response có cấu trúc: {data: [{course: {...}}, ...]}
+    const enrolledCoursesData = responseData.data;
+
+    if (!Array.isArray(enrolledCoursesData)) {
+      return { isEnrolled: false };
+    }
+
+    // Kiểm tra từng enrolled course
+    const isEnrolled = enrolledCoursesData.some((item) => {
+      if (item.course) {
+        // Check both id and _id fields
+        return item.course.id === courseId || item.course._id === courseId;
+      }
+      return false;
+    });
+
+    return { isEnrolled };
+  } catch (error) {
+    console.error("Error checking enrollment:", error);
+    return { isEnrolled: false };
+  }
+};
+
+// Enroll vào khoá học
+export const enrollCourse = async (courseId: string) => {
+  const res = await apiClient.post(`/courses/${courseId}/enroll`);
+  return res.data;
+};
+

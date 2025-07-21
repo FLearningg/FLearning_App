@@ -19,7 +19,7 @@ import {
   useFocusEffect,
   useRoute,
 } from "@react-navigation/native";
-import BottomNav from "../courses/BottomNav";
+
 import { getProfile } from "../../redux/services/profileService";
 import GoBackButton from "../../components/GoBackButton";
 import Toast from "react-native-toast-message";
@@ -29,6 +29,13 @@ import * as ImagePicker from "expo-image-picker";
 const PRIMARY_COLOR = "#66C5B3";
 const RED_COLOR = "#D9534F";
 const AVATAR_SIZE = 110;
+
+// Thêm type cho params
+
+type ProfileScreenParams = {
+  showPasswordChangedToast?: boolean;
+  fromBottomTab?: boolean;
+};
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -41,9 +48,11 @@ const ProfileScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const [newImage, setNewImage] = useState<string | null>(null);
 
+  const params = route.params as ProfileScreenParams | undefined;
+
   useFocusEffect(
     React.useCallback(() => {
-      if (route.params?.showPasswordChangedToast) {
+      if (params?.showPasswordChangedToast) {
         Toast.show({
           type: "custom_with_image",
           text1: "Password changed!",
@@ -54,7 +63,7 @@ const ProfileScreen = () => {
           },
           visibilityTime: 1500,
         });
-        route.params.showPasswordChangedToast = false;
+        // Không gán lại params, không cần reset params ở đây
       }
       const fetchProfile = async () => {
         try {
@@ -73,7 +82,7 @@ const ProfileScreen = () => {
         }
       };
       fetchProfile();
-    }, [route.params])
+    }, [params?.showPasswordChangedToast])
   );
 
   // Hàm xin quyền camera/thư viện
@@ -167,7 +176,9 @@ const ProfileScreen = () => {
     <>
       <SafeAreaView style={styles.container}>
         <View style={{ paddingTop: Platform.OS === "android" ? 24 : 0 }}>
-          <GoBackButton title="Profile" onPress={() => navigation.goBack()} />
+          {!params?.fromBottomTab && (
+            <GoBackButton title="Profile" onPress={() => navigation.goBack()} />
+          )}
         </View>
         <StatusBar
           barStyle="dark-content"
@@ -272,7 +283,6 @@ const ProfileScreen = () => {
           </View>
         </ScrollView>
       </SafeAreaView>
-      <BottomNav />
     </>
   );
 };

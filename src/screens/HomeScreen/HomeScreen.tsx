@@ -95,19 +95,20 @@ import LoadingComponent from "../../components/Loading/LoadingComponent";
 import { INITIAL_FILTERS } from "../courses/FilterComponents";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-
   const currentUser = useSelector((state: RootState) => state.auth.currentUser);
   const dispatch = useDispatch<AppDispatch>();
   const markAllAsRead = async () => {
     try {
       await markNotificationAsRead(currentUser?._id, dispatch);
-      navigation.navigate("Notification")
+      navigation.navigate("Notification");
     } catch (error) {
       console.error("Error marking as read:", error);
     }
   };
   // Fetch categories from Redux store
-  const categories = useSelector((state: RootState) => state.categories.getCategories.categories);
+  const categories = useSelector(
+    (state: RootState) => state.categories.getCategories.categories
+  );
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -134,9 +135,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       .catch((error) => {
         setError(
           error.response?.data?.message ||
-          error.response?.data?.error ||
-          error.message ||
-          "Error fetching popular courses"
+            error.response?.data?.error ||
+            error.message ||
+            "Error fetching popular courses"
         );
         setPopularCourses([]);
       })
@@ -144,12 +145,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         setLoading(false);
       });
   }, [dispatch]);
-  const filteredCourses = activeTab === "All"
-    ? popularCourses
-    : popularCourses.filter(
-      (course) => course.categoryIds[0]?.name === activeTab
-    );
-
+  const filteredCourses =
+    activeTab === "All"
+      ? popularCourses
+      : popularCourses.filter(
+          (course) => course.categoryIds[0]?.name === activeTab
+        );
 
   // Prevent back navigation when on Home screen
   useFocusEffect(
@@ -216,13 +217,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           {/* Header - Inside ScrollView so it scrolls with content */}
           <View style={homeScreenStyles.header}>
             <View style={homeScreenStyles.headerTextContainer}>
-              <Text style={homeScreenStyles.greeting}>Hi, {currentUser?.firstName} {currentUser?.lastName}</Text>
+              <Text style={homeScreenStyles.greeting}>
+                Hi, {currentUser?.firstName} {currentUser?.lastName}
+              </Text>
               <Text style={homeScreenStyles.subGreeting}>
                 What Would you like to learn Today?
               </Text>
               <Text style={homeScreenStyles.searchHint}>Search Below.</Text>
             </View>
-            <TouchableOpacity style={homeScreenStyles.notificationButton} onPress={markAllAsRead}>
+            <TouchableOpacity
+              style={homeScreenStyles.notificationButton}
+              onPress={markAllAsRead}
+            >
               <Image
                 source={require("../../../assets/images/NOTIFICATIONS.jpg")}
                 style={homeScreenStyles.notificationIcon}
@@ -277,11 +283,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   key={category._id}
                   style={[
                     homeScreenStyles.categoryItem,
-                    activeCategoryId === category._id && homeScreenStyles.activeCategoryItem,
+                    activeCategoryId === category._id &&
+                      homeScreenStyles.activeCategoryItem,
                   ]}
                   onPress={() => {
                     setActiveCategoryId(category._id);
-                    navigation.navigate("OnlineCourses", {
+                    navigation.navigate("MainTabs", {
                       filters: {
                         ...INITIAL_FILTERS,
                         subCategories: {
@@ -295,7 +302,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   <Text
                     style={[
                       homeScreenStyles.categoryText,
-                      activeCategoryId === category._id && homeScreenStyles.activeCategoryText,
+                      activeCategoryId === category._id &&
+                        homeScreenStyles.activeCategoryText,
                     ]}
                   >
                     {category.name}
@@ -331,7 +339,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   ]}
                   onPress={() => {
                     if (tab === "All") {
-                      navigation.navigate("OnlineCourses");
+                      navigation.navigate("MainTabs");
                     }
                     setActiveTab(tab);
                   }}
@@ -357,7 +365,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 let finalPrice = course.price;
                 if (course.discountId) {
                   if (course.discountId.typee === "fixedAmount") {
-                    finalPrice = Math.max(0, course.price - course.discountId.value);
+                    finalPrice = Math.max(
+                      0,
+                      course.price - course.discountId.value
+                    );
                   } else if (course.discountId.typee === "percent") {
                     finalPrice = Math.max(
                       0,
@@ -387,18 +398,36 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                       <Text style={homeScreenStyles.courseCategory}>
                         {course.categoryIds[0]?.name}
                       </Text>
-                      <Text style={homeScreenStyles.courseTitle} numberOfLines={2} ellipsizeMode="tail">
+                      <Text
+                        style={homeScreenStyles.courseTitle}
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                      >
                         {course.title}
                       </Text>
                       <View style={homeScreenStyles.courseStats}>
                         <Text style={homeScreenStyles.coursePrice}>
                           {/* {course.price} */}
-                          {finalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}$
+                          {finalPrice.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                          $
                           {course.discountId && (
                             <Text>
                               {" / "}
-                              <Text style={{ textDecorationLine: "line-through", color: "#888", fontSize: responsiveWidth(12) }}>
-                                {course.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}$
+                              <Text
+                                style={{
+                                  textDecorationLine: "line-through",
+                                  color: "#888",
+                                  fontSize: responsiveWidth(12),
+                                }}
+                              >
+                                {course.price.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                  maximumFractionDigits: 2,
+                                })}
+                                $
                               </Text>
                             </Text>
                           )}
@@ -419,7 +448,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                       </View>
                     </View>
                   </TouchableOpacity>
-                )
+                );
               })}
             </ScrollView>
           </View>
