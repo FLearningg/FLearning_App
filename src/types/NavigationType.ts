@@ -1,3 +1,4 @@
+import { PurchaseHistoryItem } from './../redux/services/profileService';
 import { Filters } from "../screens/courses/FilterComponents";
 
 export type RootStackParamList = {
@@ -30,6 +31,7 @@ export type RootStackParamList = {
   Cart: { courseId: string };
   Progress: { courseId: string; status: "Completed" | "Ongoing" };
   MainTabs: { filters?: Filters } | undefined;
+  ERecipe: { transactionId?: string; purchaseData?: PurchaseHistoryItem };
 };
 
 export type MainTabsParamList = {
